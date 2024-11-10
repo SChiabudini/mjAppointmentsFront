@@ -1,13 +1,21 @@
-import React from 'react'
+import style from './Header.module.css';
+import React from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import logo from './logo.jpg';
+
 import NavBar from './NavBar/NavBar.jsx';
 
 const Header = () => {
   return (
-    <div>
-      <div>
-        <h1>LOGO</h1>
-        <div>
-          <NavBar />
+    <div className={style.container}>
+      <div className={style.content}>
+        <NavLink to="/">
+          <h1>
+            <img className={style.logoImg} src={logo} alt="Logo-MJ" title="Logo-MJ"/>
+          </h1>
+        </NavLink>
+        <div className={style.nav}>
+            <NavBar/>
         </div>
       </div>
     </div>

@@ -1,0 +1,21 @@
+.container {
+    background-color: black;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+}
+
+h1 {
+    margin: 0;
+    height: 4rem;
+}
+
+h1 img {
+    height: 100%;
+}
