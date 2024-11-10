@@ -1,0 +1,35 @@
+.NavLink{
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-left: 2rem;
+    letter-spacing: 0.05rem;
+    position: relative;
+}
+
+.NavLink:hover{
+    color: #ff6600c7;
+}
+
+.selected{
+    color: #ff6600;
+}
+
+/* Subrayado animado cuando el enlace está activo */
+.NavLink:before {
+    content: ''; /* Esto crea un elemento vacío antes del texto */
+    position: absolute;
+    bottom: -2px; /* Colocamos el subrayado en la parte inferior del texto */
+    left: 0;
+    width: 0; /* Inicialmente el subrayado tiene un ancho de 0 */
+    height: 2px; /* Altura del subrayado */
+    background-color: #ff6600; /* Color del subrayado */
+    transition: width 0.5s ease-in-out; /* Hacemos que el subrayado se expanda con una transición */
+}
+
+/* Cuando el enlace está activo, el subrayado se expande completamente */
+.NavLink.selected:before {
+    width: 100%;
+}
+
