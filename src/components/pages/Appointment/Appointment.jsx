@@ -67,7 +67,7 @@ const Appointment = () => {
     } catch (error) {
         console.error("Error saving appoiment:", error);
     }
-};
+  };
 
   return (
     <div className="page">
@@ -79,7 +79,7 @@ const Appointment = () => {
           </div>
         </div>
         <div className="container">
-          <form onSubmit={handleSubmit} className={style.appointmentForm}>
+          <form onSubmit={handleSubmit}>
             <div>
               {/* <div className={style.containerMessage}>
                 <label className={style.mensagge}>Los campos con (*) son obligatorios</label>
@@ -113,7 +113,7 @@ const Appointment = () => {
                   <option value="" disabled>Seleccionar</option>
                 </select>
                 <div>
-                  <button type='button' >Crear</button>
+                  <button type='button'>Crear</button>
                 </div>
               </div>
               <div>
