@@ -3,10 +3,15 @@ import PersonClient from './PersonClient/PersonClient.jsx';
 import CompanyClient from './CompanyClient/CompanyClient.jsx';
 
 const Clients = () => {
+  
   return (
     <div>
-      <PersonClient />
-      <CompanyClient />
+      <div>
+        <PersonClient />
+      </div>
+      <div>
+        <CompanyClient />
+      </div>      
     </div>
   )
 }
