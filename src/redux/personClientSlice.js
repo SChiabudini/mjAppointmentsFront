@@ -3,18 +3,18 @@ import { createSlice } from "@reduxjs/toolkit";
 export const personClientSlice = createSlice({
     name: "personClient",
     initialState: {
-        personClient: [],
-        personClientCopy: [],
+        personClients: [],
+        personClientsCopy: [],
 
     },
     reducers: {
-        getPersonClientReducer: (state, action) => {
-            state.personClient = action.payload;
-            state.personClientCopy = action.payload;
+        getPersonClientsReducer: (state, action) => {
+            state.personClients = action.payload;
+            state.personClientsCopy = action.payload;
         },
     }
 });
 
-export const { getPersonClientReducer } = personClientSlice.actions;
+export const { getPersonClientsReducer } = personClientSlice.actions;
 
 export default personClientSlice.reducer;

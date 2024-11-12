@@ -1,20 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const appoimentSlice = createSlice({
-    name: "appoiment",
+export const appointmentSlice = createSlice({
+    name: "appointment",
     initialState: {
-        appoiment: [],
-        appoimentCopy: [],
-
+        appointments: [],
+        appointmentsCopy: [],
     },
     reducers: {
-        getAppoimentReducer: (state, action) => {
-            state.appoiment = action.payload;
-            state.appoimentCopy = action.payload;
+        getAppointmentsReducer: (state, action) => {
+            state.appointments = action.payload;
+            state.appointmentsCopy = action.payload;
         },
     }
 });
 
-export const { getAppoimentReducer } = appoimentSlice.actions;
+export const { getAppointmentsReducer } = appointmentSlice.actions;
 
-export default appoimentSlice.reducer;
+export default appointmentSlice.reducer;

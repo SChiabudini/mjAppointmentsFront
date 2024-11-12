@@ -3,18 +3,18 @@ import { createSlice } from "@reduxjs/toolkit";
 export const companyClientSlice = createSlice({
     name: "companyClient",
     initialState: {
-        companyClient: [],
-        companyClientCopy: [],
+        companyClients: [],
+        companyClientsCopy: [],
 
     },
     reducers: {
-        getCompanyClientReducer: (state, action) => {
-            state.companyClient = action.payload;
-            state.companyClientCopy = action.payload;
+        getCompanyClientsReducer: (state, action) => {
+            state.companyClients = action.payload;
+            state.companyClientsCopy = action.payload;
         },
     }
 });
 
-export const { getCompanyClientReducer } = companyClientSlice.actions;
+export const { getCompanyClientsReducer } = companyClientSlice.actions;
 
 export default companyClientSlice.reducer;
