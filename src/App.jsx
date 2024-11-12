@@ -2,8 +2,7 @@ import './App.css';
 import React, { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/common/Header.jsx';
-import Home from './components/pages/Home/Home.jsx';
-import Appointment from './components/pages/Appointment/Appointment.jsx';
+import Appointments from './components/pages/Appointments/Appointments.jsx';
 import Clients from './components/pages/Clients/Clients.jsx';
 import Vehicles from './components/pages/Vehicles/Vehicles.jsx';
 import Sheets from './components/pages/Sheets/Sheets.jsx';
@@ -15,11 +14,10 @@ const App = () => {
       <div className="header"><Header /></div>
       <div className="content">
         <Routes>
-          <Route path='/' element={<Home />}/>
-          <Route path='/turnos' element={<Appointment />}/>
-          <Route path='/clientes' element={<Clients />}/>
-          <Route path='/vehiculos' element={<Vehicles />}/>
-          <Route path='/fichas' element={<Sheets />}/>
+          <Route path='/' element={<Appointments />}/>
+          <Route path='/main_window/clientes' element={<Clients />}/>
+          <Route path='/main_window/vehiculos' element={<Vehicles />}/>
+          <Route path='/main_window/fichas' element={<Sheets />}/>
         </Routes>
       </div>
     </div>

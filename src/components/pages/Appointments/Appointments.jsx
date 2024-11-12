@@ -1,8 +1,8 @@
-import style from './Appointment.module.css';
+import style from './Appointments.module.css';
 import React, { useEffect, useState } from 'react';
 
 
-const Appointment = () => {
+const Appointments = () => {
 
   const initialAppointmentState = {
     date: '',
@@ -137,4 +137,4 @@ const Appointment = () => {
   )
 }
 
-export default Appointment;
+export default Appointments;

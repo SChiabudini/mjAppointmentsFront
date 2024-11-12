@@ -3,18 +3,18 @@ import { createSlice } from "@reduxjs/toolkit";
 export const procedureSheetSlice = createSlice({
     name: "procedureSheet",
     initialState: {
-        procedureSheet: [],
-        procedureSheetCopy: [],
+        procedureSheets: [],
+        procedureSheetsCopy: [],
 
     },
     reducers: {
-        getProcedureSheetReducer: (state, action) => {
-            state.procedureSheet = action.payload;
-            state.procedureSheetCopy = action.payload;
+        getProcedureSheetsReducer: (state, action) => {
+            state.procedureSheets = action.payload;
+            state.procedureSheetsCopy = action.payload;
         },
     }
 });
 
-export const { getProcedureSheetReducer } = procedureSheetSlice.actions;
+export const { getProcedureSheetsReducer } = procedureSheetSlice.actions;
 
 export default procedureSheetSlice.reducer;

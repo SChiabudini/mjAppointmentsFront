@@ -3,18 +3,18 @@ import { createSlice } from "@reduxjs/toolkit";
 export const serviceSheetSlice = createSlice({
     name: "serviceSheet",
     initialState: {
-        serviceSheet: [],
-        serviceSheetCopy: [],
+        serviceSheets: [],
+        serviceSheetsCopy: [],
 
     },
     reducers: {
-        getServiceSheetReducer: (state, action) => {
-            state.serviceSheet = action.payload;
-            state.serviceSheetCopy = action.payload;
+        getServiceSheetsReducer: (state, action) => {
+            state.serviceSheets = action.payload;
+            state.serviceSheetsCopy = action.payload;
         },
     }
 });
 
-export const { getServiceSheetReducer } = serviceSheetSlice.actions;
+export const { getServiceSheetsReducer } = serviceSheetSlice.actions;
 
 export default serviceSheetSlice.reducer;

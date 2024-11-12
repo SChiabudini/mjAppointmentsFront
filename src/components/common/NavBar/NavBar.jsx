@@ -1,39 +1,38 @@
 import style from './NavBar.module.css';
 import React from 'react';
-import { NavLink } from "react-router-dom";
-
+import { useNavigate, useLocation } from "react-router-dom";
 
 const NavBar = () => {
 
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleClick = (name) => {
+    if(name === 'turnos') {
+      navigate('/');
+    }
+
+    if(name === 'clientes') {
+      navigate('/main_window/clientes');
+    }
+    
+    if(name === 'vehiculos') {
+      navigate('/main_window/vehiculos');
+    }
+
+    if(name === 'fichas') {
+      navigate('/main_window/fichas');
+    }
+  }
+
   return (
-    <div>
-      <NavLink className={({ isActive }) => `${style.NavLink} ${isActive ? style.selected : ''}`} to="/turnos" >Turnos</NavLink>
-      <NavLink className={({ isActive }) => `${style.NavLink} ${isActive ? style.selected : ''}`} to="/clientes" >Clientes</NavLink>
-      <NavLink className={({ isActive }) => `${style.NavLink} ${isActive ? style.selected : ''}`} to="/vehiculos" >Vehículos</NavLink>
-      <NavLink className={({ isActive }) => `${style.NavLink} ${isActive ? style.selected : ''}`} to="/fichas" >Fichas</NavLink>
+    <div className={style.NavBar}>
+      <div className={`${style.NavLink} ${location.pathname === '/' ? style.selected : ''}`}  onClick={() => handleClick('turnos')}>Turnos</div>
+      <div className={`${style.NavLink} ${location.pathname === '/main_window/clientes' ? style.selected : ''}`}  onClick={() => handleClick('clientes')}>Clientes</div>
+      <div className={`${style.NavLink} ${location.pathname === '/main_window/vehiculos' ? style.selected : ''}`}  onClick={() => handleClick('vehiculos')}>Vehículos</div>
+      <div className={`${style.NavLink} ${location.pathname === '/main_window/fichas' ? style.selected : ''}`}  onClick={() => handleClick('fichas')}>Fichas</div>
     </div>
   )
 }
 
 export default NavBar;
-
-
-//OPC 1:
-// const NavBar = () => {
-
-//   const navigate = useNavigate();
-
-//   const handleNavigate = (route) => {
-//       navigate(route);
-//   };
-
-
-//   return (
-//     <div>
-//       <button onClick={() => handleNavigate('/')}>Inicio</button>
-//       <button onClick={() => handleNavigate('/turnos')}>Turnos</button>
-//       <button onClick={() => handleNavigate('/clientes')}>Clientes</button>
-//       <button onClick={() => handleNavigate('/fichas')}>Fichas</button>
-//     </div>
-//   )
-// }

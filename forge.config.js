@@ -33,7 +33,7 @@ module.exports = {
       name: '@electron-forge/plugin-webpack',
       config: {
         mainConfig: './webpack.main.config.js',
-        devContentSecurityPolicy: "connect-src 'self' http://localhost:3001/ https://api.imgur.com/ 'unsafe-eval'",
+        devContentSecurityPolicy: "connect-src 'self' http://localhost:8000/ 'unsafe-eval'",
         renderer: {
           config: './webpack.renderer.config.js',
           entryPoints: [

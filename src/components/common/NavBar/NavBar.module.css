@@ -1,3 +1,7 @@
+.NavBar{
+    display: flex;
+}
+
 .NavLink{
     color: white;
     text-decoration: none;
