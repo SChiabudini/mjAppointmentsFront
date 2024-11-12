@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/common/Header.jsx';
 import Appointments from './components/pages/Appointments/Appointments.jsx';
