@@ -15,8 +15,9 @@ const VehiclesTable = () => {
 
     useEffect(() => {
 
-        dispatch(getVehicles());
-        console.log(vehicles);
+        if(vehicles.length === 0){
+            dispatch(getVehicles());
+        }
 
     }, [dispatch]);
 
