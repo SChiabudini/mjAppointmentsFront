@@ -37,3 +37,22 @@
     width: 100%;
 }
 
+.DropdownMenu {
+    position: absolute;
+    top: 40px; /* Ajusta según el diseño */
+    left: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    z-index: 10;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .DropdownItem {
+    padding: 10px 15px;
+    cursor: pointer;
+  }
+  
+  .DropdownItem:hover {
+    background-color: #f0f0f0;
+  }
