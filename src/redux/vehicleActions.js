@@ -8,7 +8,9 @@ export const getVehicles = () => {
             
             const { data } = await api.get("/vehicle");
 
-            dispatch(getVehiclesReducer(data));
+            const reversedData = data.reverse();
+
+            dispatch(getVehiclesReducer(reversedData));
 
         } catch (error) {
             
@@ -20,16 +22,15 @@ export const getVehicles = () => {
 };
 
 export const postVehicle = (vehicleData) => {
-
     return async () => {
         try {
             const response = await api.post("/vehicle", vehicleData);
-
-            return response;
-
+            return response.data;
         } catch (error) {
-            console.error('Error creating vehicle:', error.message);
-            return error;
+            if (error.response) {
+                throw new Error(error.response.data.error || 'Error creating vehicle');
+            }
+            throw new Error('Network error or server not reachable');
         }
-    }
-}
+    };
+};
