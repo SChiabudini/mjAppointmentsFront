@@ -73,8 +73,7 @@ const NewCompanyClient = () => {
     };
   
     return (
-      <div className="page">
-        <div  className="component">
+<div  className="component">
           <div className="title">
             <h2>NUEVO CLIENTE EMPRESA</h2>
             <div className="titleButtons">
@@ -114,7 +113,6 @@ const NewCompanyClient = () => {
             </form>
           </div>
         </div>
-      </div>
     )
 };
 

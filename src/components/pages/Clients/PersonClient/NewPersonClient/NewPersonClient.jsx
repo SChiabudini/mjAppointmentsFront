@@ -72,47 +72,45 @@ const NewPersonClient = () => {
       };
     
       return (
-        <div className="page">
-          <div  className="component">
+        <div  className="component">
             <div className="title">
-              <h2>NUEVO CLIENTE</h2>
-              <div className="titleButtons">
-                  {/* <button onClick={handleSetForm} disabled={isClearDisabled}><img src={iconClear} alt="" /></button> */}
-              </div>
+            <h2>NUEVO CLIENTE</h2>
+            <div className="titleButtons">
+                {/* <button onClick={handleSetForm} disabled={isClearDisabled}><img src={iconClear} alt="" /></button> */}
+            </div>
             </div>
             <div className="container">
-              <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}>
                 <div>
-                  <div>
+                <div>
                     <label htmlFor="dni">DNI</label>
                     <input type="text" name="dni" value={newPersonClient.dni} onChange={handleInputChange}/>
-                  </div>
-                  <div>
+                </div>
+                <div>
                     <label htmlFor="name">Nombre</label>
                     <input type="text" name="name" value={newPersonClient.name} onChange={handleInputChange}/>
-                  </div>
-                  <div>
+                </div>
+                <div>
                     <label htmlFor="email">Email</label>
                     <input type="text" name="email" value={newPersonClient.email} onChange={handleInputChange}/>
-                  </div>
-                  <div>
+                </div>
+                <div>
                     <label htmlFor="phones">Teléfono</label> 
                     {/* Guardar varios telefonos */}
                     <input type="text" name="phones" value={newPersonClient.phones}/>
-                  </div>
-                  <div>
+                </div>
+                <div>
                     {/* Guardar varios vehiculos */}
                     <label htmlFor="vehicles">Vehículo(s)</label> 
                     <input type="text" name="vehicles" value={newPersonClient.vehicles}/>
-                  </div>
-                  <div>
+                </div>
+                <div>
                     <label htmlFor="cuilCuit">CUIL/CUIT</label>
                     <input type="text" name="cuilCuit" value={newPersonClient.cuilCuit} onChange={handleInputChange}/>
-                  </div>
                 </div>
-              </form>
+                </div>
+            </form>
             </div>
-          </div>
         </div>
       )
 };
