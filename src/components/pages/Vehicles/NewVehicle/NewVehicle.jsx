@@ -18,6 +18,7 @@ const NewVehicle = () => {
   };
 
   const [newVehicle, setNewVehicle] = useState(initialVehicleState);
+  const [alreadyExist, setAlreadyExist] = useState(false);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -26,6 +27,10 @@ const NewVehicle = () => {
       ...newVehicle,
       [name]: name === 'year' ? parseInt(value, 10) || 0 : value,
     });
+
+    if (name === 'licensePlate') {
+      setAlreadyExist(false);
+    }
   };
   
 
@@ -33,28 +38,27 @@ const NewVehicle = () => {
     event.preventDefault();
 
     const vehicleData = {
-      licensePlate: newVehicle.licensePlate,
-      brand: newVehicle.brand, 
-      model: newVehicle.model,
-      year: newVehicle.year,
-      engine: newVehicle.engine,
-      //personClient: newVehicle.personClient,
-      //companyClient: newVehicle.companyClient
+        licensePlate: newVehicle.licensePlate,
+        brand: newVehicle.brand,
+        model: newVehicle.model,
+        year: newVehicle.year,
+        engine: newVehicle.engine,
     };
 
     try {
         console.log(vehicleData);
-        const response = dispatch(postVehicle(vehicleData));
-
-        if (response.data) {
-            console.log("Vehicle successfully saved");
-            setNewAppointment(initialVehicleState);
-            dispatch(getVehicles());
-        }
+        await dispatch(postVehicle(vehicleData));
+        console.log("Vehicle successfully saved");
+        setNewVehicle(initialVehicleState);
+        dispatch(getVehicles());
     } catch (error) {
-        console.error("Error saving vehicle:", error);
+        // Aquí manejamos el error
+        console.error("Error saving vehicle:", error.message);
+        if(error.message.includes('already exist')){
+          setAlreadyExist(true);
+        }
     }
-  };
+};
 
   return (
     <div className="component">
@@ -69,6 +73,7 @@ const NewVehicle = () => {
       <div>
         <label htmlFor="licensePlate">Patente</label>
         <input type="text" name="licensePlate" value={newVehicle.licensePlate} onChange={handleInputChange}/>
+        {alreadyExist && <p>Ya existe un vehículo con esa patente.</p>}
       </div>
       <div>
         <label htmlFor="brand">Marca</label>
