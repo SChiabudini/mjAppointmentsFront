@@ -1,4 +1,3 @@
-import style from './Vehicles.module.css';
 import React from 'react';
 import NewVehicle from './NewVehicle/NewVehicle.jsx';
 import VehiclesTable from './VehiclesTable/VehiclesTable.jsx';
