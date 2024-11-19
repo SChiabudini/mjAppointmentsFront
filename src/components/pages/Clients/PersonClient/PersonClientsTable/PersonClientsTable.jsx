@@ -118,7 +118,7 @@ const PersonClientsTable = () => {
                                             ? personClient.phones.join(', ') 
                                             : 'N/A'}
                                     </td>
-                                    <td>{personClient.cuilCuit ? cpersonClient.cuilCuit : 'N/A'}</td>
+                                    <td>{personClient.cuilCuit ? personClient.cuilCuit : 'N/A'}</td>
                                     <td>
                                         {personClient.vehicles.length 
                                             ? personClient.vehicles.map(vehicle => vehicle.licensePlate).join(', ') 

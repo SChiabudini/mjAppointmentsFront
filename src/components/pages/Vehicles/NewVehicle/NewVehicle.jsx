@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from "react-redux";
+import React, { useState } from 'react';
+import { useDispatch } from "react-redux";
 import { getVehicles, postVehicle } from '../../../../redux/vehicleActions';
 
 const NewVehicle = () => {
@@ -41,11 +41,10 @@ const NewVehicle = () => {
         brand: newVehicle.brand,
         model: newVehicle.model,
         year: newVehicle.year,
-        engine: newVehicle.engine,
+        engine: newVehicle.engine
     };
 
-    try {
-        console.log(vehicleData);
+    try { 
         await dispatch(postVehicle(vehicleData));
         console.log("Vehicle successfully saved");
         setNewVehicle(initialVehicleState);
