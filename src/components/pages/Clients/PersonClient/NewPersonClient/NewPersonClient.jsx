@@ -33,8 +33,7 @@ const NewPersonClient = () => {
       };
 
       const handlePhoneChange = (event) => {
-        setCurrentPhone(event.target.value); // Actualiza el valor temporal
-    
+        setCurrentPhone(event.target.value);
     
     };
 
@@ -44,7 +43,7 @@ const NewPersonClient = () => {
                 ...prevState,
                 phones: [...prevState.phones, currentPhone.trim()]
             }));
-            setCurrentPhone(""); // Limpia el input
+            setCurrentPhone("");
         }
     };
 
