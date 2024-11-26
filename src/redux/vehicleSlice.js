@@ -17,12 +17,20 @@ export const vehicleSlice = createSlice({
             state.vehicleDetail = action.payload;
         },
 
+        searchVehiclesReducer: (state, action) => {
+            state.vehicles = action.payload;
+        },
+
         clearVehicleDetailReducer: (state, action) => {
             state.vehicleDetail = {};
         },
+
+        clearVehiclesReducer: (state) => {
+            state.vehicles = state.vehiclesCopy;
+        }
     }
 });
 
-export const { getVehiclesReducer, getVehicleByIdReducer } = vehicleSlice.actions;
+export const { getVehiclesReducer, getVehicleByIdReducer, searchVehiclesReducer, clearVehiclesReducer } = vehicleSlice.actions;
 
 export default vehicleSlice.reducer;

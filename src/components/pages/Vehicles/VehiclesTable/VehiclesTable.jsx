@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getVehicles, searchVehicles } from "../../../../redux/vehicleActions.js";
+import { clearVehiclesReducer } from "../../../../redux/vehicleSlice.js";
 
 const VehiclesTable = () => {
 
@@ -13,11 +14,13 @@ const VehiclesTable = () => {
 
     useEffect(() => {
 
-        if(licensePlate){
-            dispatch(searchVehicles(licensePlate));
-        } else if(!vehicles || vehicles.length === 0){
+        if(!licensePlate && vehicles.length === 0){
             dispatch(getVehicles());
-        }
+        };
+
+        return () => {
+            dispatch(clearVehiclesReducer());
+        };
 
     }, [licensePlate, dispatch]);
 
@@ -25,8 +28,21 @@ const VehiclesTable = () => {
 
     const handleChangeLicensePlate = (event) => {
         setLicensePlate(event.target.value);
-        setCurrentPage(1);
-    }
+    };
+
+    const handleSearch = (event) => {
+        if (event.key === "Enter" && licensePlate.trim()) {
+            dispatch(searchVehicles(licensePlate.trim()));
+            setCurrentPage(1);
+        }
+    };
+
+    const handleInputChange = (event) => {
+        if (event.target.value === "") {
+            dispatch(getVehicles());
+            setCurrentPage(1);
+        }
+    };
 
     //----- PAGINADO
 
@@ -104,6 +120,8 @@ const VehiclesTable = () => {
                                             type="search"
                                             name="searchLicensePlate"
                                             onChange={handleChangeLicensePlate}
+                                            onKeyDown={handleSearch}
+                                            onInput={handleInputChange}
                                             value={licensePlate}
                                             placeholder="Buscar"
                                             autoComplete="off"
