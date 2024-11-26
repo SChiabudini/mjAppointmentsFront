@@ -11,10 +11,11 @@ const VehiclesTable = () => {
     const navigate = useNavigate();
 
     const [licensePlate, setLicensePlate] = useState('');
+    const [client, setClient] = useState('');
 
     useEffect(() => {
 
-        if(!licensePlate && vehicles.length === 0){
+        if(!licensePlate && !client && vehicles.length === 0){
             dispatch(getVehicles());
         };
 
@@ -30,16 +31,22 @@ const VehiclesTable = () => {
         setLicensePlate(event.target.value);
     };
 
+    const handleChangeClient = (event) => {
+        setClient(event.target.value);
+    };
+
     const handleSearch = (event) => {
-        if (event.key === "Enter" && licensePlate.trim()) {
-            dispatch(searchVehicles(licensePlate.trim()));
-            setCurrentPage(1);
+        if (event.key === "Enter") {
+            if (licensePlate.trim() || client.trim()) {
+                dispatch(searchVehicles(licensePlate.trim(), client.trim()));
+                setCurrentPage(1);
+            }
         }
     };
 
     const handleInputChange = (event) => {
         if (event.target.value === "") {
-            dispatch(getVehicles());
+            dispatch(clearVehiclesReducer());
             setCurrentPage(1);
         }
     };
@@ -142,7 +149,20 @@ const VehiclesTable = () => {
                                     Motor    
                                 </th>
                                 <th>
-                                    Cliente    
+                                    <div className="withFilter">
+                                        <span>Cliente</span>
+                                        <input 
+                                            type="search"
+                                            name="searchClient"
+                                            onChange={handleChangeClient}
+                                            onKeyDown={handleSearch}
+                                            onInput={handleInputChange}
+                                            value={client}
+                                            placeholder="Buscar"
+                                            autoComplete="off"
+                                            className="filterSearch"
+                                        />
+                                    </div>   
                                 </th>
                                 <th>
                                     Detalle    

@@ -43,7 +43,7 @@ export const getVehicleById = (vehicleId) => {
 
 //-----TRAE SOLO LAS ACTIVAS FILTRADAS
 
-export const searchVehicles = (licensePlate) => {
+export const searchVehicles = (licensePlate, client) => {
 
     return async (dispatch) => {
 
@@ -55,9 +55,15 @@ export const searchVehicles = (licensePlate) => {
                 query += `licensePlate=${licensePlate}&`
             }
 
+            if(client){
+                query += `client=${client}&`
+            }
+
             const { data } = await api.get(query);
 
             dispatch(searchVehiclesReducer(data));
+
+            console.log(data);
 
         } catch (error) {
             console.error("Vehicles search error:", error.message);
