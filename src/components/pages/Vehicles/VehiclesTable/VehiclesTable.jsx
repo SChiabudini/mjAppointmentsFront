@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getVehicles } from "../../../../redux/vehicleActions.js";
+import { getVehicles, searchVehicles } from "../../../../redux/vehicleActions.js";
 
 const VehiclesTable = () => {
 
@@ -9,19 +9,32 @@ const VehiclesTable = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const [currentPage, setCurrentPage] = useState(1);
-    
-    const itemsPerPage = 20;
+    const [licensePlate, setLicensePlate] = useState('');
 
     useEffect(() => {
 
-        if(vehicles.length === 0){
+        if(licensePlate){
+            dispatch(searchVehicles(licensePlate));
+        } else if(!vehicles || vehicles.length === 0){
             dispatch(getVehicles());
         }
 
-    }, [dispatch]);
+    }, [licensePlate, dispatch]);
 
-    const paginatedVehicles = vehicles.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    //----- BUSCAR VEHÍCULO
+
+    const handleChangeLicensePlate = (event) => {
+        setLicensePlate(event.target.value);
+        setCurrentPage(1);
+    }
+
+    //----- PAGINADO
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 20;
+    const paginatedVehicles = Array.isArray(vehicles) 
+    ? vehicles.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+    : [];
     const totalPages = Math.ceil(vehicles.length / itemsPerPage);
     
     const handlePageChange = (newPage) => {
@@ -85,7 +98,18 @@ const VehiclesTable = () => {
                         <thead>
                             <tr>
                                 <th>
-                                    Patente
+                                    <div className="withFilter">
+                                        <span>Patente</span>
+                                        <input 
+                                            type="search"
+                                            name="searchLicensePlate"
+                                            onChange={handleChangeLicensePlate}
+                                            value={licensePlate}
+                                            placeholder="Buscar"
+                                            autoComplete="off"
+                                            className="filterSearch"
+                                        />
+                                    </div>
                                 </th>
                                 <th>
                                     Marca
@@ -108,7 +132,7 @@ const VehiclesTable = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {paginatedVehicles.map(vehicle => (
+                            {paginatedVehicles?.map(vehicle => (
                                 <tr key={vehicle._id}>
                                     <td>{vehicle.licensePlate}</td>
                                     <td>{vehicle.brand}</td>
