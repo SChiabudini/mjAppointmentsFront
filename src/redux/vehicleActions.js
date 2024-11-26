@@ -1,5 +1,8 @@
 import api from '../services/axios.js';
-import { getVehiclesReducer } from './vehicleSlice.js';
+import { getVehiclesReducer, getVehicleByIdReducer } from './vehicleSlice.js';
+
+
+//-----TRAE ÚNICAMENTE LOS ACTIVOS
 
 export const getVehicles = () => {
 
@@ -20,6 +23,48 @@ export const getVehicles = () => {
     }
 
 };
+
+//-----TRAE POR ID TANTO ACTIVOS COMO INACTIVOS
+
+export const getVehicleById = (vehicleId) => {
+
+    return async (dispatch) => {
+        try {
+            const { data } = await api.get(`/vehicle/${vehicleId}`);
+
+            dispatch(getVehicleByIdReducer(data));
+        } catch (error) {
+            console.error("Error retrieving vehicle by server id: ", error.message);
+            return null;
+        }
+    }
+
+}
+
+//-----TRAE SOLO LAS ACTIVAS FILTRADAS
+
+export const searchVehicles = (licensePlate) => {
+
+    return async (dispatch) => {
+
+        try {
+            
+            let query = '/vehicles?';
+            
+            if(licensePlate){
+                query += `licensePlate=${licensePlate}&`
+            }
+
+            const { data } = await api.get(query);
+
+            dispatch(getVehiclesReducer(data));
+
+        } catch (error) {
+            console.error("Vehicles search error:", error.message);
+            return null;
+        }
+    }
+}
 
 export const postVehicle = (vehicleData) => {
     return async () => {

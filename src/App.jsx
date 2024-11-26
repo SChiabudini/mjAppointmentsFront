@@ -6,6 +6,7 @@ import Appointments from './components/pages/Appointments/Appointments.jsx';
 import PersonClient from './components/pages/Clients/PersonClient/PersonClient.jsx';
 import CompanyClient from './components/pages/Clients/CompanyClient/CompanyClient.jsx';
 import Vehicles from './components/pages/Vehicles/Vehicles.jsx';
+import VehicleDetail from './components/pages/Vehicles/VehicleDetail/VehicleDetail.jsx';
 import Sheets from './components/pages/Sheets/Sheets.jsx';
 
 const App = () => {
@@ -19,6 +20,7 @@ const App = () => {
           <Route path='/main_window/clientes/personas' element={<PersonClient />}/>
           <Route path='/main_window/clientes/empresas' element={<CompanyClient />}/>
           <Route path='/main_window/vehiculos' element={<Vehicles />}/>
+          <Route path='/main_window/vehiculos/:id' element={<VehicleDetail />} />
           <Route path='/main_window/fichas' element={<Sheets />}/>
         </Routes>
       </div>
