@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export const appointmentSlice = createSlice({
-    name: "appointment",
+    name: "appointments",
     initialState: {
         appointments: [],
         appointmentsCopy: [],
