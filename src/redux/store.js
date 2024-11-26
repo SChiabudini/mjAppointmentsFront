@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import Appointment from "./appoimentSlice.js";
+import Appointment from "./appointmentSlice.js";
 import CompanyClient from "./companyClientSlice.js";
 import PersonClient from "./personClientSlice.js";
 import ProcedureSheet from "./procedureSheetSlice.js";
