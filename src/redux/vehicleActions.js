@@ -1,5 +1,5 @@
 import api from '../services/axios.js';
-import { getVehiclesReducer, getVehicleByIdReducer } from './vehicleSlice.js';
+import { getVehiclesReducer, getVehicleByIdReducer, searchVehiclesReducer } from './vehicleSlice.js';
 
 
 //-----TRAE ÚNICAMENTE LOS ACTIVOS
@@ -49,7 +49,7 @@ export const searchVehicles = (licensePlate) => {
 
         try {
             
-            let query = '/vehicles?';
+            let query = '/vehicle?';
             
             if(licensePlate){
                 query += `licensePlate=${licensePlate}&`
@@ -57,7 +57,7 @@ export const searchVehicles = (licensePlate) => {
 
             const { data } = await api.get(query);
 
-            dispatch(getVehiclesReducer(data));
+            dispatch(searchVehiclesReducer(data));
 
         } catch (error) {
             console.error("Vehicles search error:", error.message);
