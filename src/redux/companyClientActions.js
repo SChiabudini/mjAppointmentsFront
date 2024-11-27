@@ -1,5 +1,7 @@
 import api from '../services/axios.js';
-import { getCompanyClientsReducer } from './companyClientSlice.js';
+import { getCompanyClientsReducer, getCompanyClientByIdReducer, searchCompanyClientsReducer } from './companyClientSlice.js';
+
+//-----TRAE ÚNICAMENTE LOS ACTIVOS
 
 export const getCompanyClients = () => {
 
@@ -20,6 +22,59 @@ export const getCompanyClients = () => {
     }
 
 };
+
+//-----TRAE POR ID TANTO ACTIVOS COMO INACTIVOS
+
+export const getCompanyClientById = (companyClientId) => {
+
+    return async (dispatch) => {
+        try {
+            const { data } = await api.get(`/companyClient/${companyClientId}`);
+
+            dispatch(getCompanyClientByIdReducer(data));
+
+        } catch (error) {
+            console.error("Error retrieving client by server id: ", error.message);
+            return null;
+        }
+    }
+
+}
+
+//-----TRAE SOLO LOS ACTIVOS FILTRADOS
+
+export const searchCompanyClients = (cuit, name, vehicle) => {
+
+    return async (dispatch) => {
+
+        try {
+            
+            let query = '/companyClient?';
+            
+            if(cuit){
+                query += `cuit=${cuit}&`
+            }
+
+            if(name){
+                query += `name=${name}&`
+            }
+
+            if(vehicle){
+                query += `vehicle=${vehicle}&`
+            }
+
+            const { data } = await api.get(query);
+
+            dispatch(searchCompanyClientsReducer(data));
+
+            console.log(data);
+
+        } catch (error) {
+            console.error("Clients search error:", error.message);
+            return null;
+        }
+    }
+}
 
 export const postCompanyClient = (clientData) => {
     return async () => {

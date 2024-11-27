@@ -21,7 +21,7 @@ export const vehicleSlice = createSlice({
             state.vehicles = action.payload;
         },
 
-        clearVehicleDetailReducer: (state, action) => {
+        clearVehicleDetailReducer: (state) => {
             state.vehicleDetail = {};
         },
 
@@ -31,6 +31,6 @@ export const vehicleSlice = createSlice({
     }
 });
 
-export const { getVehiclesReducer, getVehicleByIdReducer, searchVehiclesReducer, clearVehiclesReducer } = vehicleSlice.actions;
+export const { getVehiclesReducer, getVehicleByIdReducer, searchVehiclesReducer, clearVehicleDetailReducer, clearVehiclesReducer } = vehicleSlice.actions;
 
 export default vehicleSlice.reducer;

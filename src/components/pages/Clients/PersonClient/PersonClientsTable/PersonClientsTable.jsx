@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getPersonClients } from "../../../../../redux/personClientActions.js";
+import detail from "../../../../../assets/img/detail.png";
 
 const PersonClientsTable = () => {
 
@@ -124,7 +125,11 @@ const PersonClientsTable = () => {
                                             ? personClient.vehicles.map(vehicle => vehicle.licensePlate).join(', ') 
                                             : 'N/A'}
                                     </td>
-                                    <td>Detalle</td>
+                                    <td>
+                                        <a onClick={() => navigate(`/main_window/clientes/personas/${personClient._id}`)}>
+                                            <img src={detail} alt="" className="detailImg" />
+                                        </a>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>

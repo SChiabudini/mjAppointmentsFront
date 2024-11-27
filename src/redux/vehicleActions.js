@@ -41,7 +41,7 @@ export const getVehicleById = (vehicleId) => {
 
 }
 
-//-----TRAE SOLO LAS ACTIVAS FILTRADAS
+//-----TRAE SOLO LOS ACTIVOS FILTRADOS
 
 export const searchVehicles = (licensePlate, client) => {
 
