@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { useDispatch } from "react-redux";
-import { getVehicles, postVehicle } from '../../../../redux/vehicleActions';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import { getVehicles, postVehicle } from '../../../../redux/vehicleActions.js';
+import { getPersonClients } from '../../../../redux/personClientActions.js';
+import { getCompanyClients } from '../../../../redux/companyClientActions.js';
 
 const NewVehicle = () => {
 
@@ -12,12 +14,39 @@ const NewVehicle = () => {
     model: '',
     year: 0,
     engine: '',
-    personClient: '',
-    companyClient: ''
+    personClient: null,
+    companyClient: null
   };
+
+  const personClients = useSelector(state => state.personClient.personClients);
+  const companyClients = useSelector(state => state.companyClient.companyClients);
 
   const [newVehicle, setNewVehicle] = useState(initialVehicleState);
   const [alreadyExist, setAlreadyExist] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredClients, setFilteredClients] = useState([]);
+  const [searchingPerson, setSearchingPerson] = useState(true);
+
+  useEffect(() => {
+    if(personClients.length === 0){
+      dispatch(getPersonClients());
+    };
+
+    if(companyClients.length === 0){
+      dispatch(getCompanyClients());
+    };
+
+  }, [personClients, companyClients, dispatch]);
+
+  useEffect(() => {
+    const clients = searchingPerson ? personClients : companyClients;
+    setFilteredClients(
+      clients.filter(client => 
+        client.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        (client.dni && client.dni.toString().includes(searchTerm))
+      )
+    );
+  }, [searchTerm, searchingPerson, personClients, companyClients]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -32,6 +61,14 @@ const NewVehicle = () => {
     }
   };
   
+  const handleClientSelection = (id) => {
+    if (searchingPerson) {
+      setNewVehicle({ ...newVehicle, personClient: id, companyClient: null });
+    } else {
+      setNewVehicle({ ...newVehicle, companyClient: id, personClient: null });
+    }
+    setSearchTerm('');
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -41,10 +78,12 @@ const NewVehicle = () => {
         brand: newVehicle.brand,
         model: newVehicle.model,
         year: newVehicle.year,
-        engine: newVehicle.engine
+        engine: newVehicle.engine,
+        personClient: newVehicle.personClient,
+        companyClient: newVehicle.companyClient
     };
 
-    try { 
+    try {
         await dispatch(postVehicle(vehicleData));
         console.log("Vehicle successfully saved");
         setNewVehicle(initialVehicleState);
@@ -89,20 +128,29 @@ const NewVehicle = () => {
         <label htmlFor="engine">Motor</label>
         <input type="text" name="engine" value={newVehicle.engine} onChange={handleInputChange}/>
       </div>
-      {/*<div>
-        <label>Cliente</label>
-        <label htmlFor="personClient">Persona</label>
-        <input type="checkbox" name="personClient"/>
-        <label htmlFor="companyClient">Empresa</label>
-        <input type="checkbox" name="companyClient"/>
-        <select name="personClient" value={newVehicle.personClient}>
-          <option value="" disabled>Seleccionar</option>
-        </select>
-        <select name="companyClient" value={newVehicle.companyClient}>
-          <option value="" disabled>Seleccionar</option>
-        </select>
-              </div>
-        */}
+      <div>
+          <label>Cliente</label>
+          <div>
+            <button type="button" onClick={() => setSearchingPerson(true)}>Persona</button>
+            <button type="button" onClick={() => setSearchingPerson(false)}>Empresa</button>
+          </div>
+          <input
+            type="text"
+            placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          {filteredClients.length > 0 && (
+            <ul className="dropdown">
+              {filteredClients.map(client => (
+                <li key={client._id} onClick={() => handleClientSelection(client._id)}>
+                  {client.dni ? `${client.dni} - ${client.name}` : client.name}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        
         <div>
           <button type='submit'>Crear</button>
         </div>
