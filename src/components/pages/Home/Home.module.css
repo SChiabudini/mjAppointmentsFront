@@ -3,15 +3,25 @@
     width: 80vw;
 }
 
+.icon {
+    width: 20px;  
+    height: 20px;
+    margin-right: 5px; 
+}
+
 /* .containerEvents {
     background-color: red;
 } */
 
-/* .rbc-row-bg {
-    background: orange !important;
-} */
+/* .rbc-event,
+.rbc-day-slot .rbc-background-event {
+    background-color: red !important;
+}
 
-/* .rbc-event {
-    background: yellow;
-    padding: 5px;
+.rbc-event{
+    background: red;
+}
+
+.rbc-event.rbc-event--bg {
+    background-color: red !important;
 } */

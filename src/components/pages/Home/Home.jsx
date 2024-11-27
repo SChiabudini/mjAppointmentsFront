@@ -1,7 +1,9 @@
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import style from './Home.module.css';
+import iconMechanic from './Icons/mechanic.png';
+import iconService from './Icons/service.png';
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Calendar, dayjsLocalizer } from 'react-big-calendar';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
@@ -10,55 +12,46 @@ dayjs.locale('es');
 
 const Home = () => {
 
-    const appointment = useSelector(state => state.appointment.appointments);
-    // console.log(appointment);
-    
     const localizer = dayjsLocalizer(dayjs);
 
-    const events = [
-        {
-            start: dayjs('2024-11-28T12:00:00').toDate(),
-            end: dayjs('2024-11-2915:00:00').toDate(),
-            title: appointment[0]?.procedure
-        },
-        {
-            start: dayjs('2024-11-27T12:00:00').toDate(),
-            end: dayjs('2024-11-27T15:00:00').toDate(),
-            title: 'Evento 1'
-        },
-        {
-            start: dayjs('2024-11-30T12:00:00').toDate(),
-            end: dayjs('2024-12-2T15:00:00').toDate(),
-            title: 'Evento 2'
-        },
-        {
-            start: dayjs('2024-11-27T16:00:00').toDate(),
-            end: dayjs('2024-11-27T18:00:00').toDate(),
-            title: 'Evento 3'
-        },
-        {
-            start: dayjs('2024-11-28T08:00:00').toDate(),
-            end: dayjs('2024-11-28T15:00:00').toDate(),
-            title: 'Evento 4'
-        },
-        {
-            start: dayjs('2024-12-5T12:00:00').toDate(),
-            end: dayjs('2024-12-10T15:00:00').toDate(),
-            title: 'Evento 5'
-        },
+    const appointments = useSelector(state => state.appointment.appointments);
+    console.log(appointments);
 
-    ];
+    const events = appointments?.map(appointment => ({
+        start: dayjs(appointment.start).toDate(),
+        end: dayjs(appointment.end).toDate(),
+        title: appointment.procedure,  
+        personClient: appointment.personClient.name,  
+        vehicle: `${appointment.vehicle.brand} ${appointment.vehicle.model}`, 
+        mechanical: appointment.mechanical,  
+        service: appointment.service,  
+    }));
 
     const components = {
-        event: props => {
-            return <div className={style.containerEvents}>
-                <div>
-                    <span>Hola</span>
+        event: props => {            
+            console.log(props);         
+            // Destructuración de los valores de props.event: 
+            const { mechanical, service, personClient, vehicle, title } = props.event;  
+
+            return (
+                <div className={style.containerEvents}>
+                    <div>
+                        <span>
+                            {mechanical && <img src={iconMechanic} alt="mechanic-icon" className={style.icon} />}
+                            {service && <img src={iconService} alt="service-icon" className={style.icon} />}
+                        </span>
+                    </div>
+                    <div>
+                        <span>{personClient}</span>
+                    </div>
+                    <div>
+                        <span>{title}</span>
+                    </div>
+                    <div>
+                        <span>{vehicle}</span>
+                    </div>
                 </div>
-                <div>
-                    {props.title}
-                </div>
-            </div>
+            )
         }
     };
 
