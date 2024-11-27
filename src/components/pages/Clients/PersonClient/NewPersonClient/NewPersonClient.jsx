@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { getPersonClients, postPersonClient } from "../../../../../redux/personClientActions";
 
-const NewPersonClient = () => {
+const NewPersonClient = ({ onClientAdded = () => {} }) => {
 
     const dispatch = useDispatch();
 
@@ -67,16 +67,22 @@ const NewPersonClient = () => {
         };
     
         try {
-            console.log(personClientData);
-            await dispatch(postPersonClient(personClientData));
-            console.log("Client successfully saved");
-            setNewPersonClient(initialPersonClientState);
-            dispatch(getPersonClients());
+            dispatch(postPersonClient(personClientData))
+            .then((response) => {
+                onClientAdded(response);
+                console.log("Client successfully saved");
+                setNewPersonClient(initialPersonClientState);
+                dispatch(getPersonClients());
+            })
+            .catch(error => {
+                console.error("Error saving person client:", error.message);
+                if(error.message.includes('already exist')){
+                    setAlreadyExist(true);
+                }
+            });
+
         } catch (error) {
-            console.error("Error saving person client:", error.message);
-            if(error.message.includes('already exist')){
-                setAlreadyExist(true);
-            }
+            console.error("Unexpected error:", error.message);
         }
       };
     

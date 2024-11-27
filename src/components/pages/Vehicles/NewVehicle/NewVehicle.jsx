@@ -116,7 +116,14 @@ const NewVehicle = () => {
         await dispatch(postVehicle(vehicleData));
         console.log("Vehicle successfully saved");
         setNewVehicle(initialVehicleState);
+        setSearchTerm('');
         dispatch(getVehicles());
+        if(vehicleData.personClient){
+          dispatch(getPersonClients());
+        }
+        if(vehicleData.companyClient){
+          dispatch(getCompanyClients());
+        }
     } catch (error) {
         // Aquí manejamos el error
         console.error("Error saving vehicle:", error.message);
@@ -211,10 +218,10 @@ const NewVehicle = () => {
 
         </form>
         <div>
-          <NewPersonClient onClientAdded={false}/>
+          <NewPersonClient onClientAdded={handleClientSelection}/>
         </div>
         <div>
-          <NewCompanyClient onClientAdded={false}/>
+          <NewCompanyClient onClientAdded={handleClientSelection}/>
         </div>
       </div>
     </div>
