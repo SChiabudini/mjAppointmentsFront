@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getVehicles, searchVehicles } from "../../../../redux/vehicleActions.js";
 import { clearVehiclesReducer } from "../../../../redux/vehicleSlice.js";
+import detail from "../../../../assets/img/detail.png";
 
 const VehiclesTable = () => {
 
@@ -178,7 +179,11 @@ const VehiclesTable = () => {
                                     <td>{vehicle.year}</td>
                                     <td>{vehicle.engine}</td>
                                     <td>{vehicle.personClient ? vehicle.personClient.name : vehicle.companyClient ? vehicle.companyClient.name : 'N/A'}</td>
-                                    <td>Detalle</td>
+                                    <td>
+                                        <a onClick={() => navigate(`/main_window/vehiculos/${vehicle._id}`)}>
+                                            <img src={detail} alt="" className="detailImg" />
+                                        </a>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
