@@ -1,5 +1,5 @@
 import api from '../services/axios.js';
-import { getAppointmentsReducer } from './appointmentSlice.js';
+import { getAppointmentsReducer, postAppointmentReducer } from './appointmentSlice.js';
 
 export const getAppointments = () => {
 
@@ -9,11 +9,25 @@ export const getAppointments = () => {
             
             dispatch(getAppointmentsReducer(data));
 
-
         } catch (error) {
             console.error("Error retrieving appintments from server: " + error.message);
             return null;
-        }
-    }
+        };
+    };
+};
 
+export const postAppointment = (appointmentData) => {
+    return async (dispatch) => {
+        try {
+            const { data } = await axios.post('/appointment', appointmentData);
+
+            dispatch(postAppointmentReducer(data));
+
+            return data;
+
+        } catch (error) {
+            console.error("Error creating appointment: ", error.message);
+            return null;
+        };
+    };
 };

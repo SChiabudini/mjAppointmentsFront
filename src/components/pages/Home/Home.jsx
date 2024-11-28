@@ -31,7 +31,7 @@ const Home = () => {
 
     const [newAppointment, setNewAppointment] = useState(initialAppointmentState);
     const [showAppointmentForm, setShowAppointmentForm] = useState(false);
-    const [actionType, setActionType] = useState(null);
+    const [isButtonVisible, setIsButtonVisible] = useState(true); 
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const [isClearDisabled, setIsClearDisabled] = useState(true);
 
@@ -118,13 +118,14 @@ const Home = () => {
       };
 
     //-----------APPOINTMENT-----------//
-    const handleShowAppointmentForm = (type) => {
+    const handleShowAppointmentForm = () => {
         setShowAppointmentForm(!showAppointmentForm);
-        setActionType(type);
+        setIsButtonVisible(false);
     };
 
     const handleCloseAppointmentForm = () => {
         setShowAppointmentForm(false);
+        setIsButtonVisible(true); 
     };
 
     // const handleAppointmentAdded = (newAppointment) => {
@@ -188,7 +189,7 @@ const Home = () => {
         } catch (error) {
             console.error("Error saving appoiment:", error);
         }
-      };
+    };
 
     return (
         <div className={style.container}>
@@ -217,16 +218,16 @@ const Home = () => {
                     components={components}
                 />
             </div>
-            <div className={style.containerAddCategory}>
-                <button className={style.buttonAddAppointment} type='button' onClick={() => handleShowAppointmentForm('create')}>+</button>
-                {/* <button className={style.buttonDeleteAppointment} type='button' onClick={() => handleShowAppointmentForm('delete')}>-</button> */}
-            </div>
-            <div className={`${style.addCategoryComponent} ${showAppointmentForm ? style.addCategoryComponentBorder : ''}`}>
-                {showAppointmentForm && <FormAppointment onClose={handleCloseAppointmentForm} actionType={actionType}/>}
-                {/* {showAppointmentForm && <FormAppointment onCategoryAdded={handleCategoryAdded} onClose={handleCloseAppointmentForm} actionType={actionType}/>} */}
+            {isButtonVisible && (
+                <div>
+                    <button type='button' onClick={handleShowAppointmentForm}>Crear turno</button>
+                </div>
+            )}
+            <div>
+                {showAppointmentForm && <FormAppointment onClose={handleCloseAppointmentForm} />}
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default Home;
