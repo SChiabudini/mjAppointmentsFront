@@ -11,9 +11,13 @@ export const appointmentSlice = createSlice({
             state.appointments = action.payload;
             state.appointmentsCopy = action.payload;
         },
+        postAppointmentReducer: (state, action) => {
+            state.appointments.push(action.payload);
+            state.appointmentsCopy.push(action.payload);
+        }
     }
 });
 
-export const { getAppointmentsReducer } = appointmentSlice.actions;
+export const { getAppointmentsReducer, postAppointmentReducer } = appointmentSlice.actions;
 
 export default appointmentSlice.reducer;
