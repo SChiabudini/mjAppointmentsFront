@@ -7,15 +7,34 @@ import { useSelector, useDispatch } from "react-redux";
 import { Calendar, dayjsLocalizer } from 'react-big-calendar';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
+import FormAppointment from "../FormAppointment/FormAppointment.jsx";
 
 dayjs.locale('es');
 
 const Home = () => {
 
+    const initialAppointmentState = {
+        start: '',
+        end: '',
+        personClient: {},
+        companyClient: {},
+        vehicle: {},
+        mechanical: false,
+        service: false,
+        procedure: ''
+    };
+
     const localizer = dayjsLocalizer(dayjs);
 
     const appointments = useSelector(state => state.appointment.appointments);
     // console.log(appointments);
+
+    const [newAppointment, setNewAppointment] = useState(initialAppointmentState);
+    const [showAppointmentForm, setShowAppointmentForm] = useState(false);
+    const [actionType, setActionType] = useState(null);
+    const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+    const [isClearDisabled, setIsClearDisabled] = useState(true);
+
 
     const events = appointments?.map(appointment => ({
         start: dayjs(appointment.start).toDate(),
@@ -70,33 +89,144 @@ const Home = () => {
         noEventsInRange: "Sin turnos agendados"
     };
 
-  return (
-    <div className={style.container}>
-        <Calendar 
-            localizer={localizer}
-            messages={messages}
-            events={events}
-            min={dayjs('2024-01-01T08:00:00').toDate()}  // Hora mínima (08:00 AM)
-            max={dayjs('2024-01-01T18:00:00').toDate()}  // Hora máxima (06:00 PM)
-            formats={{
-                monthHeaderFormat: (date) => {
-                    return dayjs(date)
-                        .format("MMMM - YYYY")
-                        .replace(/^./, (match) => match.toUpperCase());  // Capitaliza el primer carácter
-                },
-                // weekHeaderFormat: (date) => {
-                //     return dayjs(date)
-                //         .format("dddd - DD/MM/YY")
-                //         .replace(/^./, (match) => match.toUpperCase());  // Capitaliza el primer carácter
-                // },
-                dayHeaderFormat: date => {
-                    return dayjs(date).format("dddd - DD/MM/YY").replace(/^./, (match) => match.toUpperCase());
-                },
-            }}
-            components={components}
-        />
-    </div>
-  )
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+    
+        // if (event.target.value) {
+        //     setIsClearDisabled(false);
+        // }
+    
+        if(name === 'date'){
+          setNewAppointment({
+                ...newAppointment,
+                name: value
+            });
+        };
+        if(name === 'time'){
+          setNewAppointment({
+                ...newAppointment,
+                name: value
+            });
+        };
+        if(name === 'procedure'){
+          setNewAppointment({
+                ...newAppointment,
+                name: value
+            });
+        };
+        // validateForm();
+      };
+
+    //-----------APPOINTMENT-----------//
+    const handleShowAppointmentForm = (type) => {
+        setShowAppointmentForm(!showAppointmentForm);
+        setActionType(type);
+    };
+
+    const handleCloseAppointmentForm = () => {
+        setShowAppointmentForm(false);
+    };
+
+    // const handleAppointmentAdded = (newAppointment) => {
+    //     setShowAppointmentForm(false);
+        
+    //     if(newAppointment !== undefined){
+    //         setSelectedCategory({ value: newAppointment._id, label: newAppointment.name });
+    //         setNewAppointment((prevNewProduct) => ({
+    //             ...prevNewProduct,
+    //             category: [newAppointment._id]
+    //         }));
+    //     };
+    //     dispatch(getCategories());
+    //     validateForm();
+    // };
+
+    const handleSetForm = () => {
+        setNewAppointment(initialAppointmentState);
+        setIsSubmitDisabled(true);
+        setIsClearDisabled(true);
+    };
+
+    // const validateForm = () => {
+    //     const isProductNameValid = newProduct.name.trim() !== '';
+    //     const isColorValid = colors.length > 0;
+    //     const isSizeValid = sizes.length > 0;
+    //     const isCategoryValid = newProduct.category.length > 0;
+    //     const isPriceValid = newProduct.price > 0;
+
+    //     // Validar que al menos una combinación de color y talla tenga stock mayor a 0
+    //     const hasAtLeastOneValidStock = combinations.some(combination => {
+    //         const color = newProduct.color.find(c => c.colorName === combination.color);
+    //         const size = color ? color.size.find(s => s.sizeName === combination.size) : null;
+    //         return size ? size.stock > 0 : false;
+    //     });
+
+    //     setIsSubmitDisabled(!(isProductNameValid && isColorValid && isSizeValid && isCategoryValid && isPriceValid && hasAtLeastOneValidStock));
+    // };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+    
+        const appointmentData = {
+          date: newAppointment.date,
+          time: newAppointment.time, 
+          personClient: newAppointment.personClient,
+          companyClient: newAppointment.companyClient,
+          vehicle: newAppointment.vehicle,
+          procedure: newAppointment.procedure
+        };
+    
+        try {
+            // Enviar la petición como un objeto JSON
+            // const response = await dispatch(postAppointment(appointmentData));
+    
+            if (response.data) {
+                console.log("Appointment successfully saved");
+                setNewAppointment(initialAppointmentState); // Resetear el formulario
+                // navigate('/main_window/turnos/success/post');
+            }
+        } catch (error) {
+            console.error("Error saving appoiment:", error);
+        }
+      };
+
+    return (
+        <div className={style.container}>
+            <div className={style.calendarContainer}>
+                <Calendar 
+                    localizer={localizer}
+                    messages={messages}
+                    events={events}
+                    min={dayjs('2024-01-01T08:00:00').toDate()}  // Hora mínima (08:00 AM)
+                    max={dayjs('2024-01-01T18:00:00').toDate()}  // Hora máxima (06:00 PM)
+                    formats={{
+                        monthHeaderFormat: (date) => {
+                            return dayjs(date)
+                                .format("MMMM - YYYY")
+                                .replace(/^./, (match) => match.toUpperCase());  // Capitaliza el primer carácter
+                        },
+                        // weekHeaderFormat: (date) => {
+                        //     return dayjs(date)
+                        //         .format("dddd - DD/MM/YY")
+                        //         .replace(/^./, (match) => match.toUpperCase());  // Capitaliza el primer carácter
+                        // },
+                        dayHeaderFormat: date => {
+                            return dayjs(date).format("dddd - DD/MM/YY").replace(/^./, (match) => match.toUpperCase());
+                        },
+                    }}
+                    components={components}
+                />
+            </div>
+            <div className={style.containerAddCategory}>
+                <button className={style.buttonAddAppointment} type='button' onClick={() => handleShowAppointmentForm('create')}>+</button>
+                {/* <button className={style.buttonDeleteAppointment} type='button' onClick={() => handleShowAppointmentForm('delete')}>-</button> */}
+            </div>
+            <div className={`${style.addCategoryComponent} ${showAppointmentForm ? style.addCategoryComponentBorder : ''}`}>
+                {showAppointmentForm && <FormAppointment onClose={handleCloseAppointmentForm} actionType={actionType}/>}
+                {/* {showAppointmentForm && <FormAppointment onCategoryAdded={handleCategoryAdded} onClose={handleCloseAppointmentForm} actionType={actionType}/>} */}
+            </div>
+        </div>
+    )
 }
 
 export default Home;
