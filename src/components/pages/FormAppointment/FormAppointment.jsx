@@ -1,11 +1,17 @@
 import style from './FormAppointment.module.css';
 import React, { useState, useEffect } from 'react';
-import { postAppointment } from '../../../redux/appointmentActions';
 import { useDispatch, useSelector } from 'react-redux';
+import NewCompanyClient from '../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx';
+import NewVehicle from '../Vehicles/NewVehicle/NewVehicle.jsx';
+import NewPersonClient from '../Clients/PersonClient/NewPersonClient/NewPersonClient.jsx';
+import { postAppointment } from '../../../redux/appointmentActions.js';
 
 const FormAppointment = ({ onClose }) => {
     
     const dispatch = useDispatch();
+
+    const appointments = useSelector(state => state.appointment.appointments);
+    // console.log(appointments);    
 
     const initialAppointmentState = {
         start: '',
@@ -19,8 +25,13 @@ const FormAppointment = ({ onClose }) => {
     };
 
     const [newAppointment, setNewAppointment] = useState(initialAppointmentState);
+    const [selectedOptionClient, setSelectedOptionClient] = useState(null);
+    const [showCompanyClientPopup, setShowCompanyClientPopup] = useState(false);
+    const [showPersonClientPopup, setShowPersonClientPopup] = useState(false);
+    const [showVehiclePopup, setShowVehiclePopup] = useState(false);
     // const [errorMessage, setErrorMessage] = useState('');
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+// console.log(selectedOptionClient);
 
     useEffect(() => {
         // validateForm();
@@ -31,6 +42,12 @@ const FormAppointment = ({ onClose }) => {
     //     const isDeleteCategoryValid = deleteCategory !== '';
     // };
 
+    // Función para convertir una fecha en formato ISO 8601
+    const convertToISODate = (dateStr) => {
+        const date = new Date(dateStr);
+        return date.toISOString();
+    };
+
     const handleInputChange = (event) => {
         const { name, value } = event.target;
     
@@ -38,16 +55,11 @@ const FormAppointment = ({ onClose }) => {
         //     setIsClearDisabled(false);
         // }
     
-        if(name === 'date'){
-          setNewAppointment({
+        if (name === 'start' || name === 'end') {
+            // Convertir la fecha a formato ISO 8601
+            setNewAppointment({
                 ...newAppointment,
-                name: value
-            });
-        };
-        if(name === 'time'){
-          setNewAppointment({
-                ...newAppointment,
-                name: value
+                [name]: convertToISODate(value)
             });
         };
         if(name === 'procedure'){
@@ -57,7 +69,56 @@ const FormAppointment = ({ onClose }) => {
             });
         };
         // validateForm();
-      };
+    };
+
+    //-----------CLIENT-----------//
+    // const handleCheckboxChange = (option) => {
+    //     setSelectedOptionClient(!option === selectedOptionClient ? 'personClient' : option);
+    // };
+
+    const handleCheckboxChange = (option) => {
+        setSelectedOptionClient(option);
+    };
+
+    const handleCreateClient = () => {
+        if (selectedOptionClient === 'companyClient') {
+            setShowCompanyClientPopup(true);
+            setShowPersonClientPopup(false);
+        } else if (selectedOptionClient === 'personClient') {
+            setShowPersonClientPopup(true);
+            setShowCompanyClientPopup(false);
+        } else {
+            setShowCompanyClientPopup(false);
+            setShowPersonClientPopup(false);
+        }
+    };
+
+    const personClients = appointments.filter(appointment => appointment.personClient)?.map(appointment => appointment.personClient);
+
+    // const companyClients = appointments.filter(appointment => appointment.companyClient)?.map(appointment => appointment.companyClient); 
+    // console.log(companyClients);
+    
+
+    //-----------VEHICLE-----------//
+    const handleCreateVehicle = () => {
+        setShowVehiclePopup(true);
+    };
+
+    // const handleCheckboxChange = (option) => {
+    //     setSelectedOptionClient(option);
+        
+    //     if (option === 'companyClient') {
+    //         // Si se selecciona 'companyClient', mostramos el pop-up de NewCompanyClient
+    //         setShowCompanyClientPopup(true);
+    //         setShowPersonClientPopup(false); // Aseguramos que el pop-up de persona no se muestre
+    //     } else if (option === 'personClient') {
+    //         setShowPersonClientPopup(true);
+    //         setShowCompanyClientPopup(false); // Aseguramos que el pop-up de empresa no se muestre
+    //     } else {
+    //         setShowCompanyClientPopup(false);
+    //         setShowPersonClientPopup(false); // Si no hay opción seleccionada, no mostramos pop-ups
+    //     }
+    // };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -101,31 +162,43 @@ const FormAppointment = ({ onClose }) => {
                         <label className={style.mensagge}>Los campos con (*) son obligatorios</label>
                     </div> */}
                     <div>
-                        <label htmlFor="date">Fecha</label>
-                        <input type="text" name="start" value={newAppointment.start}/>
+                        <label htmlFor="start">Fecha de inicio</label>
+                        <input 
+                            type="datetime-local" 
+                            name="start" 
+                            value={newAppointment.start ? new Date(newAppointment.start).toISOString().slice(0, 16) : ''} 
+                            onChange={handleInputChange} 
+                        />
                     </div>
                     <div>
-                        <label htmlFor="date">Finalizacion</label>
-                        <input type="text" name="end" value={newAppointment.end}/>
-                    </div>
-                    <div>
-                        <label htmlFor="time">Horario</label>
-                        <input type="text" name="time" />
+                        <label htmlFor="end">Fecha de finalización</label>
+                        <input 
+                            type="datetime-local" 
+                            name="end" 
+                            value={newAppointment.end ? new Date(newAppointment.end).toISOString().slice(0, 16) : ''} 
+                            onChange={handleInputChange} 
+                        />
                     </div>
                     <div>
                         <label>Cliente</label>
                         <label htmlFor="personClient">Persona</label>
-                        <input type="checkbox" name="personClient"/>
+                        <input type="checkbox" name="personClient" id="personClient" checked={selectedOptionClient === 'personClient'} onChange={() => handleCheckboxChange('personClient')} />
                         <label htmlFor="companyClient">Empresa</label>
-                        <input type="checkbox" name="companyClient"/>
+                        <input type="checkbox" name="companyClient" id="companyClient" checked={selectedOptionClient === 'companyClient'} onChange={() => handleCheckboxChange('companyClient')} />
                         <select name="personClient" value={newAppointment.personClient}>
-                        <option value="" disabled>Seleccionar</option>
+                            <option value="" disabled>Seleccionar</option>
+                            {personClients?.map(client => ( 
+                                <option key={client._id} value={client._id}>{client.name}</option>
+                            ))}
                         </select>
                         <select name="companyClient" value={newAppointment.companyClient}>
-                        <option value="" disabled>Seleccionar</option>
+                            <option value="" disabled>Seleccionar</option>
+                            {/* {companyClients?.map(company => ( 
+                                <option key={company._id} value={company._id}>{company.name}</option>
+                            ))} */}
                         </select>
                         <div>
-                        <button type='button'>Crear</button>
+                            <button type="button" onClick={handleCreateClient}>Crear</button>
                         </div>
                     </div>
                     <div>
@@ -134,7 +207,7 @@ const FormAppointment = ({ onClose }) => {
                         <option value="" disabled>Seleccionar</option>
                         </select>
                         <div>
-                        <button type='button'>Crear</button>
+                            <button type="button" onClick={handleCreateVehicle}>Crear</button>
                         </div>
                     </div>
                     <div>
@@ -148,6 +221,9 @@ const FormAppointment = ({ onClose }) => {
                     </div>
                 </form>
             </div>
+            {showPersonClientPopup && <NewPersonClient />}
+            {showCompanyClientPopup && <NewCompanyClient />}
+            {showVehiclePopup && <NewVehicle />}
         </div>
     );
 };
