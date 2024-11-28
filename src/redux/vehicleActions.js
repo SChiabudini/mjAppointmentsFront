@@ -61,9 +61,9 @@ export const searchVehicles = (licensePlate, client) => {
 
             const { data } = await api.get(query);
 
-            dispatch(searchVehiclesReducer(data));
+            const reversedData = data.reverse();
 
-            console.log(data);
+            dispatch(searchVehiclesReducer(reversedData));
 
         } catch (error) {
             console.error("Vehicles search error:", error.message);

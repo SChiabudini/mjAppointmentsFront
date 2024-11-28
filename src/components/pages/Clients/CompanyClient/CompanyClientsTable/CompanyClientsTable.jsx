@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getCompanyClients } from "../../../../../redux/companyClientActions.js";
+import { getCompanyClients, searchCompanyClients } from "../../../../../redux/companyClientActions.js";
+import { clearCompanyClientsReducer } from "../../../../../redux/companyClientSlice.js";
 import detail from "../../../../../assets/img/detail.png";
 
 const CompanyClientsTable = () => {
@@ -10,19 +11,59 @@ const CompanyClientsTable = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const [currentPage, setCurrentPage] = useState(1);
-    
-    const itemsPerPage = 20;
+    const [cuit, setCuit] = useState('');
+    const [name, setName] = useState('');
+    const [vehicle, setVehicle] = useState('');
 
     useEffect(() => {
 
-        if(companyClients.length === 0){
+        if(!cuit && !name && !vehicle && companyClients.length === 0){
             dispatch(getCompanyClients());
+        };
+
+        return () => {
+            dispatch(clearCompanyClientsReducer());
+        };
+
+    }, [cuit, name, vehicle, dispatch]);
+
+    //----- BUSCAR CLIENTE
+
+    const handleChangeCuit = (event) => {
+        setCuit(event.target.value);
+    };
+
+    const handleChangeName = (event) => {
+        setName(event.target.value);
+    };
+
+    const handleChangeVehicle = (event) => {
+        setVehicle(event.target.value);
+    };
+
+    const handleSearch = (event) => {
+        if (event.key === "Enter") {
+            if (cuit.trim() || name.trim() || vehicle.trim()) {
+                dispatch(searchCompanyClients(cuit.trim(), name.trim(), vehicle.trim()));
+                setCurrentPage(1);
+            }
         }
+    };
 
-    }, [dispatch]);
+    const handleInputChange = (event) => {
+        if (event.target.value === "") {
+            dispatch(clearCompanyClientsReducer());
+            setCurrentPage(1);
+        }
+    };
 
-    const paginatedCompanyClients = companyClients.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    //----- PAGINADO
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 20;
+    const paginatedCompanyClients = Array.isArray(companyClients)
+    ? companyClients.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+    : [];
     const totalPages = Math.ceil(companyClients.length / itemsPerPage);
     
     const handlePageChange = (newPage) => {
@@ -86,10 +127,36 @@ const CompanyClientsTable = () => {
                         <thead>
                             <tr>
                                 <th>
-                                    CUIT
+                                    <div className="withFilter">
+                                        <span>CUIT</span>
+                                        <input 
+                                            type="search"
+                                            name="searchCuit"
+                                            onChange={handleChangeCuit}
+                                            onKeyDown={handleSearch}
+                                            onInput={handleInputChange}
+                                            value={cuit}
+                                            placeholder="Buscar"
+                                            autoComplete="off"
+                                            className="filterSearch"
+                                        />
+                                    </div>
                                 </th>
                                 <th>
-                                    Nombre
+                                    <div className="withFilter">
+                                        <span>Nombre</span>
+                                        <input 
+                                            type="search"
+                                            name="searchName"
+                                            onChange={handleChangeName}
+                                            onKeyDown={handleSearch}
+                                            onInput={handleInputChange}
+                                            value={name}
+                                            placeholder="Buscar"
+                                            autoComplete="off"
+                                            className="filterSearch"
+                                        />
+                                    </div>
                                 </th>
                                 <th>
                                     Email    
@@ -101,7 +168,20 @@ const CompanyClientsTable = () => {
                                     Dirección    
                                 </th>
                                 <th>
-                                    Vehículos    
+                                    <div className="withFilter">
+                                        <span>Vehículos</span>
+                                        <input 
+                                            type="search"
+                                            name="searchVehicle"
+                                            onChange={handleChangeVehicle}
+                                            onKeyDown={handleSearch}
+                                            onInput={handleInputChange}
+                                            value={vehicle}
+                                            placeholder="Buscar"
+                                            autoComplete="off"
+                                            className="filterSearch"
+                                        />
+                                    </div>    
                                 </th>
                                 <th>
                                     Detalle    
