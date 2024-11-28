@@ -24,7 +24,7 @@ const VehiclesTable = () => {
             dispatch(clearVehiclesReducer());
         };
 
-    }, [licensePlate, dispatch]);
+    }, [licensePlate, client, dispatch]);
 
     //----- BUSCAR VEHÍCULO
 
