@@ -65,9 +65,9 @@ export const searchCompanyClients = (cuit, name, vehicle) => {
 
             const { data } = await api.get(query);
 
-            dispatch(searchCompanyClientsReducer(data));
+            const reversedData = data.reverse();
 
-            console.log(data);
+            dispatch(searchCompanyClientsReducer(reversedData));
 
         } catch (error) {
             console.error("Clients search error:", error.message);
