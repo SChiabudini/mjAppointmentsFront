@@ -29,7 +29,7 @@ const Home = () => {
 
     const components = {
         event: props => {            
-            console.log(props);         
+            // console.log(props);         
             // Destructuración de los valores de props.event: 
             const { mechanical, service, personClient, vehicle, title } = props.event;  
 
