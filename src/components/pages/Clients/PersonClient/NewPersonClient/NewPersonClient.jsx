@@ -5,6 +5,7 @@ import { getVehicles } from "../../../../../redux/vehicleActions.js";
 import NewVehicle from '../../../Vehicles/NewVehicle/NewVehicle.jsx';
 
 const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
+    
     const dispatch = useDispatch();
     
     const initialPersonClientState = {
@@ -13,7 +14,7 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
         email: '',
         phones: [],
         cuilCuit: '',
-        vehicles: [] // Ahora es un array
+        vehicles: []
     };
     
     const vehicles = useSelector(state => state.vehicle.vehicles);
@@ -32,19 +33,13 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
         }
     }, [vehicles, dispatch]);
 
-    useEffect(() => {
-        setFilteredVehicles(
-            vehicles.filter(vehicle => 
-                vehicle.licensePlate.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-        );
-    }, [searchTerm, vehicles]);
-
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setNewPersonClient(prevState => ({ ...prevState, [name]: value }));
         if (name === 'dni') setAlreadyExist(false);
     };
+
+    //----- MANEJAR TELÉFONOS
 
     const addPhone = () => {
         if (currentPhone.trim() !== "") {
@@ -62,6 +57,16 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
             phones: prevState.phones.filter((_, i) => i !== index)
         }));
     };
+
+    //----- MANEJAR VEHÍCULOS
+
+    useEffect(() => {
+        setFilteredVehicles(
+            vehicles.filter(vehicle => 
+                vehicle.licensePlate.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+        );
+    }, [searchTerm, vehicles]);
 
     const handleVehicleSelection = (vehicle) => {
         if (!newPersonClient.vehicles.some(v => v.licensePlate === vehicle.licensePlate)) {

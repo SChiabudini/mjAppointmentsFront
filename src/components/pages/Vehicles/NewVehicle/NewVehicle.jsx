@@ -168,53 +168,56 @@ const NewVehicle = ({ onClientAdded = () => {}, isNested = false }) => {
           <label htmlFor="engine">Motor</label>
           <input type="text" name="engine" value={newVehicle.engine} onChange={handleInputChange}/>
         </div>
-        <div>
-          <label>Cliente</label>
-          <div>
-            <label>
-              <input
-                type="radio"
-                name="clientType"
-                value="person"
-                checked={searchingPerson}
-                onChange={() => (setSearchingPerson(true), setSearchTerm(''))}
-              />
-              Persona
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="clientType"
-                value="company"
-                checked={!searchingPerson}
-                onChange={() => (setSearchingPerson(false), setSearchTerm(''))}
-              />
-              Empresa
-            </label>
-          </div>
-          <input
-            type="text"
-            placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onFocus={handleSearchFocus}
-            onBlur={handleSearchBlur}
-            onKeyDown={handleKeyDown}
-          />
-          {filteredClients.length > 0 && dropdownVisible && (
-            <ul className="dropdown">
-              {filteredClients.map((client, index) => (
-                <li
-                  key={client._id}
-                  onClick={() => handleClientSelection(client)}
-                  className={index === selectedIndex ? 'highlight' : ''}
-                >
-                  {client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+        {!isNested ? (
+                  <div>
+                  <label>Cliente</label>
+                  <div>
+                    <label>
+                      <input
+                        type="radio"
+                        name="clientType"
+                        value="person"
+                        checked={searchingPerson}
+                        onChange={() => (setSearchingPerson(true), setSearchTerm(''))}
+                      />
+                      Persona
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        name="clientType"
+                        value="company"
+                        checked={!searchingPerson}
+                        onChange={() => (setSearchingPerson(false), setSearchTerm(''))}
+                      />
+                      Empresa
+                    </label>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onFocus={handleSearchFocus}
+                    onBlur={handleSearchBlur}
+                    onKeyDown={handleKeyDown}
+                  />
+                  {filteredClients.length > 0 && dropdownVisible && (
+                    <ul className="dropdown">
+                      {filteredClients.map((client, index) => (
+                        <li
+                          key={client._id}
+                          onClick={() => handleClientSelection(client)}
+                          className={index === selectedIndex ? 'highlight' : ''}
+                        >
+                          {client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+        ) : (<></>)}  
+
           
           <div>
             <button type='submit'>Crear</button>
