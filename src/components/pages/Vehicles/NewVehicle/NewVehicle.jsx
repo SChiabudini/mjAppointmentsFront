@@ -5,9 +5,8 @@ import { getPersonClients } from '../../../../redux/personClientActions.js';
 import { getCompanyClients } from '../../../../redux/companyClientActions.js';
 import NewPersonClient from '../../Clients/PersonClient/NewPersonClient/NewPersonClient.jsx';
 import NewCompanyClient from '../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx';
-import add from '../../../../assets/img/add.png';
 
-const NewVehicle = () => {
+const NewVehicle = ({ onClientAdded = () => {} }) => {
 
   const dispatch = useDispatch();
 
@@ -113,7 +112,9 @@ const NewVehicle = () => {
     };
 
     try {
-        await dispatch(postVehicle(vehicleData));
+      dispatch(postVehicle(vehicleData))
+      .then((response) => {
+        onClientAdded(response);
         console.log("Vehicle successfully saved");
         setNewVehicle(initialVehicleState);
         setSearchTerm('');
@@ -124,12 +125,15 @@ const NewVehicle = () => {
         if(vehicleData.companyClient){
           dispatch(getCompanyClients());
         }
-    } catch (error) {
-        // Aquí manejamos el error
+      })
+      .catch(error => {
         console.error("Error saving vehicle:", error.message);
         if(error.message.includes('already exist')){
           setAlreadyExist(true);
         }
+      });
+    } catch (error) {
+      console.error("Unexpected error:", error.message);
     }
 };
 
