@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { getCompanyClients, postCompanyClient } from "../../../../../redux/companyClientActions";
 import { getVehicles } from "../../../../../redux/vehicleActions";
+import NewVehicle from '../../../Vehicles/NewVehicle/NewVehicle.jsx';
 
-const NewCompanyClient = ({ onClientAdded = () => {} }) => {
+const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false }) => {
 
   const dispatch = useDispatch();
 
@@ -16,9 +17,21 @@ const NewCompanyClient = ({ onClientAdded = () => {} }) => {
     vehicles: []   
   };
   
+  const vehicles = useSelector(state => state.vehicle.vehicles);
+
   const [newCompanyClient, setNewCompanyClient] = useState(initialCompanyClientState);
   const [alreadyExist, setAlreadyExist] = useState(false);
   const [currentPhone, setCurrentPhone] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredVehicles, setFilteredVehicles] = useState([]);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+
+  useEffect(() => {
+    if (vehicles.length === 0) {
+        dispatch(getVehicles());
+    }
+  }, [vehicles, dispatch]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -32,10 +45,8 @@ const NewCompanyClient = ({ onClientAdded = () => {} }) => {
       setAlreadyExist(false);
     }
   };
-  
-  const handlePhoneChange = (event) => {
-    setCurrentPhone(event.target.value);
-  };
+
+  //----- MANEJAR TELÉFONOS
 
   const addPhone = () => {
     if (currentPhone.trim() !== "") {
@@ -54,42 +65,75 @@ const NewCompanyClient = ({ onClientAdded = () => {} }) => {
     }));
   };
 
+  //----- MANEJAR VEHÍCULOS
+
+  useEffect(() => {
+    setFilteredVehicles(
+        vehicles.filter(vehicle => 
+            vehicle.licensePlate.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+    );
+  }, [searchTerm, vehicles]);
+
+  const handleVehicleSelection = (vehicle) => {
+    if (!newCompanyClient.vehicles.some(v => v.licensePlate === vehicle.licensePlate)) {
+        setNewCompanyClient(prevState => ({
+            ...prevState,
+            vehicles: [...prevState.vehicles, vehicle]
+        }));
+    }
+    setSearchTerm('');
+  };
+
+  const removeVehicle = (index) => {
+    setNewCompanyClient(prevState => ({
+        ...prevState,
+        vehicles: prevState.vehicles.filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleSearchFocus = () => {
+      setDropdownVisible(true);
+      setSelectedIndex(-1);
+  };
+
+  const handleSearchBlur = () => {
+      setTimeout(() => {
+          setDropdownVisible(false);
+          setSelectedIndex(-1);
+      }, 150);
+  };
+
+  const handleKeyDown = (e) => {
+      if (e.key === 'ArrowDown') {
+          setSelectedIndex(prev => (prev + 1) % filteredVehicles.length);
+      } else if (e.key === 'ArrowUp') {
+          setSelectedIndex(prev => (prev - 1 + filteredVehicles.length) % filteredVehicles.length);
+      } else if (e.key === 'Enter' && selectedIndex >= 0) {
+          handleVehicleSelection(filteredVehicles[selectedIndex]);
+          setDropdownVisible(false);
+      } else {
+          setDropdownVisible(true);
+      }
+  };
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    const companyClientData = {
-      cuit: newCompanyClient.cuit,
-      name: newCompanyClient.name, 
-      email: newCompanyClient.email,
-      phones: newCompanyClient.phones,
-      address: newCompanyClient.address,
-      vehicles: newCompanyClient.vehicles,
-    };
-
     try {
-      dispatch(postCompanyClient(companyClientData))
-      .then((response) => {
+        const response = await dispatch(postCompanyClient(newCompanyClient));
         onClientAdded(response);
         console.log("Client successfully saved");
         setNewCompanyClient(initialCompanyClientState);
         dispatch(getCompanyClients());
-        if(newCompanyClient.vehicles.length > 0){
-          dispatch(getVehicles());
-        }
-      })
-      .catch(error => {
-        console.error("Error saving company client:", error.message);
-        if(error.message.includes('already exist')){
-          setAlreadyExist(true);
-        }
-      });
+        dispatch(getVehicles());
     } catch (error) {
-      console.error("Unexpected error:", error.message);
+        console.error("Error saving person client:", error.message);
+        if (error.message.includes('already exist')) setAlreadyExist(true);
     }
   };
   
     return (
-<div  className="component">
+        <div  className="component">
           <div className="title">
             <h2>NUEVO CLIENTE EMPRESA</h2>
             <div className="titleButtons">
@@ -118,7 +162,7 @@ const NewCompanyClient = ({ onClientAdded = () => {} }) => {
                         <input
                             type="text"
                             value={currentPhone}
-                            onChange={handlePhoneChange}
+                            onChange={(e) => setCurrentPhone(e.target.value)}
                             placeholder="Añadir teléfono"
                         />
                         <button type="button" onClick={addPhone}>Añadir</button>
@@ -132,17 +176,41 @@ const NewCompanyClient = ({ onClientAdded = () => {} }) => {
                         ))}
                     </ul>
                 </div>
+                {!isNested ? (
+                  <>
+                      <label>Vehículo(s)</label>
+                      <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onFocus={handleSearchFocus} onBlur={handleSearchBlur} onKeyDown={handleKeyDown} placeholder="Buscar vehículo" />
+                      {dropdownVisible && filteredVehicles.length > 0 && (
+                          <ul>
+                              {filteredVehicles.map((vehicle, index) => (
+                                  <li key={vehicle._id} onClick={() => handleVehicleSelection(vehicle)} className={index === selectedIndex ? 'highlight' : ''}>
+                                      {vehicle.licensePlate}
+                                  </li>
+                              ))}
+                          </ul>
+                      )}
+                      <ul>
+                          {newCompanyClient.vehicles.map((vehicle, index) => (
+                              <li key={index}>
+                                  {vehicle.licensePlate}
+                                  <button type="button" onClick={() => removeVehicle(index)}>Eliminar</button>
+                              </li>
+                          ))}
+                      </ul>
+                  </>
+                ) : (
+                <></>
+                )}
                 <div>
                   <label htmlFor="address">Dirección</label>
                   <input type="text" name="address" value={newCompanyClient.address} onChange={handleInputChange}/>
                 </div>
-                {/* <div>
-                  <label htmlFor="vehicles">Vehículo(s)</label> 
-                  <input type="text" name="vehicles" value={newCompanyClient.vehicles}/>
-                </div> */}
                 <button type='submit'>Crear</button>
               </div>
             </form>
+            <div>
+                {!isNested && <NewVehicle onClientAdded={handleVehicleSelection} isNested={true}/>}
+            </div>
           </div>
         </div>
     )
