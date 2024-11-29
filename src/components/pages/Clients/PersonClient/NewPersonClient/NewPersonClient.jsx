@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getPersonClients, postPersonClient } from "../../../../../redux/personClientActions";
-import { getVehicles } from "../../../../../redux/vehicleActions";
+import { getPersonClients, postPersonClient } from "../../../../../redux/personClientActions.js";
+import { getVehicles } from "../../../../../redux/vehicleActions.js";
+import NewVehicle from '../../../Vehicles/NewVehicle/NewVehicle.jsx';
 
-const NewPersonClient = ({ onClientAdded = () => {} }) => {
+const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
     const dispatch = useDispatch();
     
     const initialPersonClientState = {
@@ -144,25 +145,31 @@ const NewPersonClient = ({ onClientAdded = () => {} }) => {
                             <li key={index}>{phone}<button type="button" onClick={() => removePhone(index)}>Eliminar</button></li>
                         ))}</ul>
 
-                        <label>Vehículo(s)</label>
-                        <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onFocus={handleSearchFocus} onBlur={handleSearchBlur} onKeyDown={handleKeyDown} placeholder="Buscar vehículo" />
-                        {dropdownVisible && filteredVehicles.length > 0 && (
-                            <ul>
-                                {filteredVehicles.map((vehicle, index) => (
-                                    <li key={vehicle._id} onClick={() => handleVehicleSelection(vehicle)} className={index === selectedIndex ? 'highlight' : ''}>
-                                        {vehicle.licensePlate}
-                                    </li>
-                                ))}
-                            </ul>
+                        {!isNested ? (
+                            <>
+                                <label>Vehículo(s)</label>
+                                <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onFocus={handleSearchFocus} onBlur={handleSearchBlur} onKeyDown={handleKeyDown} placeholder="Buscar vehículo" />
+                                {dropdownVisible && filteredVehicles.length > 0 && (
+                                    <ul>
+                                        {filteredVehicles.map((vehicle, index) => (
+                                            <li key={vehicle._id} onClick={() => handleVehicleSelection(vehicle)} className={index === selectedIndex ? 'highlight' : ''}>
+                                                {vehicle.licensePlate}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                                <ul>
+                                    {newPersonClient.vehicles.map((vehicle, index) => (
+                                        <li key={index}>
+                                            {vehicle.licensePlate}
+                                            <button type="button" onClick={() => removeVehicle(index)}>Eliminar</button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </>
+                        ) : (
+                        <></>
                         )}
-                        <ul>
-                            {newPersonClient.vehicles.map((vehicle, index) => (
-                                <li key={index}>
-                                    {vehicle.licensePlate}
-                                    <button type="button" onClick={() => removeVehicle(index)}>Eliminar</button>
-                                </li>
-                            ))}
-                        </ul>
 
                         <label>CUIL/CUIT</label>
                         <input type="text" name="cuilCuit" value={newPersonClient.cuilCuit} onChange={handleInputChange} />
@@ -170,6 +177,9 @@ const NewPersonClient = ({ onClientAdded = () => {} }) => {
                         <button type="submit">Crear</button>
                     </div>
                 </form>
+                <div>
+                    {!isNested && <NewVehicle onClientAdded={handleVehicleSelection} isNested={true}/>}
+                </div>
             </div>
         </div>
     );

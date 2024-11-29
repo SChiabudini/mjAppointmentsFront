@@ -6,7 +6,7 @@ import { getCompanyClients } from '../../../../redux/companyClientActions.js';
 import NewPersonClient from '../../Clients/PersonClient/NewPersonClient/NewPersonClient.jsx';
 import NewCompanyClient from '../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx';
 
-const NewVehicle = ({ onClientAdded = () => {} }) => {
+const NewVehicle = ({ onClientAdded = () => {}, isNested = false }) => {
 
   const dispatch = useDispatch();
 
@@ -222,10 +222,10 @@ const NewVehicle = ({ onClientAdded = () => {} }) => {
 
         </form>
         <div>
-          <NewPersonClient onClientAdded={handleClientSelection}/>
+          {!isNested && <NewPersonClient onClientAdded={handleClientSelection} isNested={true}/>}
         </div>
         <div>
-          <NewCompanyClient onClientAdded={handleClientSelection}/>
+          {!isNested && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true}/>}
         </div>
       </div>
     </div>
