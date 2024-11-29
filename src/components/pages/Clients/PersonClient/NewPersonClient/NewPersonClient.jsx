@@ -1,45 +1,53 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { getPersonClients, postPersonClient } from "../../../../../redux/personClientActions";
+import { getVehicles } from "../../../../../redux/vehicleActions";
 
 const NewPersonClient = ({ onClientAdded = () => {} }) => {
-
     const dispatch = useDispatch();
-
+    
     const initialPersonClientState = {
         dni: '',
         name: '',
         email: '',
         phones: [],
         cuilCuit: '',
-        vehicles: []
-      };
+        vehicles: [] // Ahora es un array
+    };
     
-      const [newPersonClient, setNewPersonClient] = useState(initialPersonClientState);
-      const [alreadyExist, setAlreadyExist] = useState(false);
-      const [currentPhone, setCurrentPhone] = useState("");
+    const vehicles = useSelector(state => state.vehicle.vehicles);
+    
+    const [newPersonClient, setNewPersonClient] = useState(initialPersonClientState);
+    const [alreadyExist, setAlreadyExist] = useState(false);
+    const [currentPhone, setCurrentPhone] = useState("");
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredVehicles, setFilteredVehicles] = useState([]);
+    const [dropdownVisible, setDropdownVisible] = useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(-1);
 
-      const handleInputChange = (event) => {
+    useEffect(() => {
+        if (vehicles.length === 0) {
+            dispatch(getVehicles());
+        }
+    }, [vehicles, dispatch]);
+
+    useEffect(() => {
+        setFilteredVehicles(
+            vehicles.filter(vehicle => 
+                vehicle.licensePlate.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+        );
+    }, [searchTerm, vehicles]);
+
+    const handleInputChange = (event) => {
         const { name, value } = event.target;
-        
-        setNewPersonClient({
-            ...newPersonClient,
-            [name]: value,
-        });
-
-        if (name === 'dni') {
-            setAlreadyExist(false);
-          }
-      };
-
-      const handlePhoneChange = (event) => {
-        setCurrentPhone(event.target.value);
-    
+        setNewPersonClient(prevState => ({ ...prevState, [name]: value }));
+        if (name === 'dni') setAlreadyExist(false);
     };
 
     const addPhone = () => {
         if (currentPhone.trim() !== "") {
-            setNewPersonClient((prevState) => ({
+            setNewPersonClient(prevState => ({
                 ...prevState,
                 phones: [...prevState.phones, currentPhone.trim()]
             }));
@@ -48,102 +56,123 @@ const NewPersonClient = ({ onClientAdded = () => {} }) => {
     };
 
     const removePhone = (index) => {
-        setNewPersonClient((prevState) => ({
+        setNewPersonClient(prevState => ({
             ...prevState,
             phones: prevState.phones.filter((_, i) => i !== index)
         }));
     };
-    
-      const handleSubmit = async (event) => {
-        event.preventDefault();
-    
-        const personClientData = {
-          dni: newPersonClient.dni, 
-          name: newPersonClient.name, 
-          email: newPersonClient.email,
-          phones: newPersonClient.phones,
-          cuilCuit: newPersonClient.cuilCuit,
-          vehicles: newPersonClient.vehicles
-        };
-    
-        try {
-            dispatch(postPersonClient(personClientData))
-            .then((response) => {
-                onClientAdded(response);
-                console.log("Client successfully saved");
-                setNewPersonClient(initialPersonClientState);
-                dispatch(getPersonClients());
-            })
-            .catch(error => {
-                console.error("Error saving person client:", error.message);
-                if(error.message.includes('already exist')){
-                    setAlreadyExist(true);
-                }
-            });
 
-        } catch (error) {
-            console.error("Unexpected error:", error.message);
+    const handleVehicleSelection = (vehicle) => {
+        if (!newPersonClient.vehicles.some(v => v.licensePlate === vehicle.licensePlate)) {
+            setNewPersonClient(prevState => ({
+                ...prevState,
+                vehicles: [...prevState.vehicles, vehicle]
+            }));
         }
-      };
-    
-      return (
-        <div  className="component">
+        setSearchTerm('');
+    };
+
+    const removeVehicle = (index) => {
+        setNewPersonClient(prevState => ({
+            ...prevState,
+            vehicles: prevState.vehicles.filter((_, i) => i !== index)
+        }));
+    };
+
+    const handleSearchFocus = () => {
+        setDropdownVisible(true);
+        setSelectedIndex(-1);
+    };
+
+    const handleSearchBlur = () => {
+        setTimeout(() => {
+            setDropdownVisible(false);
+            setSelectedIndex(-1);
+        }, 150);
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'ArrowDown') {
+            setSelectedIndex(prev => (prev + 1) % filteredVehicles.length);
+        } else if (e.key === 'ArrowUp') {
+            setSelectedIndex(prev => (prev - 1 + filteredVehicles.length) % filteredVehicles.length);
+        } else if (e.key === 'Enter' && selectedIndex >= 0) {
+            handleVehicleSelection(filteredVehicles[selectedIndex]);
+            setDropdownVisible(false);
+        } else {
+            setDropdownVisible(true);
+        }
+    };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        try {
+            const response = await dispatch(postPersonClient(newPersonClient));
+            onClientAdded(response);
+            console.log("Client successfully saved");
+            setNewPersonClient(initialPersonClientState);
+            dispatch(getPersonClients());
+            dispatch(getVehicles());
+        } catch (error) {
+            console.error("Error saving person client:", error.message);
+            if (error.message.includes('already exist')) setAlreadyExist(true);
+        }
+    };
+
+    return (
+        <div className="component">
             <div className="title">
-            <h2>NUEVO CLIENTE</h2>
-            <div className="titleButtons">
-                {/* <button onClick={handleSetForm} disabled={isClearDisabled}><img src={iconClear} alt="" /></button> */}
-            </div>
+                <h2>NUEVO CLIENTE</h2>
             </div>
             <div className="container">
-            <form onSubmit={handleSubmit}>
-                <div>
+                <form onSubmit={handleSubmit}>
                     <div>
-                        <label htmlFor="dni">DNI</label>
-                        <input type="text" name="dni" value={newPersonClient.dni} onChange={handleInputChange}/>
-                        {alreadyExist && <p>Ya existe un client con ese DNI.</p>}
-                    </div>
-                    <div>
-                        <label htmlFor="name">Nombre</label>
-                        <input type="text" name="name" value={newPersonClient.name} onChange={handleInputChange}/>
-                    </div>
-                    <div>
-                        <label htmlFor="email">Email</label>
-                        <input type="text" name="email" value={newPersonClient.email} onChange={handleInputChange}/>
-                    </div>
-                    <div>
-                        <label htmlFor="phones">Teléfono</label>
-                        <div>
-                            <input
-                                type="text"
-                                value={currentPhone}
-                                onChange={handlePhoneChange}
-                                placeholder="Añadir teléfono"
-                            />
-                            <button type="button" onClick={addPhone}>Añadir</button>
-                        </div>
+                        <label>DNI</label>
+                        <input type="text" name="dni" value={newPersonClient.dni} onChange={handleInputChange} />
+                        {alreadyExist && <p>Ya existe un cliente con ese DNI.</p>}
+
+                        <label>Nombre</label>
+                        <input type="text" name="name" value={newPersonClient.name} onChange={handleInputChange} />
+
+                        <label>Email</label>
+                        <input type="text" name="email" value={newPersonClient.email} onChange={handleInputChange} />
+
+                        <label>Teléfono</label>
+                        <input type="text" value={currentPhone} onChange={(e) => setCurrentPhone(e.target.value)} placeholder="Añadir teléfono" />
+                        <button type="button" onClick={addPhone}>Añadir</button>
+                        <ul>{newPersonClient.phones.map((phone, index) => (
+                            <li key={index}>{phone}<button type="button" onClick={() => removePhone(index)}>Eliminar</button></li>
+                        ))}</ul>
+
+                        <label>Vehículo(s)</label>
+                        <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onFocus={handleSearchFocus} onBlur={handleSearchBlur} onKeyDown={handleKeyDown} placeholder="Buscar vehículo" />
+                        {dropdownVisible && filteredVehicles.length > 0 && (
+                            <ul>
+                                {filteredVehicles.map((vehicle, index) => (
+                                    <li key={vehicle._id} onClick={() => handleVehicleSelection(vehicle)} className={index === selectedIndex ? 'highlight' : ''}>
+                                        {vehicle.licensePlate}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                         <ul>
-                            {newPersonClient.phones.map((phone, index) => (
+                            {newPersonClient.vehicles.map((vehicle, index) => (
                                 <li key={index}>
-                                    {phone}
-                                    <button type="button" onClick={() => removePhone(index)}>Eliminar</button>
+                                    {vehicle.licensePlate}
+                                    <button type="button" onClick={() => removeVehicle(index)}>Eliminar</button>
                                 </li>
                             ))}
                         </ul>
+
+                        <label>CUIL/CUIT</label>
+                        <input type="text" name="cuilCuit" value={newPersonClient.cuilCuit} onChange={handleInputChange} />
+
+                        <button type="submit">Crear</button>
                     </div>
-                    {/* <div>
-                        <label htmlFor="vehicles">Vehículo(s)</label> 
-                        <input type="text" name="vehicles" value={newPersonClient.vehicles}/>
-                    </div>*/}
-                    <div>
-                        <label htmlFor="cuilCuit">CUIL/CUIT</label>
-                        <input type="text" name="cuilCuit" value={newPersonClient.cuilCuit} onChange={handleInputChange}/>
-                    </div>
-                    <button type='submit'>Crear</button>
-                </div>
-            </form>
+                </form>
             </div>
         </div>
-      )
+    );
 };
 
 export default NewPersonClient;

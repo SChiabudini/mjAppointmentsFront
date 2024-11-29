@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { getCompanyClients, postCompanyClient } from "../../../../../redux/companyClientActions";
+import { getVehicles } from "../../../../../redux/vehicleActions";
 
-const NewCompanyClient = () => {
+const NewCompanyClient = ({ onClientAdded = () => {} }) => {
 
   const dispatch = useDispatch();
 
@@ -66,17 +67,24 @@ const NewCompanyClient = () => {
     };
 
     try {
-      console.log(companyClientData);
-      await dispatch(postCompanyClient(companyClientData));
-      console.log("Client successfully saved");
-      setNewCompanyClient(initialCompanyClientState);
-      dispatch(getCompanyClients());
-    
-    } catch (error) {
-      console.error("Error saving company client:", error.message);
-      if(error.message.includes('already exist')){
+      dispatch(postCompanyClient(companyClientData))
+      .then((response) => {
+        onClientAdded(response);
+        console.log("Client successfully saved");
+        setNewCompanyClient(initialCompanyClientState);
+        dispatch(getCompanyClients());
+        if(newCompanyClient.vehicles.length > 0){
+          dispatch(getVehicles());
+        }
+      })
+      .catch(error => {
+        console.error("Error saving company client:", error.message);
+        if(error.message.includes('already exist')){
           setAlreadyExist(true);
-      }
+        }
+      });
+    } catch (error) {
+      console.error("Unexpected error:", error.message);
     }
   };
   
