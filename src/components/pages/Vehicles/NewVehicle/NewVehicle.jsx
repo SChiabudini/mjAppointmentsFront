@@ -114,7 +114,6 @@ const NewVehicle = ({ onClientAdded = () => {}, isNested = false }) => {
     try {
       dispatch(postVehicle(vehicleData))
       .then((response) => {
-        onClientAdded(response);
         console.log("Vehicle successfully saved");
         setNewVehicle(initialVehicleState);
         setSearchTerm('');
@@ -125,6 +124,7 @@ const NewVehicle = ({ onClientAdded = () => {}, isNested = false }) => {
         if(vehicleData.companyClient){
           dispatch(getCompanyClients());
         }
+        onClientAdded(response);
       })
       .catch(error => {
         console.error("Error saving vehicle:", error.message);
@@ -138,7 +138,7 @@ const NewVehicle = ({ onClientAdded = () => {}, isNested = false }) => {
 };
 
   return (
-    <div className="component">
+    <div className="formContainer">
       <div className="title">
         <h2>NUEVO VEHÍCULO</h2>
         <div className="titleButtons">

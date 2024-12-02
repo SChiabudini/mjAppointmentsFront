@@ -1,5 +1,5 @@
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import style from './Home.module.css';
+import style from './Calendar.module.css';
 import iconMechanic from './Icons/mechanic.png';
 import iconService from './Icons/service.png';
 import React, { useEffect, useState } from "react";
@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Calendar, dayjsLocalizer } from 'react-big-calendar';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
-import FormAppointment from "../FormAppointment/FormAppointment.jsx";
+import FormAppointment from "../../FormAppointment/FormAppointment.jsx";
 
 dayjs.locale('es');
 

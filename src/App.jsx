@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/common/Header.jsx';
-import Home from './components/pages/Home/Home.jsx';
 import Appointments from './components/pages/Appointments/Appointments.jsx';
 import PersonClient from './components/pages/Clients/PersonClient/PersonClient.jsx';
 import PersonClientDetail from './components/pages/Clients/PersonClient/PersonClientDetail/PersonClientDetail.jsx';
@@ -27,8 +26,7 @@ const App = () => {
       <div className="header"><Header /></div>
       <div className="content">
         <Routes>
-          <Route path='/' element={<Home />}/>
-          <Route path='/main_window/turnos' element={<Appointments />}/>
+          <Route path='/' element={<Appointments />}/>
           <Route path='/main_window/clientes/personas' element={<PersonClient />}/>
           <Route path='/main_window/clientes/personas/:id' element={<PersonClientDetail />}/>
           <Route path='/main_window/clientes/empresas' element={<CompanyClient />}/>
