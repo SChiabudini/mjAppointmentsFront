@@ -120,6 +120,7 @@ h2{
 }
 
 .page{
+    position: relative;
     background-color: var(--light-grey);
     padding: 1.5rem;
     display: flex;
@@ -394,3 +395,32 @@ th div.withFilter button.sort{
     opacity: 1;
     background-color: white;
 }
+
+/**--POP UP--**/
+
+.popUp {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    overflow-y: auto;
+    padding: 1rem;
+  }
+  
+  .formContainer {
+    background-color: #fff;
+    padding: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 1000px;
+    margin-top: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+    max-height: 80vh;
+    overflow-y: auto;
+  }

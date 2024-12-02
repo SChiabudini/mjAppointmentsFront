@@ -10,12 +10,8 @@ const NavBar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleClick = (name) => {
-    if(name === 'inicio') {
-      navigate('/');
-    }
-
     if(name === 'turnos') {
-      navigate('/main_window/turnos');
+      navigate('/');
     }
     
     if(name === 'vehiculos') {
@@ -39,8 +35,7 @@ const NavBar = () => {
 
   return (
     <div className={style.NavBar}>
-      <div className={`${style.NavLink} ${location.pathname === '/' ? style.selected : ''}`}  onClick={() => handleClick('inicio')}>Inicio</div>
-      <div className={`${style.NavLink} ${location.pathname === '/main_window/turnos' ? style.selected : ''}`}  onClick={() => handleClick('turnos')}>Turnos</div>
+      <div className={`${style.NavLink} ${location.pathname === '/' ? style.selected : ''}`}  onClick={() => handleClick('turnos')}>Turnos</div>
       <div
         className={`${style.NavLink} ${location.pathname.startsWith('/main_window/clientes') ? style.selected : ''}`}
         onClick={() => setIsDropdownOpen(!isDropdownOpen)} // Alternar visibilidad del menú desplegable

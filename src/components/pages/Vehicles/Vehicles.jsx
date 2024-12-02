@@ -6,7 +6,7 @@ const Vehicles = () => {
 
   return (
     <div className='page'>
-      <NewVehicle />
+      <div className='popUp'><NewVehicle /></div>
       <VehiclesTable />
     </div>
   )

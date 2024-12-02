@@ -138,7 +138,7 @@ const NewVehicle = ({ onClientAdded = () => {}, isNested = false }) => {
 };
 
   return (
-    <div className="component">
+    <div className="formContainer">
       <div className="title">
         <h2>NUEVO VEHÍCULO</h2>
         <div className="titleButtons">
