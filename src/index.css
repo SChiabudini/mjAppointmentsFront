@@ -106,15 +106,15 @@ table {
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--light-grey);
+  background-color: white;
   /*overflow: hidden;*/
   font-family: Arial, Helvetica, sans-serif;
 }
 
 h2{
     color: var(--orange);
-    font-weight: 400;
-    letter-spacing: 0.15rem;
+    font-weight: 600;
+    letter-spacing: 0.1rem;
     font-size: 1.2rem;
     text-transform: uppercase;
 }
