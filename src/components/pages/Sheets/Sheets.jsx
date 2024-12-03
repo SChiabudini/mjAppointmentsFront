@@ -1,8 +1,10 @@
-import React from 'react'
+import React from 'react';
+import bg from './enconstruccion.jpg';
+import style from './Sheets.module.css';
 
 const Sheets = () => {
   return (
-    <div>Sheets</div>
+    <div className={style.div}><img src={bg}/></div>
   )
 }
 
