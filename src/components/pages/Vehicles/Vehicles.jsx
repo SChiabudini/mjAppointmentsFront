@@ -198,7 +198,7 @@ const Vehicles = () => {
           </div>
           <div className={popUpOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpOpen(false)}>
             <div onClick={(e) => e.stopPropagation()}>
-              <NewVehicle onClientAdded={() => setPopUpOpen(false)}/>
+              <NewVehicle onVehicleAdded={() => setPopUpOpen(false)}/>
             </div>
           </div>
       </div>

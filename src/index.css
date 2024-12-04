@@ -159,9 +159,7 @@ button{
     background-color: var(--dark-grey);
     color: white;
     border-radius: 2px;
-    padding: 0.5rem;
-    font-weight: 300;
-    letter-spacing: 0.1rem;
+    padding: 0.5rem 1rem;
     font-size: 1rem;
     cursor: pointer;
     border: none;
@@ -215,6 +213,23 @@ button.add{
 
 /*--FORMS--*/
 
+.titleForm{
+    border-bottom: 1px solid var(--orange);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.titleForm h2{
+    font-weight: normal;
+    font-size: 1.1rem;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.formContainer .container, .formContainerNested .container{
+    padding: 0;
+}
+
 form label{
     font-weight: 300;
     letter-spacing: 0.05rem;
@@ -230,17 +245,16 @@ select:focus {
 }
 
 .dropdown {
-    position: absolute;
-    background-color: white;
-    border: 1px solid #ccc;
     list-style: none;
     margin: 0;
     padding: 0;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    z-index: 1000;
     max-height: 200px;
     overflow-y: auto;
-    width: 100%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 10;
 }
 
 .dropdown li {
@@ -417,11 +431,85 @@ th div.withFilter button.sort{
     background-color: #fff;
     padding: 2rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    min-width: 600px;
+    max-width: 400px;
+    min-width: 400px;
     margin-top: 1rem;
     width: 100%;
     box-sizing: border-box;
     max-height: 80vh;
-    overflow-y: auto;
+    position: relative; /* Permite controlar los márgenes y el padding */
+    padding-right: 16px; /* Espacio extra para que el scroll quede fuera */
+    margin-right: -16px; /* Compensa el padding para que el ancho no cambie */
+    overflow-y: scroll; /* Fuerza la barra de desplazamiento */
+    box-sizing: content-box; /* Asegura que el padding no influya en el ancho */
   }
+
+  .form-container::-webkit-scrollbar {
+    width: 0; /* Oculta el scroll en Chrome, Safari */
+    }
+
+  .formContainerNested{
+    padding: 1.5rem 1rem;
+    box-sizing: border-box;
+    margin: 1rem 0;
+    background-color: var(--light-grey);
+  }
+
+  .formRow{
+    padding: 0.5rem 0;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .formRow label{
+    width: 30%;
+  }
+
+  .formRow input{
+    width: 65%;
+  }
+
+  .clientSelection{
+    padding: 0.5rem 0;
+  }
+
+  .clientSelectionInputs{
+    padding: 1rem 0;
+  }
+  
+  .searchRow {
+    display: flex;
+    align-items: center; /* Alinear verticalmente */
+    gap: 8px; /* Espacio entre input y botón */
+}
+
+.searchRow input {
+    flex-grow: 1; /* Ocupa todo el espacio disponible */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.searchRow button {
+    min-width: 40px; /* Para asegurar un tamaño fijo */
+    background-color: var(--light-grey);
+    color: black;
+}
+
+.searchRow button:hover {
+    background-color: var(--orange);
+}
+
+.submit{
+    display: flex;
+    flex-direction: column;
+}
+
+.submit button{
+    margin-top: 1rem;
+    background-color: var(--dark-grey);
+}
+
+.submit button:hover{
+    background-color: var(--orange);
+}

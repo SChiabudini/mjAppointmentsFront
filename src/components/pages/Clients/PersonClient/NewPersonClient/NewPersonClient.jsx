@@ -124,11 +124,11 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
             console.log("Client successfully saved");
 
             if(newPersonClient.vehicles.length > 0){
-                dispatch(getPersonClients());
+                dispatch(getVehicles());
             }
 
             setNewPersonClient(initialPersonClientState);
-            dispatch(getVehicles());
+            dispatch(getPersonClients());
             onClientAdded(response);
 
         } catch (error) {
@@ -138,15 +138,15 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
     };
 
     return (
-        <div className="formContainer">
-            <div className="title">
-                <h2>NUEVO CLIENTE</h2>
+        <div className={isNested? "formContainerNested" : "formContainer"}>
+            <div className="titleForm">
+                <h2>Nuevo cliente</h2>
                 <div className="titleButtons">
                     {/* <button onClick={handleSetForm} disabled={isClearDisabled}><img src={iconClear} alt="" /></button> */}
                 </div>
             </div>
             <div className="container">
-                <form onSubmit={handleSubmit}>                    
+                <form id="personClientForm" onSubmit={handleSubmit}>                    
                     <div>
                         <label>DNI</label>
                         <input type="text" name="dni" value={newPersonClient.dni} onChange={handleInputChange} />
@@ -177,9 +177,9 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
                             <label>Vehículo(s)</label>
                             <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onFocus={handleSearchFocus} onBlur={handleSearchBlur} onKeyDown={handleKeyDown} placeholder="Buscar vehículo" />
                             {showNewVehicle ? (
-                                    <button onClick={() => setShowNewVehicle(false)}>˄</button>
+                                    <button type='button' onClick={() => setShowNewVehicle(false)}>˄</button>
                                 ) : (
-                                    <button onClick={() => setShowNewVehicle(true)}>+</button>
+                                    <button type='button' onClick={() => setShowNewVehicle(true)}>+</button>
                                 )
                             }
                             {dropdownVisible && filteredVehicles.length > 0 && (
@@ -199,13 +199,15 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
                                     </li>
                                 ))}
                             </ul>
-                            {showNewVehicle && <NewVehicle onClientAdded={handleVehicleSelection} isNested={true}/>}
                         </div>
                     ) : (
                         <></>
                     )}
-                    <button type="submit">Crear</button> 
                 </form>
+                <div>                    
+                    {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true}/>}
+                    <button type="submit" form="personClientForm">Crear</button>
+                </div>
             </div>
         </div>
     );
