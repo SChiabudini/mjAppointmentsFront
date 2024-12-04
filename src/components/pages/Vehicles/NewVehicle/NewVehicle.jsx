@@ -6,7 +6,7 @@ import { getCompanyClients } from '../../../../redux/companyClientActions.js';
 import NewPersonClient from '../../Clients/PersonClient/NewPersonClient/NewPersonClient.jsx';
 import NewCompanyClient from '../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx';
 
-const NewVehicle = ({ onClientAdded = () => {}, isNested = false }) => {
+const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false }) => {
 
     const dispatch = useDispatch();
 
@@ -14,7 +14,7 @@ const NewVehicle = ({ onClientAdded = () => {}, isNested = false }) => {
         licensePlate: '',
         brand: '',
         model: '',
-        year: 0,
+        year: null,
         engine: '',
         personClient: null,
         companyClient: null
@@ -23,18 +23,17 @@ const NewVehicle = ({ onClientAdded = () => {}, isNested = false }) => {
     const [newVehicle, setNewVehicle] = useState(initialVehicleState);
     const [alreadyExist, setAlreadyExist] = useState(false);
 
-    //----- HANDLE INPUTS
-
+    // ----- HANDLE INPUTS
     const handleInputChange = (event) => {
         const { name, value } = event.target;
 
         setNewVehicle({
-        ...newVehicle,
-        [name]: name === 'year' ? parseInt(value, 10) || 0 : value,
+            ...newVehicle,
+            [name]: name === 'year' ? (value === '' ? '' : parseInt(value, 10) || 0) : value,
         });
 
         if (name === 'licensePlate') {
-        setAlreadyExist(false);
+            setAlreadyExist(false);
         }
     };
 
@@ -109,124 +108,124 @@ const NewVehicle = ({ onClientAdded = () => {}, isNested = false }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        const vehicleToSubmit = {
+            ...newVehicle,
+            year: parseInt(newVehicle.year, 10) || 0,
+        };
+
         try {
-        const response = await dispatch(postVehicle(newVehicle));
-        console.log("Vehicle successfully saved");
+            const response = await dispatch(postVehicle(vehicleToSubmit));
+            console.log("Vehicle successfully saved");
 
-        if(newVehicle.personClient){
-            dispatch(getPersonClients());
-        }
+            if(newVehicle.personClient){
+                dispatch(getPersonClients());
+            }
 
-        if(newVehicle.companyClient){
-            dispatch(getCompanyClients());
-        }
+            if(newVehicle.companyClient){
+                dispatch(getCompanyClients());
+            }
 
-        setNewVehicle(initialVehicleState);
-        setSearchTerm('');
-        dispatch(getVehicles());
-        onClientAdded(response);
-
+            setNewVehicle(initialVehicleState);
+            setSearchTerm('');
+            dispatch(getVehicles());
+            onVehicleAdded(response);
         } catch (error) {
-        console.error("Error saving vehicle:", error.message);
-        if (error.message.includes('already exist')) setAlreadyExist(true);
+            console.error("Error saving vehicle:", error.message);
+            if (error.message.includes('already exist')) setAlreadyExist(true);
         }
     };
 
     return (
-        <div className="formContainer">
-            <div className="title">
-                <h2>NUEVO VEHÍCULO</h2>
+        <div className={isNested? "formContainerNested" : "formContainer"}>
+            <div className="titleForm">
+                <h2>Nuevo vehículo</h2>
                 <div className="titleButtons">
                     {/* <button onClick={handleSetForm} disabled={isClearDisabled}><img src={iconClear} alt="" /></button> */}
                 </div>
             </div>
             <div className="container">
-                <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="licensePlate">Patente</label>
-                    <input type="text" name="licensePlate" value={newVehicle.licensePlate} onChange={handleInputChange}/>
-                    {alreadyExist && <p>Ya existe un vehículo con esa patente.</p>}
-                </div>
-                <div>
-                    <label htmlFor="brand">Marca</label>
-                    <input type="text" name="brand" value={newVehicle.brand} onChange={handleInputChange}/>
-                </div>
-                <div>
-                    <label htmlFor="model">Modelo</label>
-                    <input type="text" name="model" value={newVehicle.model} onChange={handleInputChange}/>
-                </div>
-                <div>
-                    <label htmlFor="year">Año</label>
-                    <input type="number" name="year" value={newVehicle.year} onChange={handleInputChange}/>
-                </div>
-                <div>
-                    <label htmlFor="engine">Motor</label>
-                    <input type="text" name="engine" value={newVehicle.engine} onChange={handleInputChange}/>
-                </div>
-                {!isNested ? (
-                    <div>
-                        <label>Cliente</label>
-                        <div>
-                            <label>
-                            <input
-                                type="radio"
-                                name="clientType"
-                                value="person"
-                                checked={searchingPerson}
-                                onChange={() => (setSearchingPerson(true), setSearchTerm(''))}
-                            />
-                            Persona
-                            </label>
-                            <label>
-                            <input
-                                type="radio"
-                                name="clientType"
-                                value="company"
-                                checked={!searchingPerson}
-                                onChange={() => (setSearchingPerson(false), setSearchTerm(''))}
-                            />
-                            Empresa
-                            </label>
-                        </div>
-                        <input
-                            type="text"
-                            placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            onFocus={handleSearchFocus}
-                            onBlur={handleSearchBlur}
-                            onKeyDown={handleKeyDown}
-                        />
-                        {showNewClient ? (
-                                <button onClick={() => setShowNewClient(false)}>˄</button>
-                            ) : (
-                                <button onClick={() => setShowNewClient(true)}>+</button>
-                            )
-                        }    
-                        {filteredClients.length > 0 && dropdownVisible && (
-                            <ul className="dropdown">
-                            {filteredClients.map((client, index) => (
-                                <li
-                                key={client._id}
-                                onClick={() => handleClientSelection(client)}
-                                className={index === selectedIndex ? 'highlight' : ''}
-                                >
-                                {client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`}
-                                </li>
-                            ))}
-                            </ul>
-                        )}
-
-                        {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true}/>}
-
-
-                        {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true}/>}
+                <form id="vehicleForm" onSubmit={handleSubmit}>
+                    <div className="formRow">
+                        <label htmlFor="licensePlate">Patente</label>
+                        <input type="text" name="licensePlate" value={newVehicle.licensePlate} onChange={handleInputChange}/>
+                        {alreadyExist && <p>Ya existe un vehículo con esa patente.</p>}
                     </div>
-                ) : (<></>)}  
-                <div>
-                    <button type='submit'>Crear</button>
-                </div>
+                    <div className="formRow">
+                        <label htmlFor="brand">Marca</label>
+                        <input type="text" name="brand" value={newVehicle.brand} onChange={handleInputChange}/>
+                    </div>
+                    <div className="formRow">
+                        <label htmlFor="model">Modelo</label>
+                        <input type="text" name="model" value={newVehicle.model} onChange={handleInputChange}/>
+                    </div>
+                    <div className="formRow">
+                        <label htmlFor="year">Año</label>
+                        <input type="text" name="year" value={newVehicle.year || ''} onChange={handleInputChange}/>
+                    </div>
+                    <div className="formRow">
+                        <label htmlFor="engine">Motor</label>
+                        <input type="text" name="engine" value={newVehicle.engine} onChange={handleInputChange}/>
+                    </div>
+                    {!isNested ? (
+                        <div className="clientSelection">
+                            <label>Cliente</label>
+                            <div className="clientSelectionInputs">
+                                <label>
+                                    <input
+                                        type="radio"
+                                        name="clientType"
+                                        value="person"
+                                        checked={searchingPerson}
+                                        onChange={() => (setSearchingPerson(true), setSearchTerm(''))}
+                                    />
+                                    Persona
+                                </label>
+                                <label>
+                                    <input
+                                        type="radio"
+                                        name="clientType"
+                                        value="company"
+                                        checked={!searchingPerson}
+                                        onChange={() => (setSearchingPerson(false), setSearchTerm(''))}
+                                    />
+                                    Empresa
+                                </label>
+                            </div>
+                            <div className="searchRow">
+                                <input
+                                    type="text"
+                                    placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    onFocus={handleSearchFocus}
+                                    onBlur={handleSearchBlur}
+                                    onKeyDown={handleKeyDown}
+                                />
+                                <button onClick={() => setShowNewClient(!showNewClient)} type="button">
+                                    {showNewClient ? '-' : '+'}
+                                </button> 
+                                {filteredClients.length > 0 && dropdownVisible && (
+                                    <ul className="dropdown">
+                                        {filteredClients.map((client, index) => (
+                                            <li
+                                            key={client._id}
+                                            onClick={() => handleClientSelection(client)}
+                                            className={index === selectedIndex ? 'highlight' : ''}
+                                            >
+                                            {client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
+                        </div>
+                    ) : (<></>)}  
                 </form>
+                <div className="submit">
+                    {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true}/>}
+                    {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true}/>}
+                    <button type='submit' form="vehicleForm">Crear</button>
+                </div>
             </div>
         </div>
     )
