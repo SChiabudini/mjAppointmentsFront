@@ -48,6 +48,7 @@ const NewVehicle = ({ onClientAdded = () => {}, isNested = false }) => {
     const [searchingPerson, setSearchingPerson] = useState(true);
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(-1);
+    const [showNewClient, setShowNewClient] = useState(false);
 
     useEffect(() => {
         if(personClients.length === 0){
@@ -164,57 +165,62 @@ const NewVehicle = ({ onClientAdded = () => {}, isNested = false }) => {
                 </div>
                 {!isNested ? (
                     <div>
-                    <label>Cliente</label>
-                    <div>
-                        <label>
+                        <label>Cliente</label>
+                        <div>
+                            <label>
+                            <input
+                                type="radio"
+                                name="clientType"
+                                value="person"
+                                checked={searchingPerson}
+                                onChange={() => (setSearchingPerson(true), setSearchTerm(''))}
+                            />
+                            Persona
+                            </label>
+                            <label>
+                            <input
+                                type="radio"
+                                name="clientType"
+                                value="company"
+                                checked={!searchingPerson}
+                                onChange={() => (setSearchingPerson(false), setSearchTerm(''))}
+                            />
+                            Empresa
+                            </label>
+                        </div>
                         <input
-                            type="radio"
-                            name="clientType"
-                            value="person"
-                            checked={searchingPerson}
-                            onChange={() => (setSearchingPerson(true), setSearchTerm(''))}
+                            type="text"
+                            placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onFocus={handleSearchFocus}
+                            onBlur={handleSearchBlur}
+                            onKeyDown={handleKeyDown}
                         />
-                        Persona
-                        </label>
-                        <label>
-                        <input
-                            type="radio"
-                            name="clientType"
-                            value="company"
-                            checked={!searchingPerson}
-                            onChange={() => (setSearchingPerson(false), setSearchTerm(''))}
-                        />
-                        Empresa
-                        </label>
-                    </div>
-                    <input
-                        type="text"
-                        placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        onFocus={handleSearchFocus}
-                        onBlur={handleSearchBlur}
-                        onKeyDown={handleKeyDown}
-                    />
-                    {filteredClients.length > 0 && dropdownVisible && (
-                        <ul className="dropdown">
-                        {filteredClients.map((client, index) => (
-                            <li
-                            key={client._id}
-                            onClick={() => handleClientSelection(client)}
-                            className={index === selectedIndex ? 'highlight' : ''}
-                            >
-                            {client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`}
-                            </li>
-                        ))}
-                        </ul>
-                    )}
-                    <div>
-                        {!isNested && <NewPersonClient onClientAdded={handleClientSelection} isNested={true}/>}
-                    </div>
-                    <div>
-                        {!isNested && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true}/>}
-                    </div>
+                        {showNewClient ? (
+                                <button onClick={() => setShowNewClient(false)}>˄</button>
+                            ) : (
+                                <button onClick={() => setShowNewClient(true)}>+</button>
+                            )
+                        }    
+                        {filteredClients.length > 0 && dropdownVisible && (
+                            <ul className="dropdown">
+                            {filteredClients.map((client, index) => (
+                                <li
+                                key={client._id}
+                                onClick={() => handleClientSelection(client)}
+                                className={index === selectedIndex ? 'highlight' : ''}
+                                >
+                                {client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`}
+                                </li>
+                            ))}
+                            </ul>
+                        )}
+
+                        {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true}/>}
+
+
+                        {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true}/>}
                     </div>
                 ) : (<></>)}  
                 <div>
@@ -224,6 +230,6 @@ const NewVehicle = ({ onClientAdded = () => {}, isNested = false }) => {
             </div>
         </div>
     )
-}
+};
 
 export default NewVehicle;
