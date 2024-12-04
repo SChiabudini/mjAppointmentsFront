@@ -57,6 +57,7 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
     const [filteredVehicles, setFilteredVehicles] = useState([]);
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(-1);
+    const [showNewVehicle, setShowNewVehicle] = useState(false);
 
     useEffect(() => {
         if (vehicles.length === 0) {
@@ -175,6 +176,12 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
                         <div>
                             <label>Vehículo(s)</label>
                             <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onFocus={handleSearchFocus} onBlur={handleSearchBlur} onKeyDown={handleKeyDown} placeholder="Buscar vehículo" />
+                            {showNewVehicle ? (
+                                    <button onClick={() => setShowNewVehicle(false)}>˄</button>
+                                ) : (
+                                    <button onClick={() => setShowNewVehicle(true)}>+</button>
+                                )
+                            }
                             {dropdownVisible && filteredVehicles.length > 0 && (
                                 <ul>
                                     {filteredVehicles.map((vehicle, index) => (
@@ -192,9 +199,7 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
                                     </li>
                                 ))}
                             </ul>
-                            <div>
-                                {!isNested && <NewVehicle onClientAdded={handleVehicleSelection} isNested={true}/>}
-                            </div>
+                            {showNewVehicle && <NewVehicle onClientAdded={handleVehicleSelection} isNested={true}/>}
                         </div>
                     ) : (
                         <></>
