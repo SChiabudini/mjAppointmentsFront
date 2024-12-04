@@ -91,7 +91,6 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
     };
 
     const handleSearchFocus = () => {
-        setDropdownVisible(true);
         setSelectedIndex(-1);
     };
 
@@ -147,64 +146,86 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
             </div>
             <div className="container">
                 <form id="personClientForm" onSubmit={handleSubmit}>                    
-                    <div>
+                    <div className="formRow">
                         <label>DNI</label>
                         <input type="text" name="dni" value={newPersonClient.dni} onChange={handleInputChange} />
                         {alreadyExist && <p>Ya existe un cliente con ese DNI.</p>}
                     </div>
-                    <div>
+                    <div className="formRow">
                         <label>Nombre</label>
                         <input type="text" name="name" value={newPersonClient.name} onChange={handleInputChange} />
                     </div>
-                    <div>
+                    <div className="formRow">
                         <label>Email</label>
                         <input type="text" name="email" value={newPersonClient.email} onChange={handleInputChange} />
                     </div>
-                    <div>
-                        <label>Teléfono</label>
-                        <input type="text" value={currentPhone} onChange={(e) => setCurrentPhone(e.target.value)} placeholder="Añadir teléfono" />
-                        <button type="button" onClick={addPhone}>Añadir</button>
-                        <ul>{newPersonClient.phones.map((phone, index) => (
-                            <li key={index}>{phone}<button type="button" onClick={() => removePhone(index)}>Eliminar</button></li>
-                        ))}</ul>
+                    <div className="formRow">
+                        <label>Teléfono(s)</label>
+                        <input 
+                            type="text" 
+                            value={currentPhone} 
+                            onChange={(e) => setCurrentPhone(e.target.value)} 
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') addPhone();
+                            }} 
+                        />
+
                     </div>
-                    <div>
+                    {newPersonClient.phones.length > 0 ? (
+                        <div className="formRow">
+                            <ul>
+                                {newPersonClient.phones.map((phone, index) => (
+                                        <li key={index}>
+                                            <div>{phone}</div>
+                                            <button type="button" onClick={() => removePhone(index)}>x</button>
+                                        </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ) : ( 
+                        <></>
+                    )}                    
+                    <div className="formRow">
                         <label>CUIL/CUIT</label>
                         <input type="text" name="cuilCuit" value={newPersonClient.cuilCuit} onChange={handleInputChange} />
                     </div>
                     {!isNested ? (
                         <div>
-                            <label>Vehículo(s)</label>
-                            <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onFocus={handleSearchFocus} onBlur={handleSearchBlur} onKeyDown={handleKeyDown} placeholder="Buscar vehículo" />
-                            {showNewVehicle ? (
-                                    <button type='button' onClick={() => setShowNewVehicle(false)}>˄</button>
-                                ) : (
-                                    <button type='button' onClick={() => setShowNewVehicle(true)}>+</button>
-                                )
-                            }
-                            {dropdownVisible && filteredVehicles.length > 0 && (
+                            <div className="formRow">
+                                <label>Vehículo(s)</label>
+                            </div>
+                            <div className="searchRow">
+                                <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onFocus={handleSearchFocus} onBlur={handleSearchBlur} onKeyDown={handleKeyDown} placeholder="Buscar vehículo" />
+                                <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button">
+                                    {showNewVehicle ? '-' : '+'}
+                                </button>
+                                {dropdownVisible && filteredVehicles.length > 0 && (
+                                    <ul className="dropdown">
+                                        {filteredVehicles.map((vehicle, index) => (
+                                            <li key={vehicle._id} onClick={() => handleVehicleSelection(vehicle)} className={index === selectedIndex ? 'highlight' : ''}>
+                                                {vehicle.licensePlate}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                                
+                            </div>
+                            <div className="formRow">
                                 <ul>
-                                    {filteredVehicles.map((vehicle, index) => (
-                                        <li key={vehicle._id} onClick={() => handleVehicleSelection(vehicle)} className={index === selectedIndex ? 'highlight' : ''}>
+                                    {newPersonClient.vehicles.map((vehicle, index) => (
+                                        <li key={index}>
                                             {vehicle.licensePlate}
+                                            <button type="button" onClick={() => removeVehicle(index)}>x</button>
                                         </li>
                                     ))}
-                                </ul>
-                            )}
-                            <ul>
-                                {newPersonClient.vehicles.map((vehicle, index) => (
-                                    <li key={index}>
-                                        {vehicle.licensePlate}
-                                        <button type="button" onClick={() => removeVehicle(index)}>Eliminar</button>
-                                    </li>
-                                ))}
-                            </ul>
+                                </ul> 
+                            </div>        
                         </div>
                     ) : (
                         <></>
                     )}
                 </form>
-                <div>                    
+                <div className={isNested ? "submitNested" : "submit"}>                    
                     {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true}/>}
                     <button type="submit" form="personClientForm">Crear</button>
                 </div>
