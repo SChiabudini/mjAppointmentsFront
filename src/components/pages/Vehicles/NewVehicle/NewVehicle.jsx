@@ -8,231 +8,222 @@ import NewCompanyClient from '../../Clients/CompanyClient/NewCompanyClient/NewCo
 
 const NewVehicle = ({ onClientAdded = () => {}, isNested = false }) => {
 
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-  const initialVehicleState = {
-    licensePlate: '',
-    brand: '',
-    model: '',
-    year: 0,
-    engine: '',
-    personClient: null,
-    companyClient: null
-  };
-
-  const personClients = useSelector(state => state.personClient.personClients);
-  const companyClients = useSelector(state => state.companyClient.companyClients);
-
-  const [newVehicle, setNewVehicle] = useState(initialVehicleState);
-  const [alreadyExist, setAlreadyExist] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filteredClients, setFilteredClients] = useState([]);
-  const [searchingPerson, setSearchingPerson] = useState(true);
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(-1);
-
-  useEffect(() => {
-    if(personClients.length === 0){
-      dispatch(getPersonClients());
+    const initialVehicleState = {
+        licensePlate: '',
+        brand: '',
+        model: '',
+        year: 0,
+        engine: '',
+        personClient: null,
+        companyClient: null
     };
 
-    if(companyClients.length === 0){
-      dispatch(getCompanyClients());
+    const [newVehicle, setNewVehicle] = useState(initialVehicleState);
+    const [alreadyExist, setAlreadyExist] = useState(false);
+
+    //----- HANDLE INPUTS
+
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+
+        setNewVehicle({
+        ...newVehicle,
+        [name]: name === 'year' ? parseInt(value, 10) || 0 : value,
+        });
+
+        if (name === 'licensePlate') {
+        setAlreadyExist(false);
+        }
     };
 
-  }, [personClients, companyClients, dispatch]);
+    //----- HANDLE CLIENTS
 
-  useEffect(() => {
-    const clients = searchingPerson ? personClients : companyClients;
-    setFilteredClients(
-      clients.filter(client => 
-        client.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        (client.dni && client.dni.toString().includes(searchTerm))
-      )
-    );
-  }, [searchTerm, searchingPerson, personClients, companyClients]);
+    const personClients = useSelector(state => state.personClient.personClients);
+    const companyClients = useSelector(state => state.companyClient.companyClients);
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-  
-    setNewVehicle({
-      ...newVehicle,
-      [name]: name === 'year' ? parseInt(value, 10) || 0 : value,
-    });
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredClients, setFilteredClients] = useState([]);
+    const [searchingPerson, setSearchingPerson] = useState(true);
+    const [dropdownVisible, setDropdownVisible] = useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(-1);
 
-    if (name === 'licensePlate') {
-      setAlreadyExist(false);
-    }
-  };
-  
-  const handleClientSelection = (client) => {
-    const clientName = client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`;
-    setSearchTerm(clientName); // Muestra el cliente seleccionado en el input
-    setDropdownVisible(false); // Oculta el dropdown al seleccionar
-    if (searchingPerson) {
-      setNewVehicle({ ...newVehicle, personClient: client._id, companyClient: null });
-    } else {
-      setNewVehicle({ ...newVehicle, companyClient: client._id, personClient: null });
-    }
-  };
+    useEffect(() => {
+        if(personClients.length === 0){
+        dispatch(getPersonClients());
+        };
 
-  const handleSearchFocus = () => {
-    setDropdownVisible(true);
-    setSelectedIndex(-1);
-  };
-  
-  const handleSearchBlur = () => {
-    setTimeout(() => {
-      setDropdownVisible(false);
-      setSelectedIndex(-1);
-    }, 150);
-  };
+        if(companyClients.length === 0){
+        dispatch(getCompanyClients());
+        };
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'ArrowDown') {
-      setSelectedIndex((prev) => (prev + 1) % filteredClients.length);
-    } else if (e.key === 'ArrowUp') {
-      setSelectedIndex((prev) => (prev - 1 + filteredClients.length) % filteredClients.length);
-    } else if (e.key === 'Enter' && selectedIndex >= 0) {
-      handleClientSelection(filteredClients[selectedIndex]);
-    }
-  };
+    }, [personClients, companyClients, dispatch]);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+    useEffect(() => {
+        const clients = searchingPerson ? personClients : companyClients;
+        setFilteredClients(
+        clients.filter(client => 
+            client.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+            (client.dni && client.dni.toString().includes(searchTerm))
+        )
+        );
+    }, [searchTerm, searchingPerson, personClients, companyClients]);
 
-    const vehicleData = {
-        licensePlate: newVehicle.licensePlate,
-        brand: newVehicle.brand,
-        model: newVehicle.model,
-        year: newVehicle.year,
-        engine: newVehicle.engine,
-        personClient: newVehicle.personClient,
-        companyClient: newVehicle.companyClient
+    const handleClientSelection = (client) => {
+        const clientName = client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`;
+        setSearchTerm(clientName);
+        setDropdownVisible(false);
+        if (searchingPerson) {
+        setNewVehicle({ ...newVehicle, personClient: client._id, companyClient: null });
+        } else {
+        setNewVehicle({ ...newVehicle, companyClient: client._id, personClient: null });
+        }
     };
 
-    try {
-      dispatch(postVehicle(vehicleData))
-      .then((response) => {
+    const handleSearchFocus = () => {
+        setDropdownVisible(true);
+        setSelectedIndex(-1);
+    };
+
+    const handleSearchBlur = () => {
+        setTimeout(() => {
+        setDropdownVisible(false);
+        setSelectedIndex(-1);
+        }, 150);
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'ArrowDown') {
+        setSelectedIndex((prev) => (prev + 1) % filteredClients.length);
+        } else if (e.key === 'ArrowUp') {
+        setSelectedIndex((prev) => (prev - 1 + filteredClients.length) % filteredClients.length);
+        } else if (e.key === 'Enter' && selectedIndex >= 0) {
+        handleClientSelection(filteredClients[selectedIndex]);
+        }
+    };
+
+    //----- SUBMIT
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        try {
+        const response = await dispatch(postVehicle(newVehicle));
         console.log("Vehicle successfully saved");
+
+        if(newVehicle.personClient){
+            dispatch(getPersonClients());
+        }
+
+        if(newVehicle.companyClient){
+            dispatch(getCompanyClients());
+        }
+
         setNewVehicle(initialVehicleState);
         setSearchTerm('');
         dispatch(getVehicles());
-        if(vehicleData.personClient){
-          dispatch(getPersonClients());
-        }
-        if(vehicleData.companyClient){
-          dispatch(getCompanyClients());
-        }
         onClientAdded(response);
-      })
-      .catch(error => {
+
+        } catch (error) {
         console.error("Error saving vehicle:", error.message);
-        if(error.message.includes('already exist')){
-          setAlreadyExist(true);
+        if (error.message.includes('already exist')) setAlreadyExist(true);
         }
-      });
-    } catch (error) {
-      console.error("Unexpected error:", error.message);
-    }
-};
+    };
 
-  return (
-    <div className="formContainer">
-      <div className="title">
-        <h2>NUEVO VEHÍCULO</h2>
-        <div className="titleButtons">
-            {/* <button onClick={handleSetForm} disabled={isClearDisabled}><img src={iconClear} alt="" /></button> */}
-        </div>
-      </div>
-      <div className="container">
-        <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="licensePlate">Patente</label>
-          <input type="text" name="licensePlate" value={newVehicle.licensePlate} onChange={handleInputChange}/>
-          {alreadyExist && <p>Ya existe un vehículo con esa patente.</p>}
-        </div>
-        <div>
-          <label htmlFor="brand">Marca</label>
-          <input type="text" name="brand" value={newVehicle.brand} onChange={handleInputChange}/>
-        </div>
-        <div>
-          <label htmlFor="model">Modelo</label>
-          <input type="text" name="model" value={newVehicle.model} onChange={handleInputChange}/>
-        </div>
-        <div>
-          <label htmlFor="year">Año</label>
-          <input type="number" name="year" value={newVehicle.year} onChange={handleInputChange}/>
-        </div>
-        <div>
-          <label htmlFor="engine">Motor</label>
-          <input type="text" name="engine" value={newVehicle.engine} onChange={handleInputChange}/>
-        </div>
-        {!isNested ? (
-                  <div>
-                  <label>Cliente</label>
-                  <div>
-                    <label>
-                      <input
-                        type="radio"
-                        name="clientType"
-                        value="person"
-                        checked={searchingPerson}
-                        onChange={() => (setSearchingPerson(true), setSearchTerm(''))}
-                      />
-                      Persona
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name="clientType"
-                        value="company"
-                        checked={!searchingPerson}
-                        onChange={() => (setSearchingPerson(false), setSearchTerm(''))}
-                      />
-                      Empresa
-                    </label>
-                  </div>
-                  <input
-                    type="text"
-                    placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    onFocus={handleSearchFocus}
-                    onBlur={handleSearchBlur}
-                    onKeyDown={handleKeyDown}
-                  />
-                  {filteredClients.length > 0 && dropdownVisible && (
-                    <ul className="dropdown">
-                      {filteredClients.map((client, index) => (
-                        <li
-                          key={client._id}
-                          onClick={() => handleClientSelection(client)}
-                          className={index === selectedIndex ? 'highlight' : ''}
-                        >
-                          {client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+    return (
+        <div className="formContainer">
+            <div className="title">
+                <h2>NUEVO VEHÍCULO</h2>
+                <div className="titleButtons">
+                    {/* <button onClick={handleSetForm} disabled={isClearDisabled}><img src={iconClear} alt="" /></button> */}
                 </div>
-        ) : (<></>)}  
-
-          
-          <div>
-            <button type='submit'>Crear</button>
-          </div>
-
-        </form>
-        <div>
-          {!isNested && <NewPersonClient onClientAdded={handleClientSelection} isNested={true}/>}
+            </div>
+            <div className="container">
+                <form onSubmit={handleSubmit}>
+                <div>
+                    <label htmlFor="licensePlate">Patente</label>
+                    <input type="text" name="licensePlate" value={newVehicle.licensePlate} onChange={handleInputChange}/>
+                    {alreadyExist && <p>Ya existe un vehículo con esa patente.</p>}
+                </div>
+                <div>
+                    <label htmlFor="brand">Marca</label>
+                    <input type="text" name="brand" value={newVehicle.brand} onChange={handleInputChange}/>
+                </div>
+                <div>
+                    <label htmlFor="model">Modelo</label>
+                    <input type="text" name="model" value={newVehicle.model} onChange={handleInputChange}/>
+                </div>
+                <div>
+                    <label htmlFor="year">Año</label>
+                    <input type="number" name="year" value={newVehicle.year} onChange={handleInputChange}/>
+                </div>
+                <div>
+                    <label htmlFor="engine">Motor</label>
+                    <input type="text" name="engine" value={newVehicle.engine} onChange={handleInputChange}/>
+                </div>
+                {!isNested ? (
+                    <div>
+                    <label>Cliente</label>
+                    <div>
+                        <label>
+                        <input
+                            type="radio"
+                            name="clientType"
+                            value="person"
+                            checked={searchingPerson}
+                            onChange={() => (setSearchingPerson(true), setSearchTerm(''))}
+                        />
+                        Persona
+                        </label>
+                        <label>
+                        <input
+                            type="radio"
+                            name="clientType"
+                            value="company"
+                            checked={!searchingPerson}
+                            onChange={() => (setSearchingPerson(false), setSearchTerm(''))}
+                        />
+                        Empresa
+                        </label>
+                    </div>
+                    <input
+                        type="text"
+                        placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onFocus={handleSearchFocus}
+                        onBlur={handleSearchBlur}
+                        onKeyDown={handleKeyDown}
+                    />
+                    {filteredClients.length > 0 && dropdownVisible && (
+                        <ul className="dropdown">
+                        {filteredClients.map((client, index) => (
+                            <li
+                            key={client._id}
+                            onClick={() => handleClientSelection(client)}
+                            className={index === selectedIndex ? 'highlight' : ''}
+                            >
+                            {client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`}
+                            </li>
+                        ))}
+                        </ul>
+                    )}
+                    <div>
+                        {!isNested && <NewPersonClient onClientAdded={handleClientSelection} isNested={true}/>}
+                    </div>
+                    <div>
+                        {!isNested && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true}/>}
+                    </div>
+                    </div>
+                ) : (<></>)}  
+                <div>
+                    <button type='submit'>Crear</button>
+                </div>
+                </form>
+            </div>
         </div>
-        <div>
-          {!isNested && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true}/>}
-        </div>
-      </div>
-    </div>
-  )
+    )
 }
 
 export default NewVehicle;

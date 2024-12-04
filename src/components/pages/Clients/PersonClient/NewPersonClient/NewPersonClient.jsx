@@ -17,21 +17,10 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
         vehicles: []
     };
     
-    const vehicles = useSelector(state => state.vehicle.vehicles);
-    
     const [newPersonClient, setNewPersonClient] = useState(initialPersonClientState);
     const [alreadyExist, setAlreadyExist] = useState(false);
-    const [currentPhone, setCurrentPhone] = useState("");
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filteredVehicles, setFilteredVehicles] = useState([]);
-    const [dropdownVisible, setDropdownVisible] = useState(false);
-    const [selectedIndex, setSelectedIndex] = useState(-1);
 
-    useEffect(() => {
-        if (vehicles.length === 0) {
-            dispatch(getVehicles());
-        }
-    }, [vehicles, dispatch]);
+    //----- HANDLE INPUTS
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -39,8 +28,10 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
         if (name === 'dni') setAlreadyExist(false);
     };
 
-    //----- MANEJAR TELÉFONOS
+    //----- HANDLE PHONES
 
+    const [currentPhone, setCurrentPhone] = useState("");
+    
     const addPhone = () => {
         if (currentPhone.trim() !== "") {
             setNewPersonClient(prevState => ({
@@ -58,7 +49,20 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
         }));
     };
 
-    //----- MANEJAR VEHÍCULOS
+    //----- HANDLE VEHÍCLES
+
+    const vehicles = useSelector(state => state.vehicle.vehicles);
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredVehicles, setFilteredVehicles] = useState([]);
+    const [dropdownVisible, setDropdownVisible] = useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(-1);
+
+    useEffect(() => {
+        if (vehicles.length === 0) {
+            dispatch(getVehicles());
+        }
+    }, [vehicles, dispatch]);
 
     useEffect(() => {
         setFilteredVehicles(
@@ -110,15 +114,22 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
         }
     };
 
+    //----- SUBMIT
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             const response = await dispatch(postPersonClient(newPersonClient));
-            onClientAdded(response);
             console.log("Client successfully saved");
+
+            if(newPersonClient.vehicles.length > 0){
+                dispatch(getPersonClients());
+            }
+
             setNewPersonClient(initialPersonClientState);
-            dispatch(getPersonClients());
             dispatch(getVehicles());
+            onClientAdded(response);
+
         } catch (error) {
             console.error("Error saving person client:", error.message);
             if (error.message.includes('already exist')) setAlreadyExist(true);
@@ -126,65 +137,70 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
     };
 
     return (
-        <div className="component">
+        <div className="formContainer">
             <div className="title">
                 <h2>NUEVO CLIENTE</h2>
+                <div className="titleButtons">
+                    {/* <button onClick={handleSetForm} disabled={isClearDisabled}><img src={iconClear} alt="" /></button> */}
+                </div>
             </div>
             <div className="container">
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit}>                    
                     <div>
                         <label>DNI</label>
                         <input type="text" name="dni" value={newPersonClient.dni} onChange={handleInputChange} />
                         {alreadyExist && <p>Ya existe un cliente con ese DNI.</p>}
-
+                    </div>
+                    <div>
                         <label>Nombre</label>
                         <input type="text" name="name" value={newPersonClient.name} onChange={handleInputChange} />
-
+                    </div>
+                    <div>
                         <label>Email</label>
                         <input type="text" name="email" value={newPersonClient.email} onChange={handleInputChange} />
-
+                    </div>
+                    <div>
                         <label>Teléfono</label>
                         <input type="text" value={currentPhone} onChange={(e) => setCurrentPhone(e.target.value)} placeholder="Añadir teléfono" />
                         <button type="button" onClick={addPhone}>Añadir</button>
                         <ul>{newPersonClient.phones.map((phone, index) => (
                             <li key={index}>{phone}<button type="button" onClick={() => removePhone(index)}>Eliminar</button></li>
                         ))}</ul>
-
-                        {!isNested ? (
-                            <>
-                                <label>Vehículo(s)</label>
-                                <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onFocus={handleSearchFocus} onBlur={handleSearchBlur} onKeyDown={handleKeyDown} placeholder="Buscar vehículo" />
-                                {dropdownVisible && filteredVehicles.length > 0 && (
-                                    <ul>
-                                        {filteredVehicles.map((vehicle, index) => (
-                                            <li key={vehicle._id} onClick={() => handleVehicleSelection(vehicle)} className={index === selectedIndex ? 'highlight' : ''}>
-                                                {vehicle.licensePlate}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
+                    </div>
+                    <div>
+                        <label>CUIL/CUIT</label>
+                        <input type="text" name="cuilCuit" value={newPersonClient.cuilCuit} onChange={handleInputChange} />
+                    </div>
+                    {!isNested ? (
+                        <div>
+                            <label>Vehículo(s)</label>
+                            <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onFocus={handleSearchFocus} onBlur={handleSearchBlur} onKeyDown={handleKeyDown} placeholder="Buscar vehículo" />
+                            {dropdownVisible && filteredVehicles.length > 0 && (
                                 <ul>
-                                    {newPersonClient.vehicles.map((vehicle, index) => (
-                                        <li key={index}>
+                                    {filteredVehicles.map((vehicle, index) => (
+                                        <li key={vehicle._id} onClick={() => handleVehicleSelection(vehicle)} className={index === selectedIndex ? 'highlight' : ''}>
                                             {vehicle.licensePlate}
-                                            <button type="button" onClick={() => removeVehicle(index)}>Eliminar</button>
                                         </li>
                                     ))}
                                 </ul>
-                            </>
-                        ) : (
+                            )}
+                            <ul>
+                                {newPersonClient.vehicles.map((vehicle, index) => (
+                                    <li key={index}>
+                                        {vehicle.licensePlate}
+                                        <button type="button" onClick={() => removeVehicle(index)}>Eliminar</button>
+                                    </li>
+                                ))}
+                            </ul>
+                            <div>
+                                {!isNested && <NewVehicle onClientAdded={handleVehicleSelection} isNested={true}/>}
+                            </div>
+                        </div>
+                    ) : (
                         <></>
-                        )}
-
-                        <label>CUIL/CUIT</label>
-                        <input type="text" name="cuilCuit" value={newPersonClient.cuilCuit} onChange={handleInputChange} />
-
-                        <button type="submit">Crear</button>
-                    </div>
+                    )}
+                    <button type="submit">Crear</button> 
                 </form>
-                <div>
-                    {!isNested && <NewVehicle onClientAdded={handleVehicleSelection} isNested={true}/>}
-                </div>
             </div>
         </div>
     );
