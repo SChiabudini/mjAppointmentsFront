@@ -12,6 +12,9 @@ import Vehicles from './components/pages/Vehicles/Vehicles.jsx';
 import VehicleDetail from './components/pages/Vehicles/VehicleDetail/VehicleDetail.jsx';
 import Sheets from './components/pages/Sheets/Sheets.jsx';
 import { getAppointments } from './redux/appointmentActions.js';
+import { getPersonClients } from './redux/personClientActions.js';
+import { getCompanyClients } from './redux/companyClientActions.js';
+import { getVehicles } from './redux/vehicleActions.js';
 
 const App = () => {
 
@@ -19,6 +22,9 @@ const App = () => {
 
   useEffect(() => {
     dispatch(getAppointments());
+    dispatch(getPersonClients());
+    dispatch(getCompanyClients());
+    dispatch(getVehicles());
   }, [dispatch]);
 
   return (
