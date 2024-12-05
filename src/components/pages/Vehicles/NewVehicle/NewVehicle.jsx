@@ -233,7 +233,7 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false }) => {
                 <div className={isNested ? "submitNested" : "submit"}>
                     {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true}/>}
                     {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true}/>}
-                    <button type='submit' form="vehicleForm">Crear</button>
+                    <button type='submit' form="vehicleForm">Crear vehículo</button>
                 </div>
             </div>
         </div>

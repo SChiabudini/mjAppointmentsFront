@@ -160,8 +160,8 @@ button:hover{
 }
 
 button:disabled {
-    background-color: var(--dark-grey); /* Color de fondo para el botón deshabilitado */
-    color: #ccc; /* Color del texto para el botón deshabilitado */
+    border: 2px solid var(--dark-grey);
+    color: var(--dark-grey);
     cursor: not-allowed; /* Cambia el cursor para indicar que no se puede interactuar con el botón */
     opacity: 0.6; /* Cambia la opacidad para que el botón deshabilitado parezca más tenue */
 }
@@ -456,6 +456,10 @@ th div.withFilter button.sort{
 
 .formRow input{
     width: 65%;
+}
+
+.formRow textarea{
+    width: 100%;
 }
 
 .formRow ul{

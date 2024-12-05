@@ -6,7 +6,7 @@ import NewPersonClient from '../../Clients/PersonClient/NewPersonClient/NewPerso
 import NewVehicle from '../../Vehicles/NewVehicle/NewVehicle.jsx';
 import { postAppointment } from '../../../../redux/appointmentActions.js';
 
-const NewAppointment = ({ onClose }) => {
+const NewAppointment = () => {
     
     const dispatch = useDispatch();
 
@@ -203,6 +203,7 @@ const NewAppointment = ({ onClose }) => {
     
         try {
             // Enviar la petición como un objeto JSON
+            console.log(appointmentData);
             const response = await dispatch(postAppointment(appointmentData));            
     
             if (response) {
@@ -218,59 +219,58 @@ const NewAppointment = ({ onClose }) => {
     };
 
     return (
-        <div className="component">
-            <div className={style.titleForm}>
-                <h2>NUEVA TURNO</h2>
-                <button className={style.buttonOnClose} type='button' onClick={onClose}>X</button>
+        <div className="formContainer">
+            <div className="titleForm">
+                <h2>Nuevo turno</h2>
             </div>
             <div className="container">
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} id="appointmentForm">
                     <div>
-                        {/* <div className={style.containerMessage}>
-                            <label className={style.mensagge}>Los campos con (*) son obligatorios</label>
-                        </div> */}
-                        <div>
-                            <div>
-                                <span>Fecha y horario</span>
-                            </div>
-                            <div>
-                                <label htmlFor="start">Inicio</label>
-                                <input 
-                                    type="datetime-local" 
-                                    name="start" 
-                                    value={newAppointment.start ? new Date(newAppointment.start).toISOString().slice(0, 16) : ''} 
-                                    onChange={handleInputChange} 
-                                />
-                                <label htmlFor="end">Finalización</label>
-                                <input 
-                                    type="datetime-local" 
-                                    name="end" 
-                                    value={newAppointment.end ? new Date(newAppointment.end).toISOString().slice(0, 16) : ''} 
-                                    onChange={handleInputChange} 
-                                />
-                            </div>
+                        <div className="formRow">
+                            <div>Fecha y horario</div>
                         </div>
-                        <div>
-                            <div>
-                                <span>Cliente</span>
-                            </div>
-                            <div>
-                                <label htmlFor="personClient">Persona</label>
-                                <input 
-                                    type="checkbox" 
+                        <div className="formRow">
+                            <label htmlFor="start">Inicio</label>
+                            <input 
+                                type="datetime-local" 
+                                name="start" 
+                                value={newAppointment.start ? new Date(newAppointment.start).toISOString().slice(0, 16) : ''} 
+                                onChange={handleInputChange} 
+                            />
+                        </div>
+                        <div className="formRow">
+                            <label htmlFor="end">Finalización</label>
+                            <input 
+                                type="datetime-local" 
+                                name="end" 
+                                value={newAppointment.end ? new Date(newAppointment.end).toISOString().slice(0, 16) : ''} 
+                                onChange={handleInputChange} 
+                            />
+                        </div>
+                        <div className="clientSelection">                            
+                            <label>Cliente</label>
+                            <div className="clientSelectionInputs">
+                                <label htmlFor="personClient">
+                                    <input 
+                                    type="radio" 
                                     name="personClient" 
                                     id="personClient" 
                                     checked={selectedOptionClient === 'personClient'} 
                                     onChange={() => handleCheckboxClientChange('personClient')} 
-                                />
-                                <label htmlFor="companyClient">Empresa</label>
-                                <input 
-                                    type="checkbox" 
-                                    name="companyClient" 
-                                    id="companyClient" 
-                                    checked={selectedOptionClient === 'companyClient'} 
-                                    onChange={() => handleCheckboxClientChange('companyClient')} 
-                                />
+                                    />
+                                    Persona
+                                </label>
+
+                                <label htmlFor="companyClient">
+                                    <input 
+                                        type="radio" 
+                                        name="companyClient" 
+                                        id="companyClient" 
+                                        checked={selectedOptionClient === 'companyClient'} 
+                                        onChange={() => handleCheckboxClientChange('companyClient')} 
+                                    />
+                                    Empresa
+                                </label>
                             </div>
                             <div>
                                 <select 
@@ -328,39 +328,45 @@ const NewAppointment = ({ onClose }) => {
                                 <button type="button" onClick={handleCreateVehicle}>Crear</button>
                             </div>
                         </div>
-                        <div>
-                            <div>
-                                <span>Procedimiento</span>
+                        <div className="clientSelection">
+                            <label>Procedimiento</label>
+                            <div className="clientSelectionInputs">
+                                <label htmlFor="service">
+                                    <input 
+                                        type="checkbox" 
+                                        name="service" 
+                                        id="service" 
+                                        checked={newAppointment.service}
+                                        onChange={() => handleCheckboxProcedureChange('service')} 
+                                    />
+                                    Service
+                                </label>
+                                
+                                <label htmlFor="mechanical">
+                                    <input 
+                                        type="checkbox" 
+                                        name="mechanical" 
+                                        id="mechanical" 
+                                        checked={newAppointment.mechanical}
+                                        onChange={() => handleCheckboxProcedureChange('mechanical')} 
+                                    />
+                                    Mecánica
+                                </label>
+                                
                             </div>
-                            <div>
-                                <label htmlFor="service">Service</label>
-                                <input 
-                                    type="checkbox" 
-                                    name="service" 
-                                    id="service" 
-                                    checked={newAppointment.service}
-                                    onChange={() => handleCheckboxProcedureChange('service')} 
-                                />
-                                <label htmlFor="mechanical">Mecánica</label>
-                                <input 
-                                    type="checkbox" 
-                                    name="mechanical" 
-                                    id="mechanical" 
-                                    checked={newAppointment.mechanical}
-                                    onChange={() => handleCheckboxProcedureChange('mechanical')} 
-                                />
-                            </div>
-                            <div>
-                                <textarea 
-                                    name="procedure" 
-                                    value={newAppointment.procedure} 
-                                    onChange={handleInputChange} 
-                                />
-                            </div> 
-                        </div> 
+                            
+                        </div>
+                        <div className="formRow">
+                            <textarea
+                                name="procedure" 
+                                value={newAppointment.procedure} 
+                                onChange={handleInputChange} 
+                            />
+                        </div>
+                        
                         {/* {errorMessage && <p className={style.errorMessage}>{errorMessage}</p>} */}
-                        <div className={style.containerButton}>
-                            <button type="submit" disabled={isSubmitDisabled}>Crear turno</button>
+                        <div className="submit">
+                            <button type="submit" form="appointmentForm" disabled={isSubmitDisabled}>Crear turno</button>
                         </div>
                     </div>
                 </form>
