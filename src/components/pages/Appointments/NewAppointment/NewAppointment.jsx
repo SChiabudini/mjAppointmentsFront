@@ -17,8 +17,8 @@ const NewAppointment = ({ onClose }) => {
     // console.log(vehicles);    
 
     const initialAppointmentState = {
-        start: '',
-        end: '',
+        start: null,
+        end: null,
         personClient: null,
         companyClient: null,
         vehicle: null,
@@ -35,23 +35,8 @@ const NewAppointment = ({ onClose }) => {
     const [showVehiclePopup, setShowVehiclePopup] = useState(false);
     // const [errorMessage, setErrorMessage] = useState('');
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-console.log(newAppointment);
-
-    useEffect(() => {
-        // validateForm();
-    }, [newAppointment]);
-
-    // const validateForm = () => {
-    //     const isCategoryNameValid = newAppointment.name.trim() !== '';
-    //     const isDeleteCategoryValid = deleteCategory !== '';
-    // };
-
-    // Función para convertir una fecha en formato ISO 8601
-    const convertToISODate = (dateStr) => {
-        const date = new Date(dateStr);
-        return date.toISOString();
-    };
-
+// console.log(newAppointment);
+    
     const handleInputChange = (event) => {
         const { name, value } = event.target;
     
@@ -69,10 +54,17 @@ console.log(newAppointment);
         if(name === 'procedure'){
           setNewAppointment({
                 ...newAppointment,
-                name: value
+                procedure: value
             });
         };
         // validateForm();
+    };
+
+    //-----------DATE-----------//
+    // Función para convertir una fecha en formato ISO 8601
+    const convertToISODate = (dateStr) => {
+        const date = new Date(dateStr);
+        return date.toISOString();
     };
 
     //-----------CLIENT-----------//
@@ -97,7 +89,7 @@ console.log(newAppointment);
         }
     };    
 
-    const handleCheckboxChange = (option) => {
+    const handleCheckboxClientChange = (option) => {
         setSelectedOptionClient(option);
     
         if (option === 'companyClient') {
@@ -121,8 +113,7 @@ console.log(newAppointment);
                 companyClient: null
             });
         }
-    };
-    
+    }; 
 
     const handleCreateClient = () => {
         if (selectedOptionClient === 'companyClient') {
@@ -158,21 +149,43 @@ console.log(newAppointment);
         });
     };
 
-    // const handleCheckboxChange = (option) => {
-    //     setSelectedOptionClient(option);
-        
-    //     if (option === 'companyClient') {
-    //         // Si se selecciona 'companyClient', mostramos el pop-up de NewCompanyClient
-    //         setShowCompanyClientPopup(true);
-    //         setShowPersonClientPopup(false); // Aseguramos que el pop-up de persona no se muestre
-    //     } else if (option === 'personClient') {
-    //         setShowPersonClientPopup(true);
-    //         setShowCompanyClientPopup(false); // Aseguramos que el pop-up de empresa no se muestre
-    //     } else {
-    //         setShowCompanyClientPopup(false);
-    //         setShowPersonClientPopup(false); // Si no hay opción seleccionada, no mostramos pop-ups
-    //     }
-    // };
+    //-----------PROCEDURE-----------//
+    const handleCheckboxProcedureChange = (option) => {
+
+        if (option === 'service') {
+            setNewAppointment({
+                ...newAppointment,
+                service: true, 
+                mechanical: false 
+            });
+        } else if (option === 'mechanical') {
+            setNewAppointment({
+                ...newAppointment,
+                service: false, 
+                mechanical: true 
+            });
+        } else {
+            setNewAppointment({
+                ...newAppointment,
+                service: false, 
+                mechanical: false
+            });
+        }
+    };
+
+
+    const validateForm = () => {
+        const isDateValid = newAppointment.start && newAppointment.end !== null;
+        const isClientValid = newAppointment.personClient !== null || newAppointment.companyClient !== null;
+        const isVehicleValid = newAppointment.vehicle !== null;
+        const isProcedureValid = newAppointment.procedure !== '';
+
+        setIsSubmitDisabled(!(isDateValid && isClientValid && isVehicleValid && isProcedureValid));
+    };
+
+    useEffect(() => {
+        validateForm();
+    }, [newAppointment]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -190,11 +203,12 @@ console.log(newAppointment);
     
         try {
             // Enviar la petición como un objeto JSON
-            const response = await dispatch(postAppointment(appointmentData));
+            const response = await dispatch(postAppointment(appointmentData));            
     
-            if (response.data) {
+            if (response) {
                 console.log("Appointment successfully saved");
                 setNewAppointment(initialAppointmentState); // Resetear el formulario
+                setSelectedVehicle(null);
                 // navigate('/main_window/turnos/success/post');
             };
 
@@ -212,103 +226,142 @@ console.log(newAppointment);
             <div className="container">
                 <form onSubmit={handleSubmit}>
                     <div>
-                    {/* <div className={style.containerMessage}>
-                        <label className={style.mensagge}>Los campos con (*) son obligatorios</label>
-                    </div> */}
-                    <div>
-                        <label htmlFor="start">Fecha de inicio</label>
-                        <input 
-                            type="datetime-local" 
-                            name="start" 
-                            value={newAppointment.start ? new Date(newAppointment.start).toISOString().slice(0, 16) : ''} 
-                            onChange={handleInputChange} 
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="end">Fecha de finalización</label>
-                        <input 
-                            type="datetime-local" 
-                            name="end" 
-                            value={newAppointment.end ? new Date(newAppointment.end).toISOString().slice(0, 16) : ''} 
-                            onChange={handleInputChange} 
-                        />
-                    </div>
-                    <div>
-                        <label>Cliente</label>
-                        <label htmlFor="personClient">Persona</label>
-                        <input 
-                            type="checkbox" 
-                            name="personClient" 
-                            id="personClient" 
-                            checked={selectedOptionClient === 'personClient'} 
-                            onChange={() => handleCheckboxChange('personClient')} 
-                        />
-                        <label htmlFor="companyClient">Empresa</label>
-                        <input 
-                            type="checkbox" 
-                            name="companyClient" 
-                            id="companyClient" 
-                            checked={selectedOptionClient === 'companyClient'} 
-                            onChange={() => handleCheckboxChange('companyClient')} 
-                        />
-                        <select 
-                            name="personClient" 
-                            value={newAppointment.personClient ? newAppointment.personClient._id : ''} 
-                            onChange={handleClientChange}
-                            disabled={selectedOptionClient !== 'personClient'}
-                        >
-                            <option value="" disabled>Seleccionar</option>
-                            {personClients?.map(client => ( 
-                                <option key={client._id} value={client._id}>{client.name}</option>
-                            ))} 
-                        </select>
-                        <select 
-                            name="companyClient" 
-                            value={newAppointment.companyClient ? newAppointment.companyClient._id : ''} 
-                            onChange={handleClientChange}
-                            disabled={selectedOptionClient !== 'companyClient'}
-                        >
-                            <option value="" disabled>Seleccionar</option>
-                            {companyClients?.map(company => ( 
-                                <option key={company._id} value={company._id}>{company.name}</option>
-                            ))}
-                        </select>
+                        {/* <div className={style.containerMessage}>
+                            <label className={style.mensagge}>Los campos con (*) son obligatorios</label>
+                        </div> */}
                         <div>
-                            <button type="button" onClick={handleCreateClient}>Crear</button>
+                            <div>
+                                <span>Fecha y horario</span>
+                            </div>
+                            <div>
+                                <label htmlFor="start">Inicio</label>
+                                <input 
+                                    type="datetime-local" 
+                                    name="start" 
+                                    value={newAppointment.start ? new Date(newAppointment.start).toISOString().slice(0, 16) : ''} 
+                                    onChange={handleInputChange} 
+                                />
+                                <label htmlFor="end">Finalización</label>
+                                <input 
+                                    type="datetime-local" 
+                                    name="end" 
+                                    value={newAppointment.end ? new Date(newAppointment.end).toISOString().slice(0, 16) : ''} 
+                                    onChange={handleInputChange} 
+                                />
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <label htmlFor="vehicle">Vehículo:</label>
-                        <select 
-                            name="vehicle" 
-                            value={newAppointment.vehicle ? newAppointment.vehicle._id : ''} 
-                            onChange={(e) => handleVehicleChange(e.target.value)}
-                            disabled={vehicles.length === 0}
-                        >
-                            <option value="" disabled>Seleccionar</option>
-                            {vehicles?.map(vehicle => ( 
-                                <option key={vehicle._id} value={vehicle._id}>
-                                    {vehicle.licensePlate}
-                                </option>
-                            ))}
-                        </select>
-                            {selectedVehicle && 
-                                <span>
-                                    {selectedVehicle.brand} {selectedVehicle.model} {selectedVehicle.engine}
-                                </span>
-                            }
                         <div>
-                            <button type="button" onClick={handleCreateVehicle}>Crear</button>
+                            <div>
+                                <span>Cliente</span>
+                            </div>
+                            <div>
+                                <label htmlFor="personClient">Persona</label>
+                                <input 
+                                    type="checkbox" 
+                                    name="personClient" 
+                                    id="personClient" 
+                                    checked={selectedOptionClient === 'personClient'} 
+                                    onChange={() => handleCheckboxClientChange('personClient')} 
+                                />
+                                <label htmlFor="companyClient">Empresa</label>
+                                <input 
+                                    type="checkbox" 
+                                    name="companyClient" 
+                                    id="companyClient" 
+                                    checked={selectedOptionClient === 'companyClient'} 
+                                    onChange={() => handleCheckboxClientChange('companyClient')} 
+                                />
+                            </div>
+                            <div>
+                                <select 
+                                    name="personClient" 
+                                    value={newAppointment.personClient ? newAppointment.personClient._id : ''} 
+                                    onChange={handleClientChange}
+                                    disabled={selectedOptionClient !== 'personClient'}
+                                >
+                                    <option value="" disabled>Seleccionar</option>
+                                    {personClients?.map(client => ( 
+                                        <option key={client._id} value={client._id}>{client.name}</option>
+                                    ))} 
+                                </select>
+                                <select 
+                                    name="companyClient" 
+                                    value={newAppointment.companyClient ? newAppointment.companyClient._id : ''} 
+                                    onChange={handleClientChange}
+                                    disabled={selectedOptionClient !== 'companyClient'}
+                                >
+                                    <option value="" disabled>Seleccionar</option>
+                                    {companyClients?.map(company => ( 
+                                        <option key={company._id} value={company._id}>{company.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <button type="button" onClick={handleCreateClient}>Crear</button>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <label htmlFor="procedure">Procedimiento</label>
-                        <textarea type="text" name="procedure" value={newAppointment.procedure} />
-                    </div> 
-                    </div>
-                    {/* {errorMessage && <p className={style.errorMessage}>{errorMessage}</p>} */}
-                    <div className={style.containerButton}>
-                        <button type="submit" disabled={isSubmitDisabled}>Crear turno</button>
+                        <div>
+                            <div>
+                                <span>Vehículo</span>
+                            </div>
+                            <div>
+                                <select 
+                                    name="vehicle" 
+                                    value={newAppointment.vehicle ? newAppointment.vehicle._id : ''} 
+                                    onChange={(e) => handleVehicleChange(e.target.value)}
+                                    disabled={vehicles.length === 0}
+                                >
+                                    <option value="" disabled>Seleccionar</option>
+                                    {vehicles?.map(vehicle => ( 
+                                        <option key={vehicle._id} value={vehicle._id}>
+                                            {vehicle.licensePlate}
+                                        </option>
+                                    ))}
+                                </select>
+                                {selectedVehicle && 
+                                    <span>
+                                        {selectedVehicle.brand} {selectedVehicle.model} {selectedVehicle.engine}
+                                    </span>
+                                }
+                            </div>
+                            <div>
+                                <button type="button" onClick={handleCreateVehicle}>Crear</button>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <span>Procedimiento</span>
+                            </div>
+                            <div>
+                                <label htmlFor="service">Service</label>
+                                <input 
+                                    type="checkbox" 
+                                    name="service" 
+                                    id="service" 
+                                    checked={newAppointment.service}
+                                    onChange={() => handleCheckboxProcedureChange('service')} 
+                                />
+                                <label htmlFor="mechanical">Mecánica</label>
+                                <input 
+                                    type="checkbox" 
+                                    name="mechanical" 
+                                    id="mechanical" 
+                                    checked={newAppointment.mechanical}
+                                    onChange={() => handleCheckboxProcedureChange('mechanical')} 
+                                />
+                            </div>
+                            <div>
+                                <textarea 
+                                    name="procedure" 
+                                    value={newAppointment.procedure} 
+                                    onChange={handleInputChange} 
+                                />
+                            </div> 
+                        </div> 
+                        {/* {errorMessage && <p className={style.errorMessage}>{errorMessage}</p>} */}
+                        <div className={style.containerButton}>
+                            <button type="submit" disabled={isSubmitDisabled}>Crear turno</button>
+                        </div>
                     </div>
                 </form>
             </div>

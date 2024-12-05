@@ -19,7 +19,7 @@ const Appointments = () => {
   const localizer = dayjsLocalizer(dayjs);
 
   const appointments = useSelector(state => state.appointment.appointments);
-  // console.log(appointments);
+//   console.log(appointments);
     
   const events = appointments?.map(appointment => ({
       start: dayjs(appointment.start).toDate(),
