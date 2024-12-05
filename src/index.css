@@ -277,6 +277,7 @@ select:focus {
     flex: 1; /* Ocupa todo el espacio disponible */
     overflow-y: auto; /* Agrega scroll vertical */
     border: var(--border-dark);
+    border-top: none;
     border-radius: 3px;
 }
 
@@ -324,9 +325,12 @@ th{
     background-color: white; /* Fondo para el encabezado */
     z-index: 1; /* Asegúrate de que el encabezado esté por encima del contenido */
     border-bottom: 1px solid #ddd; /* Línea inferior para distinguir */
+    text-align: left;
+    width: fit-content;
 }
 
 th.center, td.center{
+    max-width: fit-content;
     text-align: center;
 }
 
