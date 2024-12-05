@@ -23,16 +23,18 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false }) => {
     //----- HANDLE INPUTS
 
     const handleInputChange = (event) => {
-    const { name, value } = event.target;
+        const { name, value } = event.target;
 
-    setNewCompanyClient({
-        ...newCompanyClient,
-        [name]: value,
-    });
+        setNewCompanyClient({
+            ...newCompanyClient,
+            [name]: value,
+        });
 
-    if(name === 'cuit'){
-        setAlreadyExist(false);
-    }
+        if(name === 'cuit'){
+            setAlreadyExist(false);
+        }
+        if(name === 'searchTerm') setSearchTerm(value);
+        if(name === 'searchTerm' && value === '') setDropdownVisible(false); 
     };
 
     //----- HANDLE PHONES
@@ -98,7 +100,6 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false }) => {
     };
 
     const handleSearchFocus = () => {
-        setDropdownVisible(true);
         setSelectedIndex(-1);
     };
 
@@ -202,10 +203,13 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false }) => {
                             <label>Vehículo(s)</label>
                         </div>                        
                         <div className="searchRow">
-                            <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onFocus={handleSearchFocus} onBlur={handleSearchBlur} onKeyDown={handleKeyDown} placeholder="Buscar vehículo" />
+                            <input type="text" name="searchTerm" value={searchTerm} onChange={handleInputChange} onFocus={handleSearchFocus} onBlur={handleSearchBlur} onKeyDown={handleKeyDown} placeholder="Buscar vehículo" />
                             <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button">
                                     {showNewVehicle ? '-' : '+'}
-                            </button>   
+                            </button>
+                        </div>
+                        <div className="searchRow">
+                               
                             {dropdownVisible && filteredVehicles.length > 0 && (
                                 <ul className="dropdown">
                                     {filteredVehicles.map((vehicle, index) => (
@@ -215,6 +219,7 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false }) => {
                                     ))}
                                 </ul>
                             )}
+
                         </div>
                         <div className="formRow">                            
                             <ul>

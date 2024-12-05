@@ -91,6 +91,7 @@ table {
 :root {
     --white: #ffffff;
     --light-grey: #f9f9f9;
+    --medium-grey: #b2b2b2;
     --dark-grey: #3c3c3b;
     --black: #000000;
     --orange: #ff6600;
@@ -167,6 +168,8 @@ button{
 
 button:hover{
     background-color: #000000;
+    
+    color: var(--orange);
 }
 
 button:disabled {
@@ -205,6 +208,7 @@ button.add{
 
 .titleButtons button:hover{
     background-color: black;
+    color: var(--orange);
 }
 
 .titleButtons button img{
@@ -248,22 +252,23 @@ select:focus {
     list-style: none;
     margin: 0;
     padding: 0;
-    position: absolute;
+    position: relative;
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 4px;
     z-index: 1000;
-    max-height: 200px;
+    max-height: 100px;
     overflow-y: auto;
+    width: 100%;
 }
 
 .dropdown li {
-padding: 8px 12px;
-cursor: pointer;
+    padding: 8px 12px;
+    cursor: pointer;
 }
 
 .dropdown li:hover {
-background-color: #f0f0f0;
+    background-color: #f0f0f0;
 }
 
 .highlight {
@@ -393,11 +398,11 @@ th div.withFilter button.sort{
 .pagination button{
     background-color: var(--light-grey);
     color: var(--orange);
-    padding: 0.25rem 0.5rem;
+    padding: 0.25rem 0.75rem;
 }
 
 .pagination button:hover, .pagination button.currentPage{
-    background-color: var(--dark-grey);
+    background-color: var(--medium-grey);
 }
 
 .pagination button:disabled{
@@ -421,13 +426,13 @@ th div.withFilter button.sort{
     z-index: 1000;
     overflow-y: auto;
     padding: 1rem;
-  }
+}
 
-  .popUpClosed {
+.popUpClosed {
     display: none;
-  }
-  
-  .formContainer {
+}
+
+.formContainer {
     background-color: #fff;
     padding: 2rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -436,48 +441,48 @@ th div.withFilter button.sort{
     margin-top: 1rem;
     width: 100%;
     box-sizing: border-box;
-    max-height: 50vh;
+    max-height: 55vh;
     position: relative; /* Permite controlar los márgenes y el padding */
     padding-right: 16px; /* Espacio extra para que el scroll quede fuera */
     margin-right: -16px; /* Compensa el padding para que el ancho no cambie */
     overflow-y: scroll; /* Fuerza la barra de desplazamiento */
     box-sizing: content-box; /* Asegura que el padding no influya en el ancho */
-  }
+}
 
-  .form-container::-webkit-scrollbar {
+.form-container::-webkit-scrollbar {
     width: 0; /* Oculta el scroll en Chrome, Safari */
-    }
+}
 
-  .formContainerNested{
+.formContainerNested{
     padding: 1.5rem 1rem;
     box-sizing: border-box;
     margin: 1rem 0;
     background-color: var(--light-grey);
-  }
+}
 
-  .formRow{
+.formRow{
     padding: 0.5rem 0;
     display: flex;
     justify-content: space-between;
-  }
+}
 
-  .formRow label{
+.formRow label{
     width: 30%;
-  }
+}
 
-  .formRow input{
+.formRow input{
     width: 65%;
-  }
+}
 
-  .formRow ul{
+.formRow ul{
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-  }
+}
 
-  .formRow ul li{
+.formRow ul li{
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -486,27 +491,27 @@ th div.withFilter button.sort{
     margin-bottom: 0.5rem;
     background-color: var(--light-grey);
     box-sizing: border-box;
-  }
+}
 
-  .formRow ul li button{
+.formRow ul li button{
     background: none;
     padding: 0;
     color: var(--dark-grey);
-  }
+}
 
-  .formRow ul li button:hover{
+.formRow ul li button:hover{
     color: black;
-  }
+}
 
-  .clientSelection{
+.clientSelection{
     padding: 0.5rem 0;
-  }
+}
 
-  .clientSelectionInputs{
+.clientSelectionInputs{
     padding: 1rem 0;
-  }
-  
-  .searchRow {
+}
+
+.searchRow {
     display: flex;
     align-items: center; /* Alinear verticalmente */
     gap: 8px; /* Espacio entre input y botón */
