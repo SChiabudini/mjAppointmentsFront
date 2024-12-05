@@ -115,7 +115,7 @@ const CompanyClients = () => {
     return(
         <div className="page">
             <div className="title">
-                <h2>Clientes (Empresas)</h2>
+                <h2>Empresas</h2>
                 <div className="pagination">
                     <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
                         ◂

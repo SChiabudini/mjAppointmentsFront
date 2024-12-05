@@ -1,8 +1,18 @@
 .App{
-    /* display: flex; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .header{
     z-index: 9999;
     position: relative;
+    width: 100%;
+}
+
+.content{
+    width: 100%;
+    overflow-y: scroll;
+    height: calc(100vh - 4rem);
 }
