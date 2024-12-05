@@ -6,8 +6,9 @@
 }
 
 .calendarContainer {
-    height: 80vh;
-    width: 60vw;
+    padding-top: 2rem;
+    height: 90vh;
+    width: 100%;
 }
 
 .icon {
