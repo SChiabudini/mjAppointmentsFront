@@ -190,7 +190,7 @@ const PersonClients = () => {
                                         />
                                     </div>
                                 </th>
-                                <th>
+                                <th className="center">
                                     Detalle    
                                 </th>
                             </tr>
@@ -212,7 +212,7 @@ const PersonClients = () => {
                                             ? personClient.vehicles.map(vehicle => vehicle.licensePlate).join(', ') 
                                             : 'N/A'}
                                     </td>
-                                    <td>
+                                    <td className="center">
                                         <a onClick={() => navigate(`/main_window/clientes/personas/${personClient._id}`)}>
                                             <img src={detail} alt="" className="detailImg" />
                                         </a>
