@@ -35,6 +35,9 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false }) => {
         if (name === 'licensePlate') {
             setAlreadyExist(false);
         }
+
+        if(name === 'searchTerm') setSearchTerm(value);
+        if(name === 'searchTerm' && value === '') setDropdownVisible(false);
     };
 
     //----- HANDLE CLIENTS
@@ -82,24 +85,26 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false }) => {
     };
 
     const handleSearchFocus = () => {
-        setDropdownVisible(true);
         setSelectedIndex(-1);
     };
 
     const handleSearchBlur = () => {
         setTimeout(() => {
-        setDropdownVisible(false);
-        setSelectedIndex(-1);
+            setDropdownVisible(false);
+            setSelectedIndex(-1);
         }, 150);
     };
 
     const handleKeyDown = (e) => {
         if (e.key === 'ArrowDown') {
-        setSelectedIndex((prev) => (prev + 1) % filteredClients.length);
+            setSelectedIndex((prev) => (prev + 1) % filteredClients.length);
         } else if (e.key === 'ArrowUp') {
-        setSelectedIndex((prev) => (prev - 1 + filteredClients.length) % filteredClients.length);
+            setSelectedIndex((prev) => (prev - 1 + filteredClients.length) % filteredClients.length);
         } else if (e.key === 'Enter' && selectedIndex >= 0) {
-        handleClientSelection(filteredClients[selectedIndex]);
+            handleClientSelection(filteredClients[selectedIndex]);
+            setDropdownVisible(false);
+        } else {
+            setDropdownVisible(true);
         }
     };
 
@@ -194,9 +199,10 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false }) => {
                             <div className="searchRow">
                                 <input
                                     type="text"
+                                    name="searchTerm"
                                     placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
                                     value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    onChange={handleInputChange}
                                     onFocus={handleSearchFocus}
                                     onBlur={handleSearchBlur}
                                     onKeyDown={handleKeyDown}
@@ -204,6 +210,9 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false }) => {
                                 <button onClick={() => setShowNewClient(!showNewClient)} type="button">
                                     {showNewClient ? '-' : '+'}
                                 </button> 
+                                
+                            </div>
+                            <div className="searchRow">
                                 {filteredClients.length > 0 && dropdownVisible && (
                                     <ul className="dropdown">
                                         {filteredClients.map((client, index) => (

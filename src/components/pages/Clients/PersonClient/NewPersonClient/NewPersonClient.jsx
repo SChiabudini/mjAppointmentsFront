@@ -26,6 +26,8 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
         const { name, value } = event.target;
         setNewPersonClient(prevState => ({ ...prevState, [name]: value }));
         if (name === 'dni') setAlreadyExist(false);
+        if(name === 'searchTerm') setSearchTerm(value);
+        if(name === 'searchTerm' && value === '') setDropdownVisible(false); 
     };
 
     //----- HANDLE PHONES
@@ -195,10 +197,14 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
                                 <label>Vehículo(s)</label>
                             </div>
                             <div className="searchRow">
-                                <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onFocus={handleSearchFocus} onBlur={handleSearchBlur} onKeyDown={handleKeyDown} placeholder="Buscar vehículo" />
+                                <input type="text" name="searchTerm" value={searchTerm} onChange={handleInputChange} onFocus={handleSearchFocus} onBlur={handleSearchBlur} onKeyDown={handleKeyDown} placeholder="Buscar vehículo" />
                                 <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button">
                                     {showNewVehicle ? '-' : '+'}
                                 </button>
+
+                                
+                            </div>
+                            <div className="searchRow">
                                 {dropdownVisible && filteredVehicles.length > 0 && (
                                     <ul className="dropdown">
                                         {filteredVehicles.map((vehicle, index) => (
@@ -208,7 +214,6 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
                                         ))}
                                     </ul>
                                 )}
-                                
                             </div>
                             <div className="formRow">
                                 <ul>
