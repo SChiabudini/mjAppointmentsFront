@@ -19,7 +19,7 @@ export const getAppointments = () => {
 export const postAppointment = (appointmentData) => {
     return async (dispatch) => {
         try {
-            const { data } = await axios.post('/appointment', appointmentData);
+            const { data } = await api.post('/appointment', appointmentData);
 
             dispatch(postAppointmentReducer(data));
 
