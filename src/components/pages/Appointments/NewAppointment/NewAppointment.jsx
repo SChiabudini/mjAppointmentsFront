@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import NewCompanyClient from '../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx';
 import NewPersonClient from '../../Clients/PersonClient/NewPersonClient/NewPersonClient.jsx';
 import NewVehicle from '../../Vehicles/NewVehicle/NewVehicle.jsx';
-import { postAppointment } from '../../../../redux/appointmentActions.js';
+import { getAppointments, postAppointment } from '../../../../redux/appointmentActions.js';
 
 const NewAppointment = () => {
     
@@ -150,29 +150,41 @@ const NewAppointment = () => {
     };
 
     //-----------PROCEDURE-----------//
-    const handleCheckboxProcedureChange = (option) => {
+    // const handleCheckboxProcedureChange = (option) => {
 
+    //     if (option === 'service') {
+    //         setNewAppointment({
+    //             ...newAppointment,
+    //             service: true, 
+    //             mechanical: false 
+    //         });
+    //     } else if (option === 'mechanical') {
+    //         setNewAppointment({
+    //             ...newAppointment,
+    //             service: false, 
+    //             mechanical: true 
+    //         });
+    //     } else {
+    //         setNewAppointment({
+    //             ...newAppointment,
+    //             service: false, 
+    //             mechanical: false
+    //         });
+    //     }
+    // };
+    const handleCheckboxProcedureChange = (option) => {
         if (option === 'service') {
             setNewAppointment({
                 ...newAppointment,
-                service: true, 
-                mechanical: false 
+                service: !newAppointment.service,  // Cambiar el valor de 'service' entre true y false
             });
         } else if (option === 'mechanical') {
             setNewAppointment({
                 ...newAppointment,
-                service: false, 
-                mechanical: true 
+                mechanical: !newAppointment.mechanical,  // Cambiar el valor de 'mechanical' entre true y false
             });
-        } else {
-            setNewAppointment({
-                ...newAppointment,
-                service: false, 
-                mechanical: false
-            });
-        }
-    };
-
+        };
+    };    
 
     const validateForm = () => {
         const isDateValid = newAppointment.start && newAppointment.end !== null;
@@ -184,6 +196,7 @@ const NewAppointment = () => {
     };
 
     useEffect(() => {
+        dispatch(getAppointments);
         validateForm();
     }, [newAppointment]);
 
@@ -191,32 +204,30 @@ const NewAppointment = () => {
         event.preventDefault();
     
         const appointmentData = {
-          start: newAppointment.start,
-          end: newAppointment.end, 
-          personClient: newAppointment.personClient,
-          companyClient: newAppointment.companyClient,
-          vehicle: newAppointment.vehicle,
-          mechanical: newAppointment.mechanical,
-          service: newAppointment.service,
-          procedure: newAppointment.procedure,
+            start: newAppointment.start,
+            end: newAppointment.end, 
+            personClient: newAppointment.personClient,
+            companyClient: newAppointment.companyClient,
+            vehicle: newAppointment.vehicle,
+            mechanical: newAppointment.mechanical,
+            service: newAppointment.service,
+            procedure: newAppointment.procedure,
         };
     
         try {
-            // Enviar la petición como un objeto JSON
-            console.log(appointmentData);
-            const response = await dispatch(postAppointment(appointmentData));            
+            const response = await dispatch(postAppointment(appointmentData));
     
             if (response) {
                 console.log("Appointment successfully saved");
+                dispatch(getAppointments()); // Actualizar los turnos tras guardar
                 setNewAppointment(initialAppointmentState); // Resetear el formulario
                 setSelectedVehicle(null);
-                // navigate('/main_window/turnos/success/post');
-            };
-
+            }
         } catch (error) {
-            console.error("Error saving appoiment:", error);
-        };
+            console.error("Error saving appointment:", error);
+        }
     };
+    
 
     return (
         <div className="formContainer">
