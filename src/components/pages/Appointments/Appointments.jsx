@@ -8,10 +8,13 @@ import { Calendar, dayjsLocalizer } from 'react-big-calendar';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import NewAppointment from './NewAppointment/NewAppointment.jsx';
+import { getAppointments } from "../../../redux/appointmentActions.js";
 
 dayjs.locale('es');
 
 const Appointments = () => {
+
+  const dispatch = useDispatch();
 
   //----- ABRIR POPUP
   const [popUpOpen, setPopUpOpen] = useState(false);
@@ -20,18 +23,17 @@ const Appointments = () => {
 
   const appointments = useSelector(state => state.appointment.appointments);
 //   console.log(appointments);
-    
+  
   const events = appointments?.map(appointment => ({
       start: dayjs(appointment.start).toDate(),
       end: dayjs(appointment.end).toDate(),
       title: appointment.procedure,  
       personClient: appointment.personClient ? appointment.personClient.name : '',  
       companyClient: appointment.companyClient ? appointment.companyClient.name : '',  
-      vehicle: `${appointment.vehicle.brand} ${appointment.vehicle.model}`, 
+      vehicle: `${appointment.vehicle?.brand || ''} ${appointment.vehicle?.model || ''}`, 
       mechanical: appointment.mechanical,  
       service: appointment.service,  
   }));
-//   console.log(events);
 
   const components = {
       event: props => {            
@@ -77,6 +79,10 @@ const Appointments = () => {
       event: "Evento",
       noEventsInRange: "Sin turnos agendados"
   };
+
+  useEffect(() => {
+    dispatch(getAppointments());
+  }, [dispatch]);
 
   return (
       <div className="page">
