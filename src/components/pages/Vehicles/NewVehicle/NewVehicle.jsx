@@ -209,8 +209,7 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false }) => {
                                 />
                                 <button onClick={() => setShowNewClient(!showNewClient)} type="button">
                                     {showNewClient ? '-' : '+'}
-                                </button> 
-                                
+                                </button>                                 
                             </div>
                             <div className="searchRow">
                                 {filteredClients.length > 0 && dropdownVisible && (
