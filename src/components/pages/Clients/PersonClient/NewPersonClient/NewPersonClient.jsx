@@ -200,9 +200,7 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
                                 <input type="text" name="searchTerm" value={searchTerm} onChange={handleInputChange} onFocus={handleSearchFocus} onBlur={handleSearchBlur} onKeyDown={handleKeyDown} placeholder="Buscar vehículo" />
                                 <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button">
                                     {showNewVehicle ? '-' : '+'}
-                                </button>
-
-                                
+                                </button>                                
                             </div>
                             <div className="searchRow">
                                 {dropdownVisible && filteredVehicles.length > 0 && (
