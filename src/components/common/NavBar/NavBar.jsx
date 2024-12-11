@@ -21,30 +21,34 @@ const NavBar = () => {
 
     return (
         <div className={style.NavBar}>
-            <div className={`${style.NavLink} ${location.pathname === '/' ? style.selected : ''}`} onClick={() => handleClick('turnos')}>Turnos</div>
-            
+            <div className={`${style.NavLink} ${location.pathname === '/' ? style.selected : ''}`} onClick={() => handleClick('turnos')}>
+                Turnos
+            </div>         
             <div
                 className={`${style.NavLink} ${location.pathname.startsWith('/main_window/clientes') ? style.selected : ''}`}
                 onMouseEnter={() => setIsDropdownOpen(true)}
                 onMouseLeave={() => setIsDropdownOpen(false)}
             >
-            Clientes
-            {isDropdownOpen && (
-                <div
-                    className={style.DropdownMenu}
-                    onMouseEnter={() => setIsDropdownOpen(true)} 
-                    onMouseLeave={() => setIsDropdownOpen(false)}
-                >
-                    <div className={style.DropdownItemsContainer}>
-                        <div className={style.DropdownItem} onClick={() => handleClientClick('personas')}>Personas</div>
-                        <div className={style.DropdownItem} onClick={() => handleClientClick('empresas')}>Empresas</div>
+                Clientes
+                {isDropdownOpen && (
+                    <div
+                        className={style.DropdownMenu}
+                        onMouseEnter={() => setIsDropdownOpen(true)} 
+                        onMouseLeave={() => setIsDropdownOpen(false)}
+                    >
+                        <div className={style.DropdownItemsContainer}>
+                            <div className={style.DropdownItem} onClick={() => handleClientClick('personas')}>Personas</div>
+                            <div className={style.DropdownItem} onClick={() => handleClientClick('empresas')}>Empresas</div>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>       
+            <div className={`${style.NavLink} ${location.pathname === '/main_window/vehiculos' ? style.selected : ''}`} onClick={() => handleClick('vehiculos')}>
+                Vehículos
             </div>
-            
-            <div className={`${style.NavLink} ${location.pathname === '/main_window/vehiculos' ? style.selected : ''}`} onClick={() => handleClick('vehiculos')}>Vehículos</div>
-            <div className={`${style.NavLink} ${location.pathname === '/main_window/fichas' ? style.selected : ''}`} onClick={() => handleClick('fichas')}>Fichas</div>
+            <div className={`${style.NavLink} ${location.pathname === '/main_window/fichas' ? style.selected : ''}`} onClick={() => handleClick('fichas')}>
+                Fichas
+            </div>
         </div>
     );
 }

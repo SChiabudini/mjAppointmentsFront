@@ -463,7 +463,8 @@ th div.withFilter button.sort{
 }
 
 .formRow textarea{
-    width: 100%;
+    width: 65%;
+    height: 5rem;
 }
 
 .formRow ul{
