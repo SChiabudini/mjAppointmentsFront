@@ -1,10 +1,10 @@
-import React from 'react';
-import bg from './enconstruccion.jpg';
-import style from './Sheets.module.css';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Sheets = () => {
   return (
-    <div className={style.div}><img src={bg}/></div>
+    <div></div>
   )
 }
 

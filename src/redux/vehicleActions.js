@@ -39,7 +39,7 @@ export const getVehicleById = (vehicleId) => {
         }
     }
 
-}
+};
 
 //-----TRAE SOLO LOS ACTIVOS FILTRADOS
 
