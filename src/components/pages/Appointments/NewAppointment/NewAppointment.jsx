@@ -22,9 +22,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
         personClient: null,
         companyClient: null,
         vehicle: null,
-        mechanical: false,
-        service: false,
-        procedure: ''
+        procedure: null
     };
 
     const initialPersonClientState = {
@@ -36,7 +34,23 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
         vehicles: []
     };
 
+    const initialVehicleState = {
+        licensePlate: '',
+        brand: '',
+        model: '',
+        year: null,
+        engine: '',
+        personClient: null,
+        companyClient: null
+    };
+
     const [newAppointment, setNewAppointment] = useState(initialAppointmentState);
+    const [newProcedure, setNewProcedure] = useState({
+        title: '',       
+        description: '',  
+        service: false,
+        mechanical: false,
+    });
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [newPersonClient, setNewPersonClient] = useState(initialPersonClientState);
     const [selectedOptionClient, setSelectedOptionClient] = useState('personClient');
@@ -47,14 +61,14 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
     const [searchingPerson, setSearchingPerson] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedIndex, setSelectedIndex] = useState(-1);
+    const [newVehicle, setNewVehicle] = useState(initialVehicleState);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
     const [showVehiclePopup, setShowVehiclePopup] = useState(false);
     const [filteredVehicles, setFilteredVehicles] = useState([]);
     const [showNewVehicle, setShowNewVehicle] = useState(false);
-
     // const [errorMessage, setErrorMessage] = useState('');
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-// console.log(newAppointment);
+console.log(newAppointment);
     
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -70,12 +84,6 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                 [name]: convertToISODate(value)
             });
         };
-        if(name === 'procedure'){
-          setNewAppointment({
-                ...newAppointment,
-                procedure: value
-            });
-        };
         if(name === 'searchTerm') setSearchTerm(value);
         if(name === 'searchTerm' && value === '') setDropdownVisible(false);
         // validateForm();
@@ -87,6 +95,44 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
         const date = new Date(dateStr);
         return date.toISOString();
     };
+
+    //-----------PROCEDURE-----------//
+    const handleCheckboxProcedureChange = (option) => {
+
+        setNewProcedure((prevProcedure) => {
+            const updatedProcedure = {
+                ...prevProcedure,
+                [option]: !prevProcedure[option], // Cambiar el valor del procedimiento (service o mechanical)
+            };
+    
+            // Actualizar el estado de newAppointment
+            setNewAppointment((prevAppointment) => ({
+                ...prevAppointment,
+                procedure: updatedProcedure,
+            }));
+    
+            return updatedProcedure;
+        });
+    };
+
+    const handleProcedureChange = (event) => {
+        const { name, value } = event.target;
+
+        setNewProcedure((prevProcedure) => {
+            const updatedProcedure = {
+                ...prevProcedure,
+                [name]: value, // Actualizar el campo correspondiente (title o description)
+            };
+
+            // Actualizar el estado de newAppointment
+            setNewAppointment((prevAppointment) => ({
+                ...prevAppointment,
+                procedure: updatedProcedure,
+            }));
+
+            return updatedProcedure;
+        });
+    }; 
 
     //-----------CLIENT-----------//
     const handleClientChange = (event) => {
@@ -222,43 +268,6 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
         }));
     };
 
-    //-----------PROCEDURE-----------//
-    // const handleCheckboxProcedureChange = (option) => {
-
-    //     if (option === 'service') {
-    //         setNewAppointment({
-    //             ...newAppointment,
-    //             service: true, 
-    //             mechanical: false 
-    //         });
-    //     } else if (option === 'mechanical') {
-    //         setNewAppointment({
-    //             ...newAppointment,
-    //             service: false, 
-    //             mechanical: true 
-    //         });
-    //     } else {
-    //         setNewAppointment({
-    //             ...newAppointment,
-    //             service: false, 
-    //             mechanical: false
-    //         });
-    //     }
-    // };
-    const handleCheckboxProcedureChange = (option) => {
-        if (option === 'service') {
-            setNewAppointment({
-                ...newAppointment,
-                service: !newAppointment.service,  // Cambiar el valor de 'service' entre true y false
-            });
-        } else if (option === 'mechanical') {
-            setNewAppointment({
-                ...newAppointment,
-                mechanical: !newAppointment.mechanical,  // Cambiar el valor de 'mechanical' entre true y false
-            });
-        };
-    };    
-
     const validateForm = () => {
         const isDateValid = newAppointment.start && newAppointment.end !== null;
         const isClientValid = newAppointment.personClient !== null || newAppointment.companyClient !== null;
@@ -282,8 +291,6 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
             personClient: newAppointment.personClient,
             companyClient: newAppointment.companyClient,
             vehicle: newAppointment.vehicle,
-            mechanical: newAppointment.mechanical,
-            service: newAppointment.service,
             procedure: newAppointment.procedure,
         };
     
@@ -340,7 +347,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                                         type="checkbox" 
                                         name="service" 
                                         id="service" 
-                                        checked={newAppointment.service}
+                                        checked={newProcedure.service || false} 
                                         onChange={() => handleCheckboxProcedureChange('service')} 
                                     />
                                     Service
@@ -350,30 +357,30 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                                         type="checkbox" 
                                         name="mechanical" 
                                         id="mechanical" 
-                                        checked={newAppointment.mechanical}
+                                        checked={newProcedure.mechanical || false} 
                                         onChange={() => handleCheckboxProcedureChange('mechanical')} 
                                     />
                                     Mecánica
                                 </label>                                
                             </div>    
                             <div className="formRow">
-                            <label htmlFor="titleProcedure">Título</label>
-                            <input 
-                                type="text" 
-                                name="titleProcedure" 
-                                // value={} 
-                                // onChange={handleInputChange} 
-                            />
-                        </div>               
+                                <label htmlFor="title">Título</label>
+                                <input 
+                                    type="text" 
+                                    name="title" 
+                                    value={newProcedure.title || ''} 
+                                    onChange={handleProcedureChange} 
+                                />
+                            </div>               
+                            <div className="formRow">
+                                <label htmlFor="description">Descripción</label>
+                                <textarea
+                                    name="description" 
+                                    value={newProcedure.description || ''} 
+                                    onChange={handleProcedureChange} 
+                                />
+                            </div> 
                         </div>                       
-                        <span>Descripción</span>
-                        <div className="formRow">
-                            <textarea
-                                name="procedure" 
-                                value={newAppointment.procedure} 
-                                onChange={handleInputChange} 
-                            />
-                        </div> 
                         {!isNested ? (
                             <div className="clientSelection">                            
                                 <label>Cliente</label>

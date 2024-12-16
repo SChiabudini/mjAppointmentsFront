@@ -1,6 +1,7 @@
 .NavBar{
     display: flex;
     position: relative;
+    cursor: pointer;
 }
 
 .NavLink{
