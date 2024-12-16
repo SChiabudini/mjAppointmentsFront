@@ -45,7 +45,12 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
     };
 
     const [newAppointment, setNewAppointment] = useState(initialAppointmentState);
-    const [newProcedure, setNewProcedure] = useState({})
+    const [newProcedure, setNewProcedure] = useState({
+        title: '',       
+        description: '',  
+        service: false,
+        mechanical: false,
+    });
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [newPersonClient, setNewPersonClient] = useState(initialPersonClientState);
     const [selectedOptionClient, setSelectedOptionClient] = useState('personClient');
@@ -93,34 +98,40 @@ console.log(newAppointment);
 
     //-----------PROCEDURE-----------//
     const handleCheckboxProcedureChange = (option) => {
-        if (option === 'service') {
-            setNewProcedure({
-                ...newProcedure,
-                service: !newProcedure.service,  // Cambiar el valor de 'service' entre true y false
-            });
-        } else if (option === 'mechanical') {
-            setNewProcedure({
-                ...newProcedure,
-                mechanical: !newProcedure.mechanical,  // Cambiar el valor de 'mechanical' entre true y false
-            });
-        };
-    }; 
+
+        setNewProcedure((prevProcedure) => {
+            const updatedProcedure = {
+                ...prevProcedure,
+                [option]: !prevProcedure[option], // Cambiar el valor del procedimiento (service o mechanical)
+            };
+    
+            // Actualizar el estado de newAppointment
+            setNewAppointment((prevAppointment) => ({
+                ...prevAppointment,
+                procedure: updatedProcedure,
+            }));
+    
+            return updatedProcedure;
+        });
+    };
+
     const handleProcedureChange = (event) => {
         const { name, value } = event.target;
-        
-        if (name === 'title') {
-            setNewProcedure({
-                ...newProcedure,
-                title: value, 
-            });
-        };
-        if (name === 'description') {
-            setNewProcedure({
-                ...newProcedure,
-                description: value, 
-            });
-        };
 
+        setNewProcedure((prevProcedure) => {
+            const updatedProcedure = {
+                ...prevProcedure,
+                [name]: value, // Actualizar el campo correspondiente (title o description)
+            };
+
+            // Actualizar el estado de newAppointment
+            setNewAppointment((prevAppointment) => ({
+                ...prevAppointment,
+                procedure: updatedProcedure,
+            }));
+
+            return updatedProcedure;
+        });
     }; 
 
     //-----------CLIENT-----------//
@@ -336,7 +347,7 @@ console.log(newAppointment);
                                         type="checkbox" 
                                         name="service" 
                                         id="service" 
-                                        checked={newAppointment.procedure}
+                                        checked={newProcedure.service || false} 
                                         onChange={() => handleCheckboxProcedureChange('service')} 
                                     />
                                     Service
@@ -346,7 +357,7 @@ console.log(newAppointment);
                                         type="checkbox" 
                                         name="mechanical" 
                                         id="mechanical" 
-                                        checked={newAppointment.procedure}
+                                        checked={newProcedure.mechanical || false} 
                                         onChange={() => handleCheckboxProcedureChange('mechanical')} 
                                     />
                                     Mecánica
@@ -357,7 +368,7 @@ console.log(newAppointment);
                                 <input 
                                     type="text" 
                                     name="title" 
-                                    value={newAppointment.procedure} 
+                                    value={newProcedure.title || ''} 
                                     onChange={handleProcedureChange} 
                                 />
                             </div>               
@@ -365,7 +376,7 @@ console.log(newAppointment);
                                 <label htmlFor="description">Descripción</label>
                                 <textarea
                                     name="description" 
-                                    value={newAppointment.procedure} 
+                                    value={newProcedure.description || ''} 
                                     onChange={handleProcedureChange} 
                                 />
                             </div> 
