@@ -1,22 +1,22 @@
 import api from '../services/axios.js';
-import { getProcedureSheetsReducer, getProcedureSheetByIdReducer, searchProcedureSheetsReducer } from './procedureSheetSlice.js';
+import { getMechanicalSheetsReducer, getMechanicalSheetByIdReducer, searchMechanicalSheetsReducer } from './mechanicalSheetSlice.js';
 
 //-----TRAE ÚNICAMENTE LOS ACTIVOS
 
-export const getProcedureSheets = () => {
+export const getMechanicalSheets = () => {
 
     return async (dispatch) => {
         try {
             
-            const { data } = await api.get("/procedureSheet");
+            const { data } = await api.get("/mechanicalSheet");
 
             const reversedData = data.reverse();
 
-            dispatch(getProcedureSheetsReducer(reversedData));
+            dispatch(getMechanicalSheetsReducer(reversedData));
 
         } catch (error) {
             
-            console.error("Error retrieving procedure sheets from server: " + error.message);
+            console.error("Error retrieving mechanical sheets from server: " + error.message);
             return null;
         }
     }
@@ -25,15 +25,15 @@ export const getProcedureSheets = () => {
 
 //-----TRAE POR ID TANTO ACTIVOS COMO INACTIVOS
 
-export const getProcedureSheetById = (procedureSheetId) => {
+export const getMechanicalSheetById = (mechanicalSheetId) => {
 
     return async (dispatch) => {
         try {
-            const { data } = await api.get(`/procedureSheet/${procedureSheetId}`);
+            const { data } = await api.get(`/mechanicalSheet/${mechanicalSheetId}`);
 
-            dispatch(getProcedureSheetByIdReducer(data));
+            dispatch(getMechanicalSheetByIdReducer(data));
         } catch (error) {
-            console.error("Error retrieving procedure sheet by server id: ", error.message);
+            console.error("Error retrieving mechanical sheet by server id: ", error.message);
             return null;
         }
     }
@@ -42,13 +42,13 @@ export const getProcedureSheetById = (procedureSheetId) => {
 
 //-----TRAE SOLO LOS ACTIVOS FILTRADOS
 
-export const searchProcedureSheets = (number, date, client, vehicle, kewWords) => {
+export const searchMechanicalSheets = (number, date, client, vehicle, kewWords) => {
 
     return async (dispatch) => {
 
         try {
             
-            let query = '/procedureSheet?';
+            let query = '/mechanicalSheet?';
             
             if(number){
                 query += `number=${number}&`
@@ -74,23 +74,23 @@ export const searchProcedureSheets = (number, date, client, vehicle, kewWords) =
 
             const reversedData = data.reverse();
 
-            dispatch(searchProcedureSheetsReducer(reversedData));
+            dispatch(searchMechanicalSheetsReducer(reversedData));
 
         } catch (error) {
-            console.error("Procedure sheets search error:", error.message);
+            console.error("Mechanical sheets search error:", error.message);
             return null;
         }
     }
 }
 
-export const postProcedureSheet = (procedureSheetData) => {
+export const postMechanicalSheet = (mechanicalSheetData) => {
     return async () => {
         try {
-            const response = await api.post("/procedureSheet", procedureSheetData);
+            const response = await api.post("/mechanicalSheet", mechanicalSheetData);
             return response.data;
         } catch (error) {
             if (error.response) {
-                throw new Error(error.response.data.error || 'Error creating procedure sheet');
+                throw new Error(error.response.data.error || 'Error creating mechanical sheet');
             }
             throw new Error('Network error or server not reachable');
         }

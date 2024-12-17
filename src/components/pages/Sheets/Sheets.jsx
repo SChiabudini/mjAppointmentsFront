@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getServiceSheets, searchServiceSheets } from "../../../redux/serviceSheetActions.js";
-import { getProcedureSheets, searchProcedureSheets } from "../../../redux/procedureSheetActions.js";
+import { getMechanicalSheets, searchMechanicalSheets } from "../../../redux/mechanicalSheetActions.js";
 import { clearServiceSheetsReducer } from "../../../redux/serviceSheetSlice.js";
-import { clearProcedureSheetsReducer } from '../../../redux/procedureSheetSlice.js';
+import { clearMechanicalSheetsReducer } from '../../../redux/mechanicalSheetSlice.js';
 import detail from "../../../assets/img/detail.png";
 
 const Sheets = () => {
 
     const serviceSheets = useSelector(state => state.serviceSheet.serviceSheets);
-    const procedureSheets = useSelector(state => state.procedureSheet.procedureSheets);
-    const sheets = [...serviceSheets, ...procedureSheets].sort((a, b) => new Date(b.date) - new Date(a.date));
+    const mechanicalSheets = useSelector(state => state.mechanicalSheet.mechanicalSheets);
+    const sheets = [...serviceSheets, ...mechanicalSheets].sort((a, b) => new Date(b.date) - new Date(a.date));
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -23,14 +23,14 @@ const Sheets = () => {
 
     useEffect(() => {
 
-        if(!number && !date && !client && !vehicle && !keyWords && serviceSheets.length === 0 && procedureSheets.length === 0){
+        if(!number && !date && !client && !vehicle && !keyWords && serviceSheets.length === 0 && mechanicalSheets.length === 0){
             dispatch(getServiceSheets());
-            dispatch(getProcedureSheets());
+            dispatch(getMechanicalSheets());
         };
 
         return () => {
             dispatch(clearServiceSheetsReducer());
-            dispatch(clearProcedureSheetsReducer());
+            dispatch(clearMechanicalSheetsReducer());
         };
 
     }, [number, date, client, vehicle, keyWords, dispatch]);
