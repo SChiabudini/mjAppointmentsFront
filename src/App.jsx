@@ -40,6 +40,7 @@ const App = () => {
           <Route path='/main_window/vehiculos' element={<Vehicles />}/>
           <Route path='/main_window/vehiculos/:id' element={<VehicleDetail />} />
           <Route path='/main_window/fichas' element={<Sheets />}/>
+          <Route path='/main_window/fichas/:id' element={<Sheets />}/>
         </Routes>
       </div>
     </div>
