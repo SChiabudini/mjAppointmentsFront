@@ -1,5 +1,5 @@
 import api from '../services/axios.js';
-import { getProcedureSheetsReducer, getProcedureSheetByIdReducer, searchProcedureSheetsReducer } from './ProcedureSheetSlice.js';
+import { getProcedureSheetsReducer, getProcedureSheetByIdReducer, searchProcedureSheetsReducer } from './procedureSheetSlice.js';
 
 //-----TRAE ÚNICAMENTE LOS ACTIVOS
 
