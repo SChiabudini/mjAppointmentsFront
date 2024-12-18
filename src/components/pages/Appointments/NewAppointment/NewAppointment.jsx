@@ -1,4 +1,3 @@
-import style from './NewAppointment.module.css';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import NewCompanyClient from '../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx';
@@ -26,49 +25,29 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
         procedure: null
     };
 
-    const initialPersonClientState = {
-        dni: '',
-        name: '',
-        email: '',
-        phones: [],
-        cuilCuit: '',
-        vehicles: []
-    };
-
-    const initialVehicleState = {
-        licensePlate: '',
-        brand: '',
-        model: '',
-        year: null,
-        engine: '',
-        personClient: null,
-        companyClient: null
-    };
-
-    const [newAppointment, setNewAppointment] = useState(initialAppointmentState);
-    const [newProcedure, setNewProcedure] = useState({
+    const initialProcedure = {
         title: '',       
         description: '',  
         service: false,
         mechanical: false,
-    });
+    };
+
+    const [newAppointment, setNewAppointment] = useState(initialAppointmentState);
+    const [newProcedure, setNewProcedure] = useState(initialProcedure);
     const [dropdownClientsVisible, setDropdownClientsVisible] = useState(false);
-    const [newPersonClient, setNewPersonClient] = useState(initialPersonClientState);
     const [showNewClient, setShowNewClient] = useState(false);
-    const [filteredClients, setFilteredClients] = useState([]);
     const [searchingPerson, setSearchingPerson] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredClients, setFilteredClients] = useState([]);
+    const [searchClient, setSearchClient] = useState('');
     const [selectedClientIndex, setSelectedClientIndex] = useState(-1);
-    const [newVehicle, setNewVehicle] = useState(initialVehicleState);
     const [dropdownVehiclesVisible, setDropdownVehicleVisible] = useState(false);
+    const [filteredVehicles, setFilteredVehicles] = useState([]);
     const [searchVehicle, setSearchVehicle] = useState('');
     const [selectedVehicleIndex, setSelectedVehicleIndex] = useState(-1);
-    const [selectedVehicle, setSelectedVehicle] = useState(null);
-    const [filteredVehicles, setFilteredVehicles] = useState([]);
     const [showNewVehicle, setShowNewVehicle] = useState(false);
     // const [errorMessage, setErrorMessage] = useState('');
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-// console.log(newAppointment);
+// console.log(searchVehicle);
 
     useEffect(() => {
         if(personClients.length === 0){
@@ -89,11 +68,11 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
         const clients = searchingPerson ? personClients : companyClients;
         setFilteredClients(
         clients.filter(client => 
-            client.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-            (client.dni && client.dni.toString().includes(searchTerm))
+            client.name.toLowerCase().includes(searchClient.toLowerCase()) || 
+            (client.dni && client.dni.toString().includes(searchClient))
         )
         );
-    }, [searchTerm, searchingPerson, personClients, companyClients]);    
+    }, [searchClient, searchingPerson, personClients, companyClients]);    
 
     useEffect(() => {
         setFilteredVehicles(
@@ -117,9 +96,6 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                 [name]: convertToISODate(value)
             });
         };
-        // if(name === 'searchTerm') setSearchTerm(value);
-        // if(name === 'searchTerm' && value === '') setDropdownClientsVisible(false);
-        // validateForm();
     };
 
     //-----------DATE-----------//
@@ -150,7 +126,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
 
     const handleProcedureChange = (event) => {
         const { name, value } = event.target;
-        console.log('value:', value);
+
         setNewProcedure((prevProcedure) => {
             const updatedProcedure = {
                 ...prevProcedure,
@@ -171,7 +147,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
     const handleClientSelection = (client) => {
         const clientName = client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`;
     
-        setSearchTerm(clientName);
+        setSearchClient(clientName);
         setDropdownClientsVisible(false);
 
         setNewAppointment({
@@ -192,15 +168,11 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
         });
     };
 
-    const removeVehicle = (index) => {
-
-    };
-
     //-----------ATRIBUTES INPUTS-----------//
     const handleSearchFocus = (event) => {
         const { name } = event.target;
 
-        if(name === 'searchTerm') {
+        if(name === 'searchClient') {
             setSelectedClientIndex(-1);
         };
         if(name === 'searchVehicle') {
@@ -211,7 +183,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
     const handleSearchBlur = (event) => {
         const { name } = event.target;
 
-        if(name === 'searchTerm') {
+        if(name === 'searchClient') {
             setTimeout(() => {
                 setDropdownClientsVisible(false);
                 setSelectedClientIndex(-1);
@@ -229,7 +201,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
     const handleKeyDown = (event) => {
         const { name } = event.target;
 
-        if(name === 'searchTerm') {
+        if(name === 'searchClient') {
             if (event.key === 'ArrowDown') {
                 setSelectedClientIndex((prev) => (prev + 1) % filteredClients.length);
             } else if (event.key === 'ArrowUp') {
@@ -291,9 +263,14 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                 console.log("Appointment successfully saved");
                 dispatch(getAppointments()); // Actualizar los turnos tras guardar
                 setNewAppointment(initialAppointmentState); // Resetear el formulario
-                setSelectedVehicle(null);
                 onAppointmentAdded(response);
-            }
+                setNewProcedure(initialProcedure);
+                setSearchClient('');
+                setSearchVehicle('');
+                setShowNewClient(false);
+                setShowNewVehicle(false);
+            };
+
         } catch (error) {
             console.error("Error saving appointment:", error);
         }
@@ -369,7 +346,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                                     onChange={handleProcedureChange} 
                                 />
                             </div> 
-                        </div>                       
+                        </div>
                         {!isNested ? (
                             <div className="clientSelection">                            
                                 <label>Cliente</label>
@@ -380,7 +357,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                                         name="clientType" 
                                         value="person" 
                                         checked={searchingPerson}
-                                        onChange={() => (setSearchingPerson(true), setSearchTerm(''))}
+                                        onChange={() => (setSearchingPerson(true), setSearchClient(''))}
                                         />
                                         Persona
                                     </label>
@@ -390,7 +367,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                                             name="clientType" 
                                             value="company"
                                             checked={!searchingPerson}
-                                            onChange={() => (setSearchingPerson(false), setSearchTerm(''))}
+                                            onChange={() => (setSearchingPerson(false), setSearchClient(''))}
                                         />
                                         Empresa
                                     </label>
@@ -398,11 +375,11 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                                 <div className="searchRow">
                                     <input
                                         type="text"
-                                        name="searchTerm"
+                                        name="searchClient"
                                         placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
-                                        value={searchTerm}
+                                        value={searchClient}
                                         // onChange={handleInputChange}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        onChange={(e) => setSearchClient(e.target.value)}
                                         onFocus={handleSearchFocus}
                                         onBlur={handleSearchBlur}
                                         onKeyDown={handleKeyDown}
@@ -425,8 +402,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                                             ))}
                                         </ul>
                                     )}
-                                </div>
-                                
+                                </div>                               
                             </div>
                         ) : (<></>)} 
                         {!isNested ? (
@@ -460,17 +436,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                                             ))}
                                         </ul>
                                     )}
-                                </div>
-                                <div className="formRow">
-                                    <ul>
-                                        {newPersonClient.vehicles.map((vehicle, index) => (
-                                            <li key={index}>
-                                                {vehicle.licensePlate}
-                                                <button type="button" onClick={() => removeVehicle(index)}>x</button>
-                                            </li>
-                                        ))}
-                                    </ul> 
-                                </div>        
+                                </div>     
                             </div>
                         ) : (
                             <></>
@@ -484,9 +450,6 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                     {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true}/>}
                     <button type='submit' form="appointmentForm">Crear turno</button>
                 </div>
-                {/* <div className="submit">
-                    <button type="submit" form="appointmentForm" disabled={isSubmitDisabled}>Crear turno</button>
-                </div> */}
             </div>
         </div>
     );

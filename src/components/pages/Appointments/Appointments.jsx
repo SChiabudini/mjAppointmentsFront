@@ -24,46 +24,43 @@ const Appointments = () => {
   const appointments = useSelector(state => state.appointment.appointments);
 //   console.log(appointments);
   
-  const events = appointments?.map(appointment => ({
-      start: dayjs(appointment.start).toDate(),
-      end: dayjs(appointment.end).toDate(),
-      title: appointment.procedure,  
-      personClient: appointment.personClient ? appointment.personClient.name : '',  
-      companyClient: appointment.companyClient ? appointment.companyClient.name : '',  
-      vehicle: `${appointment.vehicle?.brand || ''} ${appointment.vehicle?.model || ''}`, 
-      mechanical: appointment.mechanical,  
-      service: appointment.service,  
-  }));
+  // const events = appointments?.map(appointment => ({
+  //     start: dayjs(appointment.start).toDate(),
+  //     end: dayjs(appointment.end).toDate(),
+  //     personClient: appointment.personClient ? appointment.personClient.name : '',  
+  //     companyClient: appointment.companyClient ? appointment.companyClient.name : '',  
+  //     vehicle: `${appointment.vehicle?.brand || ''} ${appointment.vehicle?.model || ''}`, 
+  // }));
 
-  const components = {
-      event: props => {            
-          // Destructuración de los valores de props.event: 
-          const { mechanical, service, personClient, companyClient, vehicle, title } = props.event;  
+  // const components = {
+  //     event: props => {            
+  //         // Destructuración de los valores de props.event: 
+  //         const { personClient, companyClient, vehicle } = props.event;  
 
-          return (
-              <div className={style.containerEvents}>
-                  <div>
-                      <span>
-                          {mechanical && <img src={iconMechanic} alt="mechanic-icon" className={style.icon} />}
-                          {service && <img src={iconService} alt="service-icon" className={style.icon} />}
-                      </span>
-                  </div>
-                  <div>
-                      <span>{personClient}</span>
-                  </div>
-                  <div>
-                      <span>{companyClient}</span>
-                  </div>
-                  <div>
-                      <span>{title}</span>
-                  </div>
-                  <div>
-                      <span>{vehicle}</span>
-                  </div>
-              </div>
-          )
-      }
-  };
+  //         return (
+  //             <div className={style.containerEvents}>
+  //                 <div>
+  //                     <span>
+  //                         {mechanical && <img src={iconMechanic} alt="mechanic-icon" className={style.icon} />}
+  //                         {service && <img src={iconService} alt="service-icon" className={style.icon} />}
+  //                     </span>
+  //                 </div>
+  //                 <div>
+  //                     <span>{personClient}</span>
+  //                 </div>
+  //                 <div>
+  //                     <span>{companyClient}</span>
+  //                 </div>
+  //                 <div>
+  //                     <span>{title}</span>
+  //                 </div>
+  //                 <div>
+  //                     <span>{vehicle}</span>
+  //                 </div>
+  //             </div>
+  //         )
+  //     }
+  // };
 
   const messages = {
       allDay: "Todo el día",
@@ -95,7 +92,7 @@ const Appointments = () => {
             <Calendar 
               localizer={localizer}
               messages={messages}
-              events={events}
+              // events={events}
               min={dayjs('2024-01-01T08:00:00').toDate()}  // Hora apertura (08:00 AM)
               max={dayjs('2024-01-01T18:00:00').toDate()}  // Hora cierre (06:00 PM)
               formats={{
@@ -113,7 +110,7 @@ const Appointments = () => {
                       return dayjs(date).format("dddd - DD/MM/YY").replace(/^./, (match) => match.toUpperCase());
                   },
               }}
-              components={components}
+              // components={components}
             />
           </div>
         </div>
