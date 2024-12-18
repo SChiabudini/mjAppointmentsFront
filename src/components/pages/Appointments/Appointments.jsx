@@ -1,6 +1,6 @@
+import style from './Appointments.module.css';
 import React, { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import style from './Appointments.module.css';
 import iconMechanic from './Icons/mechanic.png';
 import iconService from './Icons/service.png';
 import { useSelector, useDispatch } from "react-redux";
@@ -22,45 +22,42 @@ const Appointments = () => {
   const localizer = dayjsLocalizer(dayjs);
 
   const appointments = useSelector(state => state.appointment.appointments);
-//   console.log(appointments);
+  // console.log(appointments);
   
-  // const events = appointments?.map(appointment => ({
-  //     start: dayjs(appointment.start).toDate(),
-  //     end: dayjs(appointment.end).toDate(),
-  //     personClient: appointment.personClient ? appointment.personClient.name : '',  
-  //     companyClient: appointment.companyClient ? appointment.companyClient.name : '',  
-  //     vehicle: `${appointment.vehicle?.brand || ''} ${appointment.vehicle?.model || ''}`, 
-  // }));
+  const events = appointments?.map(appointment => ({
+      start: dayjs(appointment.start).toDate(),
+      end: dayjs(appointment.end).toDate(),
+      procedureIconMechanic: appointment.procedure ? appointment.procedure.mechanical : '',
+      procedureIconService: appointment.procedure ? appointment.procedure.service : '',
+      procedureTitle: appointment.procedure ? appointment.procedure.title : '',
+      personClient: appointment.personClient ? appointment.personClient.name : '',  
+      companyClient: appointment.companyClient ? appointment.companyClient.name : '',  
+      vehicle: `${appointment.vehicle?.brand || ''} ${appointment.vehicle?.model || ''}`, 
+  }));  
 
-  // const components = {
-  //     event: props => {            
-  //         // Destructuración de los valores de props.event: 
-  //         const { personClient, companyClient, vehicle } = props.event;  
+  const components = {
+      event: props => {            
+          // Destructuración de los valores de props.event: 
+          const { procedureIconMechanic, procedureIconService, procedureTitle, personClient, companyClient, vehicle } = props.event;  
 
-  //         return (
-  //             <div className={style.containerEvents}>
-  //                 <div>
-  //                     <span>
-  //                         {mechanical && <img src={iconMechanic} alt="mechanic-icon" className={style.icon} />}
-  //                         {service && <img src={iconService} alt="service-icon" className={style.icon} />}
-  //                     </span>
-  //                 </div>
-  //                 <div>
-  //                     <span>{personClient}</span>
-  //                 </div>
-  //                 <div>
-  //                     <span>{companyClient}</span>
-  //                 </div>
-  //                 <div>
-  //                     <span>{title}</span>
-  //                 </div>
-  //                 <div>
-  //                     <span>{vehicle}</span>
-  //                 </div>
-  //             </div>
-  //         )
-  //     }
-  // };
+          return (
+			<div className={style.containerEvents}>
+				<div>
+					<span>
+						{procedureIconMechanic && <img src={iconMechanic} alt="mechanic-icon" className={style.icon} />}
+						{procedureIconService && <img src={iconService} alt="service-icon" className={style.icon} />}
+					</span>
+				</div>
+				<div className={style.content}>
+					<span>{procedureTitle}</span>
+					<span>{personClient}</span>
+					<span>{companyClient}</span>
+					<span>{vehicle}</span>
+				</div>
+			</div>
+          )
+      }
+  };
 
   const messages = {
       allDay: "Todo el día",
@@ -92,7 +89,7 @@ const Appointments = () => {
             <Calendar 
               localizer={localizer}
               messages={messages}
-              // events={events}
+              events={events}
               min={dayjs('2024-01-01T08:00:00').toDate()}  // Hora apertura (08:00 AM)
               max={dayjs('2024-01-01T18:00:00').toDate()}  // Hora cierre (06:00 PM)
               formats={{
@@ -110,7 +107,7 @@ const Appointments = () => {
                       return dayjs(date).format("dddd - DD/MM/YY").replace(/^./, (match) => match.toUpperCase());
                   },
               }}
-              // components={components}
+              components={components}
             />
           </div>
         </div>
@@ -120,7 +117,6 @@ const Appointments = () => {
             </div>
           </div>
       </div>
-
   );
 };
 

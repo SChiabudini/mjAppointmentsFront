@@ -17,6 +17,11 @@
     margin-right: 5px; 
 }
 
+.content {
+    display: flex;
+    flex-direction: column;
+}
+
 /* .containerEvents {
     background-color: red;
 } */
