@@ -41,28 +41,22 @@ const Sheets = () => {
 
     //----- BUSCAR FICHA
 
-    const handleChangeNumber = (event) => {
-
-    };
-
-    const handleChangeVehicle = (event) => {
-
-    };
-
-    const handleChangeClient = (event) => {
-
-    };
-
-    const handleChangeKeyWords = (event) => {
-
-    };
-
     const handleSearch = (event) => {
-
+        if (event.key === "Enter") {
+            if (number.trim() || vehicle.trim() || client.trim() || keyWords.trim()) {
+                dispatch(searchServiceSheets(number.trim(), vehicle.trim(), client.trim()));
+                dispatch(searchMechanicalSheets(number.trim(), vehicle.trim(), client.trim(), keyWords.trim()));
+                setCurrentPage(1);
+            }
+        }
     };
 
     const handleInputChange = (event) => {
-
+        if (event.target.value === "") {
+            dispatch(clearServiceSheetsReducer());
+            dispatch(clearMechanicalSheetsReducer());
+            setCurrentPage(1);
+        }
     };
 
     //----- PAGINADO
@@ -152,7 +146,7 @@ const Sheets = () => {
                                         <input
                                             type="search"
                                             name="searchNumber"
-                                            onChange={handleChangeNumber}
+                                            onChange={event => setNumber(event.target.value)}
                                             onKeyDown={handleSearch}
                                             onInput={handleInputChange}
                                             value={number}
@@ -171,7 +165,7 @@ const Sheets = () => {
                                         <input
                                             type="search"
                                             name="searchVehicle"
-                                            onChange={handleChangeVehicle}
+                                            onChange={event => setVehicle(event.target.value)}
                                             onKeyDown={handleSearch}
                                             onInput={handleInputChange}
                                             value={vehicle}
@@ -187,7 +181,7 @@ const Sheets = () => {
                                         <input
                                             type="search"
                                             name="searchClient"
-                                            onChange={handleChangeClient}
+                                            onChange={event => setClient(event.target.value)}
                                             onKeyDown={handleSearch}
                                             onInput={handleInputChange}
                                             value={client}
@@ -203,7 +197,7 @@ const Sheets = () => {
                                         <input
                                             type="search"
                                             name="searchKeyWords"
-                                            onChange={handleChangeKeyWords}
+                                            onChange={event => setKeyWords(event.target.value)}
                                             onKeyDown={handleSearch}
                                             onInput={handleInputChange}
                                             value={keyWords}

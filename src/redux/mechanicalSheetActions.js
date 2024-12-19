@@ -42,7 +42,7 @@ export const getMechanicalSheetById = (mechanicalSheetId) => {
 
 //-----TRAE SOLO LOS ACTIVOS FILTRADOS
 
-export const searchMechanicalSheets = (number, date, client, vehicle, kewWords) => {
+export const searchMechanicalSheets = (number, vehicle, client, keyWords) => {
 
     return async (dispatch) => {
 
@@ -54,20 +54,16 @@ export const searchMechanicalSheets = (number, date, client, vehicle, kewWords) 
                 query += `number=${number}&`
             }
 
-            if(date){
-                query += `date=${date}&`
+            if(vehicle){
+                query += `vehicle=${vehicle}&`
             }
 
             if(client){
                 query += `client=${client}&`
             }
 
-            if(vehicle){
-                query += `vehicle=${vehicle}&`
-            }
-
-            if(kewWords){
-                query += `kewWords=${kewWords}&`
+            if(keyWords){
+                query += `keyWords=${keyWords}&`
             }
 
             const { data } = await api.get(query);

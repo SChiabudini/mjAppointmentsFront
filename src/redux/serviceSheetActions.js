@@ -42,7 +42,7 @@ export const getServiceSheetById = (serviceSheetId) => {
 
 //-----TRAE SOLO LOS ACTIVOS FILTRADOS
 
-export const searchServiceSheets = (number, date, client, vehicle) => {
+export const searchServiceSheets = (number, vehicle, client) => {
 
     return async (dispatch) => {
 
@@ -54,16 +54,12 @@ export const searchServiceSheets = (number, date, client, vehicle) => {
                 query += `number=${number}&`
             }
 
-            if(date){
-                query += `date=${date}&`
+            if(vehicle){
+                query += `vehicle=${vehicle}&`
             }
 
             if(client){
                 query += `client=${client}&`
-            }
-
-            if(vehicle){
-                query += `vehicle=${vehicle}&`
             }
 
             const { data } = await api.get(query);
