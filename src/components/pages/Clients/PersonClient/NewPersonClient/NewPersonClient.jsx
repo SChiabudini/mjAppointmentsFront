@@ -4,7 +4,7 @@ import { getPersonClients, postPersonClient } from "../../../../../redux/personC
 import { getVehicles } from "../../../../../redux/vehicleActions.js";
 import NewVehicle from '../../../Vehicles/NewVehicle/NewVehicle.jsx';
 
-const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
+const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId = null }) => {
     
     const dispatch = useDispatch();
     
@@ -14,7 +14,7 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
         email: '',
         phones: [],
         cuilCuit: '',
-        vehicles: []
+        vehicles: vehicleId ? [vehicleId] : []
     };
     
     const [newPersonClient, setNewPersonClient] = useState(initialPersonClientState);
@@ -70,6 +70,8 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false }) => {
     useEffect(() => {
         setFilteredVehicles(
             vehicles.filter(vehicle => 
+                vehicle.personClient === null &&
+                vehicle.companyClient === null &&
                 vehicle.licensePlate.toLowerCase().includes(searchTerm.toLowerCase())
             )
         );
