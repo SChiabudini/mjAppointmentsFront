@@ -61,21 +61,6 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     const companyClients = useSelector(state => state.companyClient.companyClients);
     const vehicles = useSelector(state => state.vehicle.vehicles);
 
-    useEffect(() => {
-        if(personClients.length === 0){
-            dispatch(getPersonClients());
-        };
-
-        if(companyClients.length === 0){
-            dispatch(getCompanyClients());
-        };
-
-        if (vehicles.length === 0) {
-            dispatch(getVehicles());
-        }
-
-    }, [personClients, companyClients, vehicles, dispatch]);
-
     //----- HANDLE CLIENTS
 
     const [searchTermClients, setSearchTermClients] = useState('');

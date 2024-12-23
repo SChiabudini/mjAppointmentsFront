@@ -18,7 +18,7 @@ const PersonClients = () => {
 
     useEffect(() => {
 
-        if(!dni && !name && !vehicle && personClients.length === 0){
+        if(!dni && !name && !vehicle){
             dispatch(getPersonClients());
         };
 

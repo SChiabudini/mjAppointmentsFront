@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/common/Header.jsx';
@@ -15,16 +15,24 @@ import { getAppointments } from './redux/appointmentActions.js';
 import { getPersonClients } from './redux/personClientActions.js';
 import { getCompanyClients } from './redux/companyClientActions.js';
 import { getVehicles } from './redux/vehicleActions.js';
+import { getServiceSheets } from './redux/serviceSheetActions.js';
+import { getMechanicalSheets } from './redux/mechanicalSheetActions.js';
 
 const App = () => {
 
   const dispatch = useDispatch();
+  const [ hasFetched, setHasFetched ] = useState(false);
 
   useEffect(() => {
-    dispatch(getAppointments());
-    dispatch(getPersonClients());
-    dispatch(getCompanyClients());
-    dispatch(getVehicles());
+    if( !hasFetched ){
+      dispatch(getAppointments());
+      dispatch(getPersonClients());
+      dispatch(getCompanyClients());
+      dispatch(getVehicles());
+      dispatch(getServiceSheets());
+      dispatch(getMechanicalSheets());
+      setHasFetched(true);
+    }
   }, [dispatch]);
 
   return (
