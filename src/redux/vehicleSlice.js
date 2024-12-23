@@ -5,7 +5,7 @@ export const vehicleSlice = createSlice({
     initialState: {
         vehicles: [],
         vehiclesCopy: [],
-        vehicleDetail: {}
+        vehicleDetail: {},
     },
     reducers: {
         getVehiclesReducer: (state, action) => {
