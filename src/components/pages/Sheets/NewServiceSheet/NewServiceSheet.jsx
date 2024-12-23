@@ -126,19 +126,35 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     const handleVehicleSelection = (vehicle) => {
         setSearchTermVehicles(vehicle.licensePlate);
         setDropdownVisibleVehicles(false);
-        setNewServiceSheet({ ...newServiceSheet, vehicle: vehicle._id });
-
+        setNewServiceSheet((prevState) => ({
+            ...prevState,
+            vehicle: vehicle._id
+        }));
+    
+        // Lógica de asignación para personClient y companyClient
         if (vehicle.personClient) {
             setSearchTermClients(`${vehicle.personClient.dni} - ${vehicle.personClient.name}`);
-            setNewServiceSheet({ ...newServiceSheet, personClient: vehicle.personClient._id, companyClient: null });
+            setNewServiceSheet((prevState) => ({
+                ...prevState,
+                personClient: vehicle.personClient._id,
+                companyClient: null
+            }));
             setSearchingPerson(true);
         } else if (vehicle.companyClient) {
             setSearchTermClients(`${vehicle.companyClient.cuit} - ${vehicle.companyClient.name}`);
-            setNewServiceSheet({ ...newServiceSheet, companyClient: vehicle.companyClient._id, personClient: null });
+            setNewServiceSheet((prevState) => ({
+                ...prevState,
+                companyClient: vehicle.companyClient._id,
+                personClient: null
+            }));
             setSearchingPerson(false);
         } else {
             setSearchTermClients('');
-            setNewServiceSheet({ ...newServiceSheet, personClient: null, companyClient: null });
+            setNewServiceSheet((prevState) => ({
+                ...prevState,
+                personClient: null,
+                companyClient: null
+            }));
             setSearchingPerson(true);
         }
     };
@@ -189,6 +205,20 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
         } else {
             setDropdownVisible(true);
         }
+    };
+
+    //----- HANDLE FILTERS
+
+    const handleFilterChange = (event) => {
+        const { value, checked } = event.target;
+
+        setNewServiceSheet((prevState) => {
+            const updatedFilters = checked
+                ? [...prevState.filters, value] // Agregar el valor si está seleccionado
+                : prevState.filters.filter((filter) => filter !== value); // Quitar el valor si no está seleccionado
+
+            return { ...prevState, filters: updatedFilters };
+        });
     };
 
     //----- SUBMIT
@@ -342,6 +372,63 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                 {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newServiceSheet.vehicle}/>}
                 
                 <form id="serviceSheetForm" onSubmit={handleSubmit}>
+                    <div className="formRow">
+                        <label htmlFor="kilometers">Kilómetros</label>
+                        <input type="text" name="kilometers" value={newServiceSheet.kilometers} onChange={handleInputChange}/>
+                    </div>
+                    <div className="formRow">
+                        <label htmlFor="kmsToNextService">Kms próximo service</label>
+                        <input type="text" name="kmsToNextService" value={newServiceSheet.kmsToNextService} onChange={handleInputChange}/>
+                    </div>
+                    <div className="formRow">
+                        <label htmlFor="oil">Aceite</label>
+                        <input type="text" name="oil" value={newServiceSheet.oil} onChange={handleInputChange}/>
+                    </div>
+                    <div className="formRow"><label>Filtros</label></div>
+                    <div className="filterSelectionInputs">
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="filter"
+                                value="Aceite"
+                                onChange={handleFilterChange}
+                            />
+                            Aceite
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="filter"
+                                value="Aire"
+                                onChange={handleFilterChange}
+                            />
+                            Aire
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="filter"
+                                value="Habitáculo"
+                                onChange={handleFilterChange}
+                            />
+                            Habitáculo
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="filter"
+                                value="Combustible"
+                                onChange={handleFilterChange}
+                            />
+                            Combustible
+                        </label>
+                    </div>
+                    <div className="formRow">
+                        <label htmlFor="amount">Monto</label>
+                        <input type="text" name="amount" value={newServiceSheet.amount} onChange={handleInputChange}/>
+                    </div>
+                    <div className="formRow"><label htmlFor="notes">Notas</label></div>
+                    <div className="formRow"><textarea name="notes" value={newServiceSheet.notes} onChange={handleInputChange}/></div>
                     <div className="submit">
                         <button type='submit' form="serviceSheetForm">Crear ficha</button>
                     </div>
