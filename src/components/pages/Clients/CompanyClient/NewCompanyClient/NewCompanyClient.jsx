@@ -4,17 +4,17 @@ import { getCompanyClients, postCompanyClient } from "../../../../../redux/compa
 import { getVehicles } from "../../../../../redux/vehicleActions";
 import NewVehicle from '../../../Vehicles/NewVehicle/NewVehicle.jsx';
 
-const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false }) => {
+const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleId = null }) => {
 
     const dispatch = useDispatch();
 
     const initialCompanyClientState = {
-    cuit: '',
-    name: '',
-    email: '',
-    phones: [],
-    address: '',
-    vehicles: []   
+        cuit: '',
+        name: '',
+        email: '',
+        phones: [],
+        address: '',
+        vehicles: vehicleId ? [vehicleId] : []   
     };
 
     const [newCompanyClient, setNewCompanyClient] = useState(initialCompanyClientState);
@@ -75,11 +75,13 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false }) => {
     }, [vehicles, dispatch]);
 
     useEffect(() => {
-    setFilteredVehicles(
-        vehicles.filter(vehicle => 
-            vehicle.licensePlate.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-    );
+        setFilteredVehicles(
+            vehicles.filter(vehicle =>
+                vehicle.personClient === null &&
+                vehicle.companyClient === null &&
+                vehicle.licensePlate.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+        );
     }, [searchTerm, vehicles]);
 
     const handleVehicleSelection = (vehicle) => {

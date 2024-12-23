@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import NewServiceSheet from './NewServiceSheet/NewServiceSheet.jsx';
+import NewMechanicalSheet from './NewMechanicalSheet/NewMechanicalSheet.jsx';
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getServiceSheets, searchServiceSheets } from "../../../redux/serviceSheetActions.js";
@@ -37,7 +39,8 @@ const Sheets = () => {
 
     //----- ABRIR POPUP
 
-    const [popUpOpen, setPopUpOpen] = useState(false);
+    const [popUpServiceOpen, setPopUpServiceOpen] = useState(false);
+    const [popUpMechanicalOpen, setPopUpMechanicalOpen] = useState(false);
 
     //----- BUSCAR FICHA
 
@@ -130,7 +133,10 @@ const Sheets = () => {
                         ▸
                     </button>
                 </div>
-                <button onClick={() => setPopUpOpen(true)}>Nuevo</button>
+                <div>
+                    <button onClick={() => setPopUpServiceOpen(true)} style={{marginRight: '1rem'}}>+ F. service</button>
+                    <button onClick={() => setPopUpMechanicalOpen(true)}>+ F. mecánica</button>
+                </div>                
             </div>
             <div className="container">
                 <div className="tableContainer">
@@ -230,6 +236,16 @@ const Sheets = () => {
                             ))}
                         </tbody>
                     </table>
+                </div>
+            </div>
+            <div className={popUpServiceOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpServiceOpen(false)}>
+                <div onClick={(e) => e.stopPropagation()}>
+                    <NewServiceSheet onServiceSheetAdded={() => setPopUpServiceOpen(false)}/>
+                </div>
+            </div>
+            <div className={popUpMechanicalOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpMechanicalOpen(false)}>
+                <div onClick={(e) => e.stopPropagation()}>
+                    <NewMechanicalSheet onMechanicalSheetAdded={() => setPopUpMechanicalOpen(false)}/>
                 </div>
             </div>
         </div>  

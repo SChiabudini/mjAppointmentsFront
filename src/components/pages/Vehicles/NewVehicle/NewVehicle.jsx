@@ -6,7 +6,7 @@ import { getCompanyClients } from '../../../../redux/companyClientActions.js';
 import NewPersonClient from '../../Clients/PersonClient/NewPersonClient/NewPersonClient.jsx';
 import NewCompanyClient from '../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx';
 
-const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false }) => {
+const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientId = null, companyClientId = null }) => {
 
     const dispatch = useDispatch();
 
@@ -16,8 +16,8 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false }) => {
         model: '',
         year: null,
         engine: '',
-        personClient: null,
-        companyClient: null
+        personClient: personClientId,
+        companyClient: companyClientId
     };
 
     const [newVehicle, setNewVehicle] = useState(initialVehicleState);
