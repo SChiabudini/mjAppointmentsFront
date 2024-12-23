@@ -17,7 +17,7 @@ const Vehicles = () => {
 
     useEffect(() => {
 
-        if(!licensePlate && !client && vehicles.length === 0){
+        if(!licensePlate && !client){
             dispatch(getVehicles());
         };
 

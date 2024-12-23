@@ -53,17 +53,6 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
     const [showNewClient, setShowNewClient] = useState(false);
 
     useEffect(() => {
-        if(personClients.length === 0){
-        dispatch(getPersonClients());
-        };
-
-        if(companyClients.length === 0){
-        dispatch(getCompanyClients());
-        };
-
-    }, [personClients, companyClients, dispatch]);
-
-    useEffect(() => {
         const clients = searchingPerson ? personClients : companyClients;
         setFilteredClients(
         clients.filter(client => 
@@ -78,14 +67,10 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
         setSearchTerm(clientName);
         setDropdownVisible(false);
         if (searchingPerson) {
-        setNewVehicle({ ...newVehicle, personClient: client._id, companyClient: null });
+            setNewVehicle({ ...newVehicle, personClient: client._id, companyClient: null });
         } else {
-        setNewVehicle({ ...newVehicle, companyClient: client._id, personClient: null });
+            setNewVehicle({ ...newVehicle, companyClient: client._id, personClient: null });
         }
-    };
-
-    const handleSearchFocus = () => {
-        setSelectedIndex(-1);
     };
 
     const handleSearchBlur = () => {
@@ -203,7 +188,7 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                                     placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
                                     value={searchTerm}
                                     onChange={handleInputChange}
-                                    onFocus={handleSearchFocus}
+                                    onFocus={() => setSelectedIndex(-1)}
                                     onBlur={handleSearchBlur}
                                     onKeyDown={handleKeyDown}
                                 />

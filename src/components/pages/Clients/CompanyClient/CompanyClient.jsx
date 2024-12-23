@@ -18,7 +18,7 @@ const CompanyClients = () => {
 
     useEffect(() => {
 
-        if(!cuit && !name && !vehicle && companyClients.length === 0){
+        if(!cuit && !name && !vehicle){
             dispatch(getCompanyClients());
         };
 

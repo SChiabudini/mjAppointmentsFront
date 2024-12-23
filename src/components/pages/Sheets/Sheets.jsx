@@ -25,7 +25,7 @@ const Sheets = () => {
 
     useEffect(() => {
 
-        if(!number && !date && !client && !vehicle && !keyWords && serviceSheets.length === 0 && mechanicalSheets.length === 0){
+        if(!number && !date && !client && !vehicle && !keyWords){
             dispatch(getServiceSheets());
             dispatch(getMechanicalSheets());
         };

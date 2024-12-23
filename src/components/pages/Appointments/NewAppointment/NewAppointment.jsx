@@ -50,21 +50,6 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
 // console.log(searchVehicle);
 
     useEffect(() => {
-        if(personClients.length === 0){
-        dispatch(getPersonClients());
-        };
-
-        if(companyClients.length === 0){
-        dispatch(getCompanyClients());
-        };
-
-        if (vehicles.length === 0) {
-            dispatch(getVehicles());
-        };
-
-    }, [personClients, companyClients, vehicles, dispatch]);
-
-    useEffect(() => {
         const clients = searchingPerson ? personClients : companyClients;
         setFilteredClients(
         clients.filter(client => 

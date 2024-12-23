@@ -62,12 +62,6 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     const [showNewVehicle, setShowNewVehicle] = useState(false);
 
     useEffect(() => {
-        if (vehicles.length === 0) {
-            dispatch(getVehicles());
-        }
-    }, [vehicles, dispatch]);
-
-    useEffect(() => {
         setFilteredVehicles(
             vehicles.filter(vehicle => 
                 vehicle.personClient === null &&
@@ -92,10 +86,6 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
             ...prevState,
             vehicles: prevState.vehicles.filter((_, i) => i !== index)
         }));
-    };
-
-    const handleSearchFocus = () => {
-        setSelectedIndex(-1);
     };
 
     const handleSearchBlur = () => {
@@ -199,7 +189,7 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                                 <label>Vehículo(s)</label>
                             </div>
                             <div className="searchRow">
-                                <input type="text" name="searchTerm" value={searchTerm} onChange={handleInputChange} onFocus={handleSearchFocus} onBlur={handleSearchBlur} onKeyDown={handleKeyDown} placeholder="Buscar vehículo" />
+                                <input type="text" name="searchTerm" value={searchTerm} onChange={handleInputChange} onFocus={() => setSelectedIndex(-1)} onBlur={handleSearchBlur} onKeyDown={handleKeyDown} placeholder="Buscar vehículo" />
                                 <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button">
                                     {showNewVehicle ? '-' : '+'}
                                 </button>                                
