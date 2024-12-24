@@ -44,12 +44,15 @@ const Sheets = () => {
 
     //----- BUSCAR FICHA
 
+    const [ toggle, setToggle ] = useState(false);
+
     const handleSearch = (event) => {
         if (event.key === "Enter") {
             if (number.trim() || vehicle.trim() || client.trim() || keyWords.trim()) {
                 dispatch(searchServiceSheets(number.trim(), vehicle.trim(), client.trim()));
                 dispatch(searchMechanicalSheets(number.trim(), vehicle.trim(), client.trim(), keyWords.trim()));
                 setCurrentPage(1);
+                setToggle(true);
             }
         }
     };
@@ -59,6 +62,7 @@ const Sheets = () => {
             dispatch(clearServiceSheetsReducer());
             dispatch(clearMechanicalSheetsReducer());
             setCurrentPage(1);
+            setToggle(false);
         }
     };
 
@@ -219,21 +223,40 @@ const Sheets = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {paginatedSheets?.map(sheet => (
-                                <tr key={sheet._id}>
-                                    <td>{sheet.oil ? "Service" : "Mecánica"}</td>
-                                    <td>{sheet.number}</td>
-                                    <td>{formatDate(sheet.date)}</td>
-                                    <td>{sheet.vehicle.licensePlate}</td>
-                                    <td>{sheet.personClient ? sheet.personClient.name : sheet.companyClient ? sheet.companyClient.name : 'N/A'}</td>
-                                    <td>{sheet.keyWords ? sheet.keyWords : 'N/A'}</td>
-                                    <td className='center'>
-                                        <a onClick={() => navigate(`/main_window/fichas/${sheet._id}`)}>
-                                            <img src={detail} alt="" className="detailImg" />
-                                        </a>
-                                    </td>
-                                </tr>
-                            ))}
+                            {keyWords && toggle ? (
+                                mechanicalSheets?.map(sheet => (
+                                    <tr key={sheet._id}>
+                                        <td>{sheet.oil ? "Service" : "Mecánica"}</td>
+                                        <td>{sheet.number}</td>
+                                        <td>{formatDate(sheet.date)}</td>
+                                        <td>{sheet.vehicle.licensePlate}</td>
+                                        <td>{sheet.personClient ? sheet.personClient.name : sheet.companyClient ? sheet.companyClient.name : 'N/A'}</td>
+                                        <td>{sheet.keyWords ? sheet.keyWords : 'N/A'}</td>
+                                        <td className='center'>
+                                            <a onClick={() => navigate(`/main_window/fichas/${sheet._id}`)}>
+                                                <img src={detail} alt="" className="detailImg" />
+                                            </a>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                paginatedSheets?.map(sheet => (
+                                    <tr key={sheet._id}>
+                                        <td>{sheet.oil ? "Service" : "Mecánica"}</td>
+                                        <td>{sheet.number}</td>
+                                        <td>{formatDate(sheet.date)}</td>
+                                        <td>{sheet.vehicle.licensePlate}</td>
+                                        <td>{sheet.personClient ? sheet.personClient.name : sheet.companyClient ? sheet.companyClient.name : 'N/A'}</td>
+                                        <td>{sheet.keyWords ? sheet.keyWords : 'N/A'}</td>
+                                        <td className='center'>
+                                            <a onClick={() => navigate(`/main_window/fichas/${sheet._id}`)}>
+                                                <img src={detail} alt="" className="detailImg" />
+                                            </a>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+
                         </tbody>
                     </table>
                 </div>
