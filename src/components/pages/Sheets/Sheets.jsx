@@ -70,9 +70,16 @@ const Sheets = () => {
     
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
-    const paginatedSheets = Array.isArray(sheets) 
-    ? sheets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-    : [];
+    const [ paginatedSheets, setPaginatedSheets ] = useState([]);
+
+    useEffect(() => {
+        Array.isArray(sheets) && !toggle
+        ? setPaginatedSheets(sheets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage))
+        : Array.isArray(sheets)
+        ? setPaginatedSheets(mechanicalSheets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage))
+        : [];
+    }, [sheets, toggle]);
+    
     const totalPages = Math.ceil(sheets.length / itemsPerPage);
 
     const handlePageChange = (newPage) => {
@@ -223,8 +230,7 @@ const Sheets = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {keyWords && toggle ? (
-                                mechanicalSheets?.map(sheet => (
+                            {paginatedSheets?.map(sheet => (
                                     <tr key={sheet._id}>
                                         <td>{sheet.oil ? "Service" : "Mecánica"}</td>
                                         <td>{sheet.number}</td>
@@ -238,25 +244,7 @@ const Sheets = () => {
                                             </a>
                                         </td>
                                     </tr>
-                                ))
-                            ) : (
-                                paginatedSheets?.map(sheet => (
-                                    <tr key={sheet._id}>
-                                        <td>{sheet.oil ? "Service" : "Mecánica"}</td>
-                                        <td>{sheet.number}</td>
-                                        <td>{formatDate(sheet.date)}</td>
-                                        <td>{sheet.vehicle.licensePlate}</td>
-                                        <td>{sheet.personClient ? sheet.personClient.name : sheet.companyClient ? sheet.companyClient.name : 'N/A'}</td>
-                                        <td>{sheet.keyWords ? sheet.keyWords : 'N/A'}</td>
-                                        <td className='center'>
-                                            <a onClick={() => navigate(`/main_window/fichas/${sheet._id}`)}>
-                                                <img src={detail} alt="" className="detailImg" />
-                                            </a>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-
+                            ))}
                         </tbody>
                     </table>
                 </div>
