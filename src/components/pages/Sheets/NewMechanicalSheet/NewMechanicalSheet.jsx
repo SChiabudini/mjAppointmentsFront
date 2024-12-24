@@ -202,7 +202,6 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
         }
 
         try {
-            console.log(mechanicalSheetToSubmit);
             const response = await dispatch(postMechanicalSheet(mechanicalSheetToSubmit));
             console.log("Mechanical sheet successfully saved");
 
@@ -219,6 +218,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
             setNewMechanicalSheet(initialMechanicalSheetState);
             setSearchTermClients('');
             setSearchTermVehicles('');
+            console.log(initialMechanicalSheetState);
             dispatch(getMechanicalSheets());
             onMechanicalSheetAdded(response);
         } catch (error) {
@@ -338,7 +338,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                 </div>
                 {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newMechanicalSheet.vehicle}/>}
                 {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newMechanicalSheet.vehicle}/>}
-                
+                <div className="formRow"></div>
                 <form id="mechanicalSheetForm" onSubmit={handleSubmit}>
                     <div className="formRow">
                         <label htmlFor="kilometers">Kilómetros</label>

@@ -355,7 +355,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                 </div>
                 {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newServiceSheet.vehicle}/>}
                 {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newServiceSheet.vehicle}/>}
-                
+                <div className="formRow"></div>
                 <form id="serviceSheetForm" onSubmit={handleSubmit}>
                     <div className="formRow">
                         <label htmlFor="kilometers">Kilómetros</label>
