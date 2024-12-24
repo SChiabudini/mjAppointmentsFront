@@ -73,12 +73,20 @@ const Sheets = () => {
     const [ paginatedSheets, setPaginatedSheets ] = useState([]);
 
     useEffect(() => {
-        Array.isArray(sheets) && !toggle
-        ? setPaginatedSheets(sheets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage))
-        : Array.isArray(sheets)
-        ? setPaginatedSheets(mechanicalSheets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage))
-        : [];
-    }, [sheets, toggle]);
+        if (Array.isArray(sheets)) {
+            const newPaginatedSheets = !toggle
+                ? sheets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                : mechanicalSheets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    
+            // Evita actualizar el estado si no hay cambios
+            setPaginatedSheets((prev) => {
+                const prevStringified = JSON.stringify(prev);
+                const newStringified = JSON.stringify(newPaginatedSheets);
+    
+                return prevStringified === newStringified ? prev : newPaginatedSheets;
+            });
+        }
+    }, [sheets, toggle, currentPage, itemsPerPage, mechanicalSheets]);
     
     const totalPages = Math.ceil(sheets.length / itemsPerPage);
 

@@ -158,7 +158,7 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                     </div>
                     {!isNested ? (
                         <div className="clientSelection">
-                            <label>Cliente</label>
+                            <label className="formRow">Cliente</label>
                             <div className="clientSelectionInputs">
                                 <label>
                                     <input
