@@ -31,9 +31,8 @@ export const getVehicleById = (vehicleId) => {
     return async (dispatch) => {
         try {
             const { data } = await api.get(`/vehicle/${vehicleId}`);
-            console.log(data);
-
             dispatch(getVehicleByIdReducer(data));
+            
         } catch (error) {
             console.error("Error retrieving vehicle by server id: ", error.message);
             return null;
