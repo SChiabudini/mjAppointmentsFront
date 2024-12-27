@@ -1,5 +1,5 @@
 import api from '../services/axios.js';
-import { getAppointmentsReducer, postAppointmentReducer } from './appointmentSlice.js';
+import { getAppointmentsReducer, getAppointmentByIdReducer, postAppointmentReducer } from './appointmentSlice.js';
 
 export const getAppointments = () => {
 
@@ -13,6 +13,20 @@ export const getAppointments = () => {
             console.error("Error retrieving appintments from server: " + error.message);
             return null;
         };
+    };
+};
+
+export const getAppointmentById = (appointmentId) => {
+
+    return async (dispatch) => {
+        try {
+            const { data } = await api.get(`/vehicle/${appointmentId}`);
+            dispatch(getAppointmentByIdReducer(data));
+            
+        } catch (error) {
+            console.error("Error retrieving appointment by server id: ", error.message);
+            return null;
+        }
     };
 };
 

@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/common/Header.jsx';
 import Appointments from './components/pages/Appointments/Appointments.jsx';
+import AppointmentsDetail from './components/pages/Appointments/AppointmentsDetail/AppointmentsDetail.jsx';
 import PersonClient from './components/pages/Clients/PersonClient/PersonClient.jsx';
 import PersonClientDetail from './components/pages/Clients/PersonClient/PersonClientDetail/PersonClientDetail.jsx';
 import CompanyClient from './components/pages/Clients/CompanyClient/CompanyClient.jsx';
@@ -41,6 +42,7 @@ const App = () => {
       <div className="content">
         <Routes>
           <Route path='/' element={<Appointments />}/>
+          <Route path='/main_window/turno/:id' element={<AppointmentsDetail />} />
           <Route path='/main_window/clientes/personas' element={<PersonClient />}/>
           <Route path='/main_window/clientes/personas/:id' element={<PersonClientDetail />}/>
           <Route path='/main_window/clientes/empresas' element={<CompanyClient />}/>
