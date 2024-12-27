@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getAppointmentById } from '../../../../redux/appointmentActions';
+import { getAppointmentById } from '../../../../redux/appointmentActions.js';
 
 const AppointmentsDetail = () => {
 
@@ -9,14 +9,15 @@ const AppointmentsDetail = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const appointmentDetail = useSelector(state => state.appointments.appointmentDetail); 
-
-    const [loading, setLoading] = useState(true);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);    
-
     useEffect(() => {
         dispatch(getAppointmentById(id))
     }, [dispatch, id]);
+
+    const appointmentDetail = useSelector(state => state.appointment?.appointmentDetail || {});    
+    // console.log(appointmentDetail);
+
+    const [loading, setLoading] = useState(true);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);        
     
     useEffect(() => {
         const fetchData = async () => {
@@ -26,6 +27,15 @@ const AppointmentsDetail = () => {
         };
         fetchData();
     }, [dispatch, id]);
+
+    if (loading) {
+        return <div>Cargando...</div>;
+    };
+
+    // Si appointmentDetail es null o un objeto vacío, es posible que los datos aún no estén disponibles
+    if (!appointmentDetail || Object.keys(appointmentDetail).length === 0) {
+        return <div>No se encontraron detalles para este turno.</div>;
+    };
     
     const toggleShowDeleteModal = () => {
         setShowDeleteModal(!showDeleteModal);
@@ -51,7 +61,7 @@ const AppointmentsDetail = () => {
                             <div>
                             {/* <div className={style.column}> */}
                                 <p><span>Estado:&nbsp;</span>{appointmentDetail.active ? 'Activo' : 'Inactivo'}</p>
-                                {appointmentDetail.start && <p><span>Inicio del turno:&nbsp;</span>{appointmentDetail.start}</p>}
+                                {appointmentDetail.start && <p><span>Inicio del turno:&nbsp;</span></p>}
                                 <p><span>{new Date(appointmentDetail.start).toLocaleString('es-ES', { 
                                     day: '2-digit', 
                                     month: '2-digit', 
@@ -59,7 +69,7 @@ const AppointmentsDetail = () => {
                                     hour: '2-digit', 
                                     minute: '2-digit', 
                                 })}</span></p>
-                                {appointmentDetail.end && <p><span>Finalización del turno:&nbsp;</span>{appointmentDetail.start}</p>}
+                                {appointmentDetail.end && <p><span>Finalización del turno:&nbsp;</span></p>}
                                 <p><span>{new Date(appointmentDetail.end).toLocaleString('es-ES', { 
                                     day: '2-digit', 
                                     month: '2-digit', 
@@ -133,7 +143,7 @@ const AppointmentsDetail = () => {
                                     <p>No hay vehículo registrado.</p>
                                 )}
                                 {appointmentDetail.procedure ? (
-                                    <ul key={appointmentDetail.vehicle.licensePlate}>
+                                    <ul key={appointmentDetail.procedure.title}>
                                         <li> 
                                             {appointmentDetail.procedure.service && <p><span>Service</span></p>}
                                             {appointmentDetail.procedure.mechanical && <p><span>Mecánica</span></p>}

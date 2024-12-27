@@ -1,5 +1,6 @@
 import style from './Appointments.module.css';
 import React, { useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import iconMechanic from './Icons/mechanic.png';
 import iconService from './Icons/service.png';
@@ -22,9 +23,9 @@ const Appointments = () => {
   const localizer = dayjsLocalizer(dayjs);
 
   const appointments = useSelector(state => state.appointment.appointments);
-  // console.log(appointments);
   
   const events = appointments?.map(appointment => ({
+      _id: appointment._id ? appointment._id : '',
       start: dayjs(appointment.start).toDate(),
       end: dayjs(appointment.end).toDate(),
       procedureIconMechanic: appointment.procedure ? appointment.procedure.mechanical : '',
@@ -36,28 +37,30 @@ const Appointments = () => {
   }));  
 
   const components = {
-      event: props => {            
+      event: props => {   
           // Destructuración de los valores de props.event: 
-          const { procedureIconMechanic, procedureIconService, procedureTitle, personClient, companyClient, vehicle } = props.event;  
+          const { _id, procedureIconMechanic, procedureIconService, procedureTitle, personClient, companyClient, vehicle } = props.event;  
 
           return (
-			<div className={style.containerEvents}>
-				<div>
-					<span>
-						{procedureIconMechanic && <img src={iconMechanic} alt="mechanic-icon" className={style.icon} />}
-						{procedureIconService && <img src={iconService} alt="service-icon" className={style.icon} />}
-					</span>
-				</div>
-				<div className={style.content}>
-					<span>{procedureTitle}</span>
-					<span>{personClient}</span>
-					<span>{companyClient}</span>
-					<span>{vehicle}</span>
-				</div>
-			</div>
+            <Link to={`/main_window/turnos/${_id}`}>
+                <div className={style.containerEvents}>
+                <div>
+                    <span>
+                    {procedureIconMechanic && <img src={iconMechanic} alt="mechanic-icon" className={style.icon} />}
+                    {procedureIconService && <img src={iconService} alt="service-icon" className={style.icon} />}
+                    </span>
+                </div>
+                <div className={style.content}>
+                    <span>{procedureTitle}</span>
+                    <span>{personClient}</span>
+                    <span>{companyClient}</span>
+                    <span>{vehicle}</span>
+                </div>
+                </div>
+            </Link>
           )
       }
-  };
+  };  
 
   const messages = {
       allDay: "Todo el día",
