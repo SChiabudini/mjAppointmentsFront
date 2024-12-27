@@ -10,7 +10,7 @@ export const getAppointments = () => {
             dispatch(getAppointmentsReducer(data));
 
         } catch (error) {
-            console.error("Error retrieving appintments from server: " + error.message);
+            console.error("Error retrieving appointments from server: " + error.message);
             return null;
         };
     };
@@ -20,7 +20,8 @@ export const getAppointmentById = (appointmentId) => {
 
     return async (dispatch) => {
         try {
-            const { data } = await api.get(`/vehicle/${appointmentId}`);
+            const { data } = await api.get(`/appointment/${appointmentId}`);
+            
             dispatch(getAppointmentByIdReducer(data));
             
         } catch (error) {

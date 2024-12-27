@@ -42,7 +42,7 @@ const App = () => {
       <div className="content">
         <Routes>
           <Route path='/' element={<Appointments />}/>
-          <Route path='/main_window/turno/:id' element={<AppointmentsDetail />} />
+          <Route path='/main_window/turnos/:id' element={<AppointmentsDetail />} />
           <Route path='/main_window/clientes/personas' element={<PersonClient />}/>
           <Route path='/main_window/clientes/personas/:id' element={<PersonClientDetail />}/>
           <Route path='/main_window/clientes/empresas' element={<CompanyClient />}/>
