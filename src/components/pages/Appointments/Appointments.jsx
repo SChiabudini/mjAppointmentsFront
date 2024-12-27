@@ -90,8 +90,8 @@ const Appointments = () => {
               localizer={localizer}
               messages={messages}
               events={events}
-              min={dayjs('2024-01-01T08:00:00').toDate()}  // Hora apertura (08:00 AM)
-              max={dayjs('2024-01-01T18:00:00').toDate()}  // Hora cierre (06:00 PM)
+              min={dayjs('2024-01-01T07:00:00').toDate()}  // Hora apertura (07:00 AM)
+              max={dayjs('2024-01-01T17:00:00').toDate()}  // Hora cierre (17:00 PM)
               formats={{
                   monthHeaderFormat: (date) => {
                       return dayjs(date)
