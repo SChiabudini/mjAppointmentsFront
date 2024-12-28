@@ -25,13 +25,14 @@ export const getServiceSheets = () => {
 
 //-----TRAE POR ID TANTO ACTIVOS COMO INACTIVOS
 
-export const getServiceSheetById = (serviceSheetId) => {
+export const getServiceSheetById = (serviceSheetId) => {    
 
     return async (dispatch) => {
         try {
             const { data } = await api.get(`/serviceSheet/${serviceSheetId}`);
-
+            
             dispatch(getServiceSheetByIdReducer(data));
+            
         } catch (error) {
             console.error("Error retrieving service sheet by server id: ", error.message);
             return null;
