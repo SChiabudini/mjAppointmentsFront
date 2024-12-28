@@ -12,6 +12,8 @@ import CompanyClientDetail from './components/pages/Clients/CompanyClient/Compan
 import Vehicles from './components/pages/Vehicles/Vehicles.jsx';
 import VehicleDetail from './components/pages/Vehicles/VehicleDetail/VehicleDetail.jsx';
 import Sheets from './components/pages/Sheets/Sheets.jsx';
+import ServiceSheetDetail from './components/pages/Sheets/ServiceSheetDetail/ServiceSheetDetail.jsx';
+import MechanicalSheetDetail from './components/pages/Sheets/MechanicalSheetDetail/MechanicalSheetDetail.jsx';
 import { getAppointments } from './redux/appointmentActions.js';
 import { getPersonClients } from './redux/personClientActions.js';
 import { getCompanyClients } from './redux/companyClientActions.js';
@@ -50,7 +52,8 @@ const App = () => {
           <Route path='/main_window/vehiculos' element={<Vehicles />}/>
           <Route path='/main_window/vehiculos/:id' element={<VehicleDetail />} />
           <Route path='/main_window/fichas' element={<Sheets />}/>
-          <Route path='/main_window/fichas/:id' element={<Sheets />}/>
+          <Route path='/main_window/fichas/service/:id' element={<ServiceSheetDetail />}/>
+          <Route path='/main_window/fichas/mecanica/:id' element={<MechanicalSheetDetail />}/>
         </Routes>
       </div>
     </div>
