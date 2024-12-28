@@ -13,7 +13,7 @@ export const serviceSheetSlice = createSlice({
             state.serviceSheetsCopy = action.payload;
         },
 
-        getServiceSheetByIdReducer: (state, action) => {
+        getServiceSheetByIdReducer: (state, action) => {   
             state.serviceSheetDetail = action.payload;
         },
 
