@@ -239,19 +239,25 @@ const Sheets = () => {
                         </thead>
                         <tbody>
                             {paginatedSheets?.map(sheet => (
-                                    <tr key={sheet._id}>
-                                        <td>{sheet.oil ? "Service" : "Mecánica"}</td>
-                                        <td>{sheet.number}</td>
-                                        <td>{formatDate(sheet.date)}</td>
-                                        <td>{sheet.vehicle.licensePlate}</td>
-                                        <td>{sheet.personClient ? sheet.personClient.name : sheet.companyClient ? sheet.companyClient.name : 'N/A'}</td>
-                                        <td>{sheet.keyWords ? sheet.keyWords : 'N/A'}</td>
-                                        <td className='center'>
-                                            <a onClick={() => navigate(`/main_window/fichas/${sheet._id}`)}>
+                                <tr key={sheet._id}>
+                                    <td>{sheet.oil ? "Service" : "Mecánica"}</td>
+                                    <td>{sheet.number}</td>
+                                    <td>{formatDate(sheet.date)}</td>
+                                    <td>{sheet.vehicle.licensePlate}</td>
+                                    <td>{sheet.personClient ? sheet.personClient.name : sheet.companyClient ? sheet.companyClient.name : 'N/A'}</td>
+                                    <td>{sheet.keyWords ? sheet.keyWords : 'N/A'}</td>
+                                    <td className='center'>
+                                        {sheet.oil ? (
+                                            <a onClick={() => navigate(`/main_window/fichas/service/${sheet._id}`)}>
                                                 <img src={detail} alt="" className="detailImg" />
                                             </a>
-                                        </td>
-                                    </tr>
+                                        ):(
+                                            <a onClick={() => navigate(`/main_window/fichas/mecanica/${sheet._id}`)}>
+                                                <img src={detail} alt="" className="detailImg" />
+                                            </a>
+                                        )}
+                                    </td>
+                                </tr>
                             ))}
                         </tbody>
                     </table>
@@ -269,6 +275,6 @@ const Sheets = () => {
             </div>
         </div>  
     )
-}
+};
 
 export default Sheets;
