@@ -33,7 +33,7 @@ module.exports = {
       name: '@electron-forge/plugin-webpack',
       config: {
         mainConfig: './webpack.main.config.js',
-        devContentSecurityPolicy: "connect-src 'self' http://localhost:8000/ 'unsafe-eval'",
+        devContentSecurityPolicy: "connect-src 'self' http://localhost:8000/ https://mjappointments.koyeb.app/ 'unsafe-eval'",
         renderer: {
           config: './webpack.renderer.config.js',
           entryPoints: [

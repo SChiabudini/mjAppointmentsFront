@@ -1,0 +1,20 @@
+.sheetsContainer{
+    display: flex;
+    gap: 1rem;
+}
+
+.sheets{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 50%;
+}
+
+.sheets ul{
+    border-left: 1px solid black;
+}
+
+.sheets ul li{
+    margin-bottom: 0.25rem;
+    padding-left: 0.5rem;
+}
