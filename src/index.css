@@ -617,3 +617,21 @@ th div.withFilter button.sort{
 .submitNested button:hover{
     border-color: var(--orange);
 }
+
+/*-- PRINT CSS --*/
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #printable-section, #printable-section * {
+        visibility: visible;
+    }
+
+    #printable-section {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+}
