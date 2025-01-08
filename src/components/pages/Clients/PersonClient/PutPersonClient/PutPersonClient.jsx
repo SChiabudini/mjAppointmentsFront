@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate } from 'react-router-dom';
-import { getPersonClientById, getPersonClients, postPersonClient } from "../../../../../redux/personClientActions.js";
-import { getVehicles } from "../../../../../redux/vehicleActions.js";
+import { useParams } from 'react-router-dom';
+import { getPersonClientById, getPersonClients, putPersonClient } from "../../../../../redux/personClientActions.js";
 import NewVehicle from '../../../Vehicles/NewVehicle/NewVehicle.jsx';
+import { getVehicles } from "../../../../../redux/vehicleActions.js";
 
 const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId = null }) => {
     
     let { id } = useParams();
     const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     const personClientDetail = useSelector(state => state.personClient.personClientDetail); 
 
@@ -132,19 +131,20 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            // const response = await dispatch(postPersonClient(editPersonClient));
-            // console.log("Client successfully saved");
+            const response = await dispatch(putPersonClient(editPersonClient));
+            console.log("Client successfully updated");
 
-            // if(editPersonClient.vehicles.length > 0){
-            //     dispatch(getVehicles());
-            // }
+            if(editPersonClient.vehicles.length > 0){
+                dispatch(getVehicles());
+            }
 
-            // setEditPersonClient(initialPutPersonClientState);
-            // dispatch(getPersonClients());
-            // onClientAdded(response);
+            setEditPersonClient(editPersonClient);
+            dispatch(getPersonClients());
+            dispatch(getPersonClientById(id));
+            onClientAdded(response);
 
         } catch (error) {
-            console.error("Error saving person client:", error.message);
+            console.error("Error updating client person:", error.message);
             if (error.message.includes('already exist')) setAlreadyExist(true);
         }
     };
@@ -159,7 +159,7 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                     <div className="formRow">
                         <label>DNI</label>
                         <input 
-                        type="number" 
+                        type="text" 
                         name="dni" 
                         min='0'
                         value={editPersonClient.dni} 
@@ -177,7 +177,7 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                     <div className="formRow">
                         <label>Teléfono(s)</label>
                         <input 
-                            type="number" 
+                            type="text" 
                             value={currentPhone} 
                             min='0'
                             onChange={(e) => setCurrentPhone(e.target.value)} 

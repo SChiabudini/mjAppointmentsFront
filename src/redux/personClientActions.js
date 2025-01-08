@@ -41,7 +41,6 @@ export const getPersonClientById = (personClientId) => {
 }
 
 //-----TRAE SOLO LOS ACTIVOS FILTRADOS
-
 export const searchPersonClients = (dni, name, vehicle) => {
 
     return async (dispatch) => {
@@ -86,5 +85,18 @@ export const postPersonClient = (clientData) => {
             }
             throw new Error('Network error or server not reachable');
         }
+    };
+};
+
+export const putPersonClient = (personClientData) => {    
+    return async () => {   
+        try {
+            const response = await api.put('/personClient', personClientData);
+            return response;
+
+        } catch (error) {
+            console.error("Error editing a person client: ", error.message);
+            return null;
+        }  
     };
 };
