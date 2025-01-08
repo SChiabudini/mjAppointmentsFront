@@ -5,6 +5,7 @@ import PersonClient from "./personClientSlice.js";
 import MechanicalSheet from "./mechanicalSheetSlice.js";
 import ServiceSheet from "./serviceSheetSlice.js";
 import Vehicle from "./vehicleSlice.js";
+import Budget from "./budgetSlice.js"
 
 
 export default configureStore({
@@ -15,5 +16,6 @@ export default configureStore({
         mechanicalSheet: MechanicalSheet,
         serviceSheet: ServiceSheet,
         vehicle: Vehicle,
+        budget: Budget
     }
 });
