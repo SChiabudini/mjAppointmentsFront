@@ -10,6 +10,7 @@ import PersonClientDetail from './components/pages/Clients/PersonClient/PersonCl
 import PutPersonClient from './components/pages/Clients/PersonClient/PutPersonClient/PutPersonClient.jsx';
 import CompanyClient from './components/pages/Clients/CompanyClient/CompanyClient.jsx';
 import CompanyClientDetail from './components/pages/Clients/CompanyClient/CompanyClientDetail/CompanyClientDetail.jsx';
+import PutCompanyClient from './components/pages/Clients/CompanyClient/PutCompanyClient/PutCompanyClient.jsx';
 import Vehicles from './components/pages/Vehicles/Vehicles.jsx';
 import VehicleDetail from './components/pages/Vehicles/VehicleDetail/VehicleDetail.jsx';
 import Sheets from './components/pages/Sheets/Sheets.jsx';
@@ -52,6 +53,7 @@ const App = () => {
           <Route path='/main_window/clientes/personas/edit/:id' element={<PutPersonClient />}/>
           <Route path='/main_window/clientes/empresas' element={<CompanyClient />}/>
           <Route path='/main_window/clientes/empresas/:id' element={<CompanyClientDetail />}/>
+          <Route path='/main_window/clientes/empresas/edit/:id' element={<PutCompanyClient />}/>
           <Route path='/main_window/vehiculos' element={<Vehicles />}/>
           <Route path='/main_window/vehiculos/:id' element={<VehicleDetail />} />
           <Route path='/main_window/fichas' element={<Sheets />}/>

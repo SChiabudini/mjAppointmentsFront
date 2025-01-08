@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getCompanyClientById } from '../../../../../redux/companyClientActions';
+import PutCompanyClient from '../PutCompanyClient/PutCompanyClient.jsx';
 
 const CompanyClientDetail = () => {
 
@@ -31,6 +32,9 @@ const CompanyClientDetail = () => {
         setShowDeleteModal(!showDeleteModal);
     };
 
+    //----- ABRIR POPUP
+    const [popUpOpen, setPopUpOpen] = useState(false);
+
     return(
         <div className="page">
             {/* {
@@ -41,7 +45,7 @@ const CompanyClientDetail = () => {
                         <div className="title">
                             <h2>Detalle de la empresa</h2>
                             <div className="titleButtons">
-                                {companyClientDetail.active ? <button onClick={() => navigate(`/main_window/clientes/empresas/${id}`)}>Editar</button> : ''}
+                                {companyClientDetail.active ? <button onClick={() => setPopUpOpen(true)}>Editar</button> : ''}
                                 {!companyClientDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Activar</button> : <button className="delete" onClick={toggleShowDeleteModal}>Desactivar</button>}
                                 <button onClick={() => navigate(`/main_window/clientes/empresas`)}>Atrás</button>
                             </div>
@@ -137,7 +141,10 @@ const CompanyClientDetail = () => {
                     </div>
                 {/* ) */}
             {/* } */}
-            <div>
+            <div className={popUpOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpOpen(false)}>
+              <div onClick={(e) => e.stopPropagation()}>
+                <PutCompanyClient onClientAdded={() => setPopUpOpen(false)}/>
+              </div>
             </div>
         </div>
     )
