@@ -7,6 +7,7 @@ import Appointments from './components/pages/Appointments/Appointments.jsx';
 import AppointmentsDetail from './components/pages/Appointments/AppointmentsDetail/AppointmentsDetail.jsx';
 import PersonClient from './components/pages/Clients/PersonClient/PersonClient.jsx';
 import PersonClientDetail from './components/pages/Clients/PersonClient/PersonClientDetail/PersonClientDetail.jsx';
+import PutPersonClient from './components/pages/Clients/PersonClient/PutPersonClient/PutPersonClient.jsx';
 import CompanyClient from './components/pages/Clients/CompanyClient/CompanyClient.jsx';
 import CompanyClientDetail from './components/pages/Clients/CompanyClient/CompanyClientDetail/CompanyClientDetail.jsx';
 import Vehicles from './components/pages/Vehicles/Vehicles.jsx';
@@ -48,6 +49,7 @@ const App = () => {
           <Route path='/main_window/turnos/:id' element={<AppointmentsDetail />} />
           <Route path='/main_window/clientes/personas' element={<PersonClient />}/>
           <Route path='/main_window/clientes/personas/:id' element={<PersonClientDetail />}/>
+          <Route path='/main_window/clientes/personas/edit/:id' element={<PutPersonClient />}/>
           <Route path='/main_window/clientes/empresas' element={<CompanyClient />}/>
           <Route path='/main_window/clientes/empresas/:id' element={<CompanyClientDetail />}/>
           <Route path='/main_window/vehiculos' element={<Vehicles />}/>

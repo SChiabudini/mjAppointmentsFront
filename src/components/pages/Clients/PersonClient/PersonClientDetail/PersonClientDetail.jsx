@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getPersonClientById } from '../../../../../redux/personClientActions';
+import { getPersonClientById } from '../../../../../redux/personClientActions.js';
+import PutPersonClient from '../PutPersonClient/PutPersonClient.jsx';
 
 const PersonClientDetail = () => {
 
@@ -31,6 +32,9 @@ const PersonClientDetail = () => {
         setShowDeleteModal(!showDeleteModal);
     };
 
+    //----- ABRIR POPUP
+    const [popUpOpen, setPopUpOpen] = useState(false);
+
     return(
         <div className="page">
             {/* {
@@ -41,7 +45,8 @@ const PersonClientDetail = () => {
                         <div className="title">
                             <h2>Detalle del Cliente</h2>
                             <div className="titleButtons">
-                                {personClientDetail.active ? <button onClick={() => navigate(`/main_window/clientes/personas/${id}`)}>Editar</button> : ''}
+                                {/* {personClientDetail.active ? <button onClick={() => navigate(`/main_window/clientes/personas/edit/${id}`)}>Editar</button> : ''} */}
+                                {personClientDetail.active ? <button onClick={() => setPopUpOpen(true)}>Editar</button> : ''}
                                 {!personClientDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Activar</button> : <button className="delete" onClick={toggleShowDeleteModal}>Desactivar</button>}
                                 <button onClick={() => navigate(`/main_window/clientes/personas`)}>Atrás</button>
                             </div>
@@ -130,14 +135,17 @@ const PersonClientDetail = () => {
                                         ))}
                                     </div>
                                 ) : (
-                                 <p>No hay fichas mecánicas registradas.</p>
+                                    <p>No hay fichas mecánicas registradas.</p>
                                 )} 
                             </div>
                         </div>
                     </div>
                 {/* ) */}
             {/* } */}
-            <div>
+            <div className={popUpOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpOpen(false)}>
+              <div onClick={(e) => e.stopPropagation()}>
+                <PutPersonClient onClientAdded={() => setPopUpOpen(false)}/>
+              </div>
             </div>
         </div>
     )
