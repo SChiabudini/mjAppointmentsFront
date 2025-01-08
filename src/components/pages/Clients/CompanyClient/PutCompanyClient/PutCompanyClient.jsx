@@ -2,48 +2,47 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from 'react-router-dom';
 import { getPersonClientById, getPersonClients, putPersonClient } from "../../../../../redux/personClientActions.js";
+import { getCompanyClientById, getCompanyClients, putCompanyClient } from "../../../../../redux/companyClientActions.js";
 import NewVehicle from '../../../Vehicles/NewVehicle/NewVehicle.jsx';
 import { getVehicles } from "../../../../../redux/vehicleActions.js";
 
-const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId = null }) => {
+const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleId = null }) => {
     
     let { id } = useParams();
     const dispatch = useDispatch();
 
-    const personClientDetail = useSelector(state => state.personClient.personClientDetail); 
+    const companyClientDetail = useSelector(state => state.companyClient.companyClientDetail); 
 
-    const [editPersonClient, setEditPersonClient] = useState({});
+    const [editCompanyClient, setEditCompanyClient] = useState({});
     const [alreadyExist, setAlreadyExist] = useState(false);
-    // console.log(editPersonClient);
-      
 
     useEffect(() => {
-        dispatch(getPersonClientById(id));
+        dispatch(getCompanyClientById(id));
     }, [dispatch, id])
 
     useEffect(() => {    
-        if (personClientDetail && personClientDetail._id === id) {        
-            const updatedEditPersonClient = {
-                _id: personClientDetail._id,
-                cuilCuit: personClientDetail.cuilCuit,
-                dni: personClientDetail.dni,
-                name: personClientDetail.name,
-                email: personClientDetail.email,
-                phones: personClientDetail.phones,
-                vehicles: personClientDetail.vehicles,
-                active: personClientDetail.active
+        if (companyClientDetail && companyClientDetail._id === id) {        
+            const updatedEditCompanyClient = {
+                _id: companyClientDetail._id,
+                cuit: companyClientDetail.cuit,
+                name: companyClientDetail.name,
+                email: companyClientDetail.email,
+                address: companyClientDetail.address,
+                phones: companyClientDetail.phones,
+                vehicles: companyClientDetail.vehicles,
+                active: companyClientDetail.active
             };
-            setEditPersonClient(updatedEditPersonClient);
+            setEditCompanyClient(updatedEditCompanyClient);
         }
-    }, [dispatch, id, personClientDetail]);    
+    }, [dispatch, id, companyClientDetail]);    
 
     //----- HANDLE INPUTS
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         
-        setEditPersonClient(prevState => ({ ...prevState, [name]: value }));
-        if (name === 'dni') setAlreadyExist(false);
+        setEditCompanyClient(prevState => ({ ...prevState, [name]: value }));
+        if (name === 'cuit') setAlreadyExist(false);
         if(name === 'searchTerm') setSearchTerm(value);
         if(name === 'searchTerm' && value === '') setDropdownVisible(false); 
     };
@@ -54,7 +53,7 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     
     const addPhone = () => {
         if (currentPhone.trim() !== "") {
-            setEditPersonClient(prevState => ({
+            setEditCompanyClient(prevState => ({
                 ...prevState,
                 phones: [...prevState.phones, currentPhone.trim()]
             }));
@@ -63,7 +62,7 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     };
 
     const removePhone = (index) => {
-        setEditPersonClient(prevState => ({
+        setEditCompanyClient(prevState => ({
             ...prevState,
             phones: prevState.phones.filter((_, i) => i !== index)
         }));
@@ -90,8 +89,8 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     }, [searchTerm, vehicles]);
 
     const handleVehicleSelection = (vehicle) => {
-        if (!editPersonClient.vehicles.some(v => v.licensePlate === vehicle.licensePlate)) {
-            setEditPersonClient(prevState => ({
+        if (!editCompanyClient.vehicles.some(v => v.licensePlate === vehicle.licensePlate)) {
+            setEditCompanyClient(prevState => ({
                 ...prevState,
                 vehicles: [...prevState.vehicles, vehicle]
             }));
@@ -100,7 +99,7 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     };
 
     const removeVehicle = (index) => {
-        setEditPersonClient(prevState => ({
+        setEditCompanyClient(prevState => ({
             ...prevState,
             vehicles: prevState.vehicles.filter((_, i) => i !== index)
         }));
@@ -131,20 +130,20 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await dispatch(putPersonClient(editPersonClient));
-            console.log("Client/person successfully updated");
+            const response = await dispatch(putCompanyClient(editCompanyClient));
+            console.log("Client/company successfully updated");
 
-            if(editPersonClient.vehicles.length > 0){
+            if(editCompanyClient.vehicles.length > 0){
                 dispatch(getVehicles());
             }
 
-            setEditPersonClient(editPersonClient);
-            dispatch(getPersonClients());
-            dispatch(getPersonClientById(id));
+            setEditCompanyClient(editCompanyClient);
+            dispatch(getCompanyClients());
+            dispatch(getCompanyClientById(id));
             onClientAdded(response);
 
         } catch (error) {
-            console.error("Error updating client person:", error.message);
+            console.error("Error updating client company:", error.message);
             if (error.message.includes('already exist')) setAlreadyExist(true);
         }
     };
@@ -152,27 +151,27 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     return (
         <div className={isNested? "formContainerNested" : "formContainer"}>
             <div className="titleForm">
-                <h2>Editar cliente</h2>
+                <h2>Editar empresa</h2>
             </div>
             <div className="container">
                 <form id="personClientForm" onSubmit={handleSubmit}>                    
                     <div className="formRow">
-                        <label>DNI</label>
+                        <label>CUIT</label>
                         <input 
                         type="text" 
-                        name="dni" 
+                        name="cuit" 
                         min='0'
-                        value={editPersonClient.dni} 
+                        value={editCompanyClient.cuit} 
                         onChange={handleInputChange} />
-                        {alreadyExist && <p>Ya existe un cliente con ese DNI.</p>}
+                        {alreadyExist && <p>Ya existe un cliente con ese CUIT.</p>}
                     </div>
                     <div className="formRow">
                         <label>Nombre</label>
-                        <input type="text" name="name" value={editPersonClient.name} onChange={handleInputChange} />
+                        <input type="text" name="name" value={editCompanyClient.name} onChange={handleInputChange} />
                     </div>
                     <div className="formRow">
                         <label>Email</label>
-                        <input type="text" name="email" value={editPersonClient.email} onChange={handleInputChange} />
+                        <input type="text" name="email" value={editCompanyClient.email} onChange={handleInputChange} />
                     </div>
                     <div className="formRow">
                         <label>Teléfono(s)</label>
@@ -186,10 +185,10 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                             }} 
                         />
                     </div>
-                    {editPersonClient.phones?.length > 0 ? (
+                    {editCompanyClient.phones?.length > 0 ? (
                         <div className="formRow">
                             <ul>
-                                {editPersonClient.phones?.map((phone, index) => (
+                                {editCompanyClient.phones?.map((phone, index) => (
                                     <li key={index}>
                                         <div>{phone}</div>
                                         <button type="button" onClick={() => removePhone(index)}>x</button>
@@ -201,8 +200,8 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                         <></>
                     )}                    
                     <div className="formRow">
-                        <label>CUIL/CUIT</label>
-                        <input type="text" name="cuilCuit" value={editPersonClient.cuilCuit} onChange={handleInputChange} />
+                        <label>Dirección</label>
+                        <input type="text" name="address" value={editCompanyClient.address} onChange={handleInputChange} />
                     </div>
                     {!isNested ? (
                         <div>
@@ -241,7 +240,7 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                             </div>
                             <div className="formRow">
                                 <ul>
-                                    {editPersonClient.vehicles?.map((vehicle, index) => (
+                                    {editCompanyClient.vehicles?.map((vehicle, index) => (
                                         <li key={index}>
                                             {vehicle.licensePlate}
                                             <button type="button" onClick={() => removeVehicle(index)}>x</button>
@@ -263,4 +262,4 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     );
 };
 
-export default PutPersonClient;
+export default PutCompanyClient;

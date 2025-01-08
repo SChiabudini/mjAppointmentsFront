@@ -2,7 +2,6 @@ import api from '../services/axios.js';
 import { getCompanyClientsReducer, getCompanyClientByIdReducer, searchCompanyClientsReducer } from './companyClientSlice.js';
 
 //-----TRAE ÚNICAMENTE LOS ACTIVOS
-
 export const getCompanyClients = () => {
 
     return async (dispatch) => {
@@ -24,7 +23,6 @@ export const getCompanyClients = () => {
 };
 
 //-----TRAE POR ID TANTO ACTIVOS COMO INACTIVOS
-
 export const getCompanyClientById = (companyClientId) => {
 
     return async (dispatch) => {
@@ -42,7 +40,6 @@ export const getCompanyClientById = (companyClientId) => {
 }
 
 //-----TRAE SOLO LOS ACTIVOS FILTRADOS
-
 export const searchCompanyClients = (cuit, name, vehicle) => {
 
     return async (dispatch) => {
@@ -87,5 +84,18 @@ export const postCompanyClient = (clientData) => {
             }
             throw new Error('Network error or server not reachable');
         }
+    };
+};
+
+export const putCompanyClient = (companyClientData) => {    
+    return async () => {   
+        try {
+            const response = await api.put('/companyClient', companyClientData);
+            return response;
+
+        } catch (error) {
+            console.error("Error editing a company client: ", error.message);
+            return null;
+        }  
     };
 };
