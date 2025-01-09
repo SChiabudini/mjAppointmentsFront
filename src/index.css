@@ -96,7 +96,7 @@ table {
     --black: #000000;
     --orange: #ff6600;
     --red: #ad0000;
-    --green: #00ad3a;
+    --green: #08702b;
     --border-light: solid 1px #f1f1f1;
     --border-medium: solid 1px #e5e5e5;
     --border-dark: solid 1px #b2b2b2;
@@ -144,6 +144,46 @@ h2{
     overflow: auto; /* Evita desbordamientos visuales */
 }
 
+.columns {
+    flex: 1; /* Para que ocupe todo el espacio disponible en la columna */
+    box-sizing: border-box;
+    display: flex; /* Para usar flexbox */
+    padding-top: 2rem;
+}
+
+.left{
+    width: 35%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.left span, .right span{
+    font-weight: bold;
+}
+
+.right{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 2rem;
+    background-color: var(--light-grey);
+    width: 65%;
+}
+
+.clientInfo{
+    padding: 1rem 2rem;
+}
+
+.clientInfo li{
+    margin: 0.5rem;
+    list-style: disc;
+}
+
+.clientInfo li span{
+    font-weight: normal;
+}
+
 button{
     background-color: white;
     color: var(--dark-grey);
@@ -178,15 +218,23 @@ button:disabled {
 }
 
 button.delete{
-    background-color: var(--red);
+    border-color: var(--red);
+    color: var(--red);
 }
 
 button.delete:hover{
-    background-color: #7d0000 !important;
+    background-color: var(--red) !important;
+    color: white;
 }
 
 button.add{
-    background-color: var(--green);
+    border-color: var(--green);
+    color: var(--green);
+}
+
+button.add:hover{
+    background-color: var(--green) !important;
+    color: white;
 }
 
 .titleButtons button img{
@@ -568,4 +616,22 @@ th div.withFilter button.sort{
 
 .submitNested button:hover{
     border-color: var(--orange);
+}
+
+/*-- PRINT CSS --*/
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #printable-section, #printable-section * {
+        visibility: visible;
+    }
+
+    #printable-section {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
 }
