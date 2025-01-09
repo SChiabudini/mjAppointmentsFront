@@ -84,3 +84,17 @@ export const postVehicle = (vehicleData) => {
         }
     };
 };
+
+export const putVehicle = (vehicleData) => {   
+     
+    return async () => {   
+        try {
+            const response = await api.put('/vehicle', vehicleData);
+            return response;
+
+        } catch (error) {
+            console.error("Error editing a vehicle: ", error.message);
+            return null;
+        }  
+    };
+};

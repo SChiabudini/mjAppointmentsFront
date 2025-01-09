@@ -1,46 +1,82 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getVehicles, postVehicle } from '../../../../redux/vehicleActions.js';
-import { getPersonClients } from '../../../../redux/personClientActions.js';
-import { getCompanyClients } from '../../../../redux/companyClientActions.js';
-import NewPersonClient from '../../Clients/PersonClient/NewPersonClient/NewPersonClient.jsx';
-import NewCompanyClient from '../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx';
+import { useParams } from 'react-router-dom';
+import NewPersonClient from "../../Clients/PersonClient/NewPersonClient/NewPersonClient.jsx";
+import NewCompanyClient from "../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx";
+import { getVehicleById, getVehicles, putVehicle } from "../../../../redux/vehicleActions.js";
+import { getPersonClients } from "../../../../redux/personClientActions.js";
+import { getCompanyClients } from "../../../../redux/companyClientActions.js";
 
-const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientId = null, companyClientId = null }) => {
-
+const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientId = null, companyClientId = null }) => {
+    
+    let { id } = useParams();
     const dispatch = useDispatch();
 
-    const initialVehicleState = {
-        licensePlate: '',
-        brand: '',
-        model: '',
-        year: null,
-        engine: '',
-        personClient: personClientId,
-        companyClient: companyClientId
-    };
+    const vehicleDetail = useSelector(state => state.vehicle.vehicleDetail); 
 
-    const [newVehicle, setNewVehicle] = useState(initialVehicleState);
+    const [editVehicle, setEditVehicle] = useState({});
     const [alreadyExist, setAlreadyExist] = useState(false);
+    // console.log(editVehicle);
+      
+    useEffect(() => {
+        dispatch(getVehicleById(id));
+    }, [dispatch, id])
 
-    // ----- HANDLE INPUTS
+    useEffect(() => {    
+        if (vehicleDetail && vehicleDetail._id === id) {     
+            if (vehicleDetail.personClient) {
+                setSearchingPerson(true);
+                setSearchTerm(`${vehicleDetail.personClient.dni} - ${vehicleDetail.personClient.name}`);
+            } else if (vehicleDetail.companyClient) {
+                setSearchingPerson(false);
+                setSearchTerm(`${vehicleDetail.companyClient.cuit} - ${vehicleDetail.companyClient.name}`);
+            } else {
+                setSearchTerm('');
+            }   
+            setEditVehicle({
+                _id: vehicleDetail._id,
+                licensePlate: vehicleDetail.licensePlate,
+                brand: vehicleDetail.brand,
+                model: vehicleDetail.model,
+                year: vehicleDetail.year,
+                engine: vehicleDetail.engine,
+                personClient: vehicleDetail.personClient ? vehicleDetail.personClient._id : null,
+                companyClient: vehicleDetail.companyClient ? vehicleDetail.companyClient._id : null,
+                active: vehicleDetail.active,
+            });
+        }
+    }, [dispatch, id, vehicleDetail]);    
+
+    //----- HANDLE INPUTS
+
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-
-        setNewVehicle({
-            ...newVehicle,
+        
+        // setEditVehicle({
+        //     ...editVehicle,
+        //     [name]: name === 'year' ? (value === '' ? '' : parseInt(value, 10) || 0) : value,
+        // });
+        setEditVehicle((prevState) => ({
+            ...prevState,
             [name]: name === 'year' ? (value === '' ? '' : parseInt(value, 10) || 0) : value,
-        });
-
-        if (name === 'licensePlate') {
-            setAlreadyExist(false);
-        }
-
-        if(name === 'searchTerm') setSearchTerm(value);
-        if(name === 'searchTerm' && value === '') setDropdownVisible(false);
+            ...(name === 'searchTerm' && value === '' && {
+                personClient: null,
+                companyClient: null,
+            }),
+        }));
+        
+        if (name === 'licensePlate') setAlreadyExist(false);
+        // if(name === 'searchTerm') setSearchTerm(value);
+        if (name === 'searchTerm') {
+            setSearchTerm(value);
+            if (value === '') {
+                setDropdownVisible(false);
+            }
+        };
+        if(name === 'searchTerm' && value === '') setDropdownVisible(false); 
     };
 
-    //----- HANDLE CLIENTS
+    //----- HANDLE CLIENT
 
     const personClients = useSelector(state => state.personClient.personClients);
     const companyClients = useSelector(state => state.companyClient.companyClients);
@@ -59,19 +95,17 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                 client.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                 (client.dni && client.dni.toString().includes(searchTerm))
             )
-        );
+        );  
     }, [searchTerm, searchingPerson, personClients, companyClients]);
 
     const handleClientSelection = (client) => {
-        console.log(client);
-        
         const clientName = client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`;
         setSearchTerm(clientName);
         setDropdownVisible(false);
         if (searchingPerson) {
-            setNewVehicle({ ...newVehicle, personClient: client._id, companyClient: null });
+            setEditVehicle({ ...editVehicle, personClient: client._id, companyClient: null });
         } else {
-            setNewVehicle({ ...newVehicle, companyClient: client._id, personClient: null });
+            setEditVehicle({ ...editVehicle, companyClient: client._id, personClient: null });
         }
     };
 
@@ -99,30 +133,26 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
-        const vehicleToSubmit = {
-            ...newVehicle,
-            year: parseInt(newVehicle.year, 10) || 0,
-        };
-
         try {
-            const response = await dispatch(postVehicle(vehicleToSubmit));
-            console.log("Vehicle successfully saved");
+            const response = await dispatch(putVehicle(editVehicle));
+            console.log("Vehicle successfully updated");
 
-            if(newVehicle.personClient){
+            if(editVehicle.personClient){
                 dispatch(getPersonClients());
             }
 
-            if(newVehicle.companyClient){
+            if(editVehicle.companyClient){
                 dispatch(getCompanyClients());
             }
 
-            setNewVehicle(initialVehicleState);
+            setEditVehicle(editVehicle);
             setSearchTerm('');
             dispatch(getVehicles());
+            dispatch(getVehicleById(id));
             onVehicleAdded(response);
+
         } catch (error) {
-            console.error("Error saving vehicle:", error.message);
+            console.error("Error updating vehicle:", error.message);
             if (error.message.includes('already exist')) setAlreadyExist(true);
         }
     };
@@ -130,37 +160,34 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
     return (
         <div className={isNested? "formContainerNested" : "formContainer"}>
             <div className="titleForm">
-                <h2>Nuevo vehículo</h2>
-                <div className="titleButtons">
-                    {/* <button onClick={handleSetForm} disabled={isClearDisabled}><img src={iconClear} alt="" /></button> */}
-                </div>
+                <h2>Editar vehículo</h2>
             </div>
             <div className="container">
-                <form id="vehicleForm" onSubmit={handleSubmit}>
+                <form id="vehicleForm" onSubmit={handleSubmit}>                    
                     <div className="formRow">
                         <label htmlFor="licensePlate">Patente</label>
                         <input type="text" 
                         name="licensePlate" 
-                        value={newVehicle.licensePlate} 
+                        value={editVehicle.licensePlate} 
                         onChange={handleInputChange}/>
                         {alreadyExist && <p>Ya existe un vehículo con esa patente.</p>}
                     </div>
                     <div className="formRow">
                         <label htmlFor="brand">Marca</label>
-                        <input type="text" name="brand" value={newVehicle.brand} onChange={handleInputChange}/>
+                        <input type="text" name="brand" value={editVehicle.brand} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow">
                         <label htmlFor="model">Modelo</label>
-                        <input type="text" name="model" value={newVehicle.model} onChange={handleInputChange}/>
+                        <input type="text" name="model" value={editVehicle.model} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow">
                         <label htmlFor="year">Año</label>
-                        <input type="text" name="year" value={newVehicle.year || ''} onChange={handleInputChange}/>
+                        <input type="text" name="year" value={editVehicle.year || ''} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow">
                         <label htmlFor="engine">Motor</label>
-                        <input type="text" name="engine" value={newVehicle.engine} onChange={handleInputChange}/>
-                    </div>
+                        <input type="text" name="engine" value={editVehicle.engine} onChange={handleInputChange}/>
+                    </div>                   
                     {!isNested ? (
                         <div className="clientSelection">
                             <label className="formRow">Cliente</label>
@@ -171,7 +198,11 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                                         name="clientType"
                                         value="person"
                                         checked={searchingPerson}
-                                        onChange={() => (setSearchingPerson(true), setSearchTerm(''))}
+                                        onChange={() => {
+                                            setSearchingPerson(true);
+                                            setSearchTerm('');
+                                            setEditVehicle({ ...editVehicle, personClient: null, companyClient: null });
+                                        }}
                                     />
                                     Persona
                                 </label>
@@ -181,7 +212,11 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                                         name="clientType"
                                         value="company"
                                         checked={!searchingPerson}
-                                        onChange={() => (setSearchingPerson(false), setSearchTerm(''))}
+                                        onChange={() => {
+                                            setSearchingPerson(false);
+                                            setSearchTerm('');
+                                            setEditVehicle({ ...editVehicle, companyClient: null, personClient: null });
+                                        }}
                                     />
                                     Empresa
                                 </label>
@@ -217,16 +252,16 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                                 )}
                             </div>
                         </div>
-                    ) : (<></>)}  
+                    ) : (<></>)}
                 </form>
                 <div className={isNested ? "submitNested" : "submit"}>
                     {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true}/>}
                     {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true}/>}
-                    <button type='submit' form="vehicleForm">Crear vehículo</button>
+                    <button type='submit' form="vehicleForm">Editar vehículo</button>
                 </div>
             </div>
         </div>
-    )
+    );
 };
 
-export default NewVehicle;
+export default PutVehicle;

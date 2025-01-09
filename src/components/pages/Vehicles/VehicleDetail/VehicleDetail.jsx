@@ -1,8 +1,10 @@
+import style from './VehicleDetail.module.css';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getVehicleById } from '../../../../redux/vehicleActions';
-import style from './VehicleDetail.module.css';
+import PutVehicle from '../PutVehicle/PutVehicle.jsx';
+import { getVehicleById } from '../../../../redux/vehicleActions.js';
+
 
 const VehicleDetail = () => {
 
@@ -32,6 +34,9 @@ const VehicleDetail = () => {
         setShowDeleteModal(!showDeleteModal);
     };
 
+    //----- ABRIR POPUP
+    const [popUpOpen, setPopUpOpen] = useState(false);
+
     return(
         <div className="page">
             {/* {
@@ -42,7 +47,7 @@ const VehicleDetail = () => {
                         <div className="title">
                             <h2>Detalle del vehículo</h2>
                             <div className="titleButtons">
-                                {/* {vehicleDetail.active ? <button onClick={() => navigate(`/main_window/clientes/personas/${id}`)}>Editar</button> : ''} */}
+                                {vehicleDetail.active ? <button onClick={() => setPopUpOpen(true)}>Editar</button> : ''}
                                 {!vehicleDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Activar</button> : <button className="delete" onClick={toggleShowDeleteModal}>Eliminar</button>}
                                 <button onClick={() => navigate(`/main_window/vehiculos`)}>Atrás</button>
                             </div>
@@ -176,7 +181,10 @@ const VehicleDetail = () => {
                     </div>
                 {/* ) */}
             {/* } */}
-            <div>
+            <div className={popUpOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpOpen(false)}>
+              <div onClick={(e) => e.stopPropagation()}>
+                <PutVehicle onVehicleAdded={() => setPopUpOpen(false)}/>
+              </div>
             </div>
         </div>
     )
