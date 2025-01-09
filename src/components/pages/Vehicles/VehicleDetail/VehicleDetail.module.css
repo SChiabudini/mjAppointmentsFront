@@ -18,3 +18,9 @@
     margin-bottom: 0.25rem;
     padding-left: 0.5rem;
 }
+
+.withoutRegistration {
+    all: unset; /* Elimina todo el estilo heredado */
+    font-style: italic; /* Aplica la cursiva al texto */
+    font-weight: normal !important;
+  }

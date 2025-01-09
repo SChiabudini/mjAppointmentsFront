@@ -61,11 +61,9 @@ const VehicleDetail = () => {
                                 {vehicleDetail.model && <p><span>Modelo:&nbsp;</span>{vehicleDetail.model}</p>}
                                 {vehicleDetail.year && <p><span>Año:&nbsp;</span>{vehicleDetail.year}</p>}
                                 {vehicleDetail.engine && <p><span>Motor:&nbsp;</span>{vehicleDetail.engine}</p>}
-                                <div>
-                                    {(vehicleDetail.personClient || vehicleDetail.companyClient) && (
-                                        <p><span>Cliente:&nbsp;</span></p>
-                                    )}                 
-                                    {vehicleDetail.personClient ? (
+                                {vehicleDetail.personClient || vehicleDetail.companyClient ? (
+                                <>                
+                                    {vehicleDetail.personClient && (
                                         <div className="clientInfo">
                                             <ul>
                                                 {vehicleDetail.personClient.name && <li><span>Nombre:&nbsp;</span>{vehicleDetail.personClient.name}</li>}
@@ -84,10 +82,8 @@ const VehicleDetail = () => {
                                                 )}
                                             </ul>         
                                         </div>
-                                    ) : (
-                                        <></>
                                     )}      
-                                    {vehicleDetail.companyClient ? (
+                                    {vehicleDetail.companyClient && (
                                         <div className="clientInfo">
                                             <ul>
                                                 {vehicleDetail.companyClient.name && <li><span>Nombre:&nbsp;</span>{vehicleDetail.companyClient.name}</li>}
@@ -106,10 +102,11 @@ const VehicleDetail = () => {
                                                 )}
                                             </ul>
                                         </div>
-                                    ) : (
-                                        <></>
                                     )} 
-                                </div>
+                                </>
+                                ) : (
+                                    <p><span className={style.withoutRegistration}>No hay cliente asociado a este vehículo.</span></p>
+                                )}
                             </div>
                             <div className="right">
                                 {(vehicleDetail.serviceSheets?.length > 0 || vehicleDetail.mechanicalSheets?.length > 0) && (
@@ -148,7 +145,7 @@ const VehicleDetail = () => {
                                             ))}
                                         </div>
                                     ) : (
-                                        <p>No hay fichas de service registradas.</p>
+                                        <p className={style.withoutRegistration}>No hay fichas de service registradas.</p>
                                     )}
                                     {vehicleDetail.mechanicalSheets?.length > 0 ? (
                                         <div className={style.sheets}>
@@ -173,7 +170,7 @@ const VehicleDetail = () => {
                                             ))}
                                         </div>
                                     ) : (
-                                        <p>No hay fichas de mecánica registradas.</p>
+                                        <p className={style.withoutRegistration}>No hay fichas de mecánica registradas.</p>
                                     )} 
                                 </div>
                             </div>
