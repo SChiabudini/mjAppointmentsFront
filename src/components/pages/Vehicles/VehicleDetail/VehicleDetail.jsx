@@ -62,7 +62,8 @@ const VehicleDetail = () => {
                                 {vehicleDetail.year && <p><span>Año:&nbsp;</span>{vehicleDetail.year}</p>}
                                 {vehicleDetail.engine && <p><span>Motor:&nbsp;</span>{vehicleDetail.engine}</p>}
                                 {vehicleDetail.personClient || vehicleDetail.companyClient ? (
-                                <>                
+                                <div>  
+                                    <p><span>Cliente:&nbsp;</span></p>              
                                     {vehicleDetail.personClient && (
                                         <div className="clientInfo">
                                             <ul>
@@ -103,7 +104,7 @@ const VehicleDetail = () => {
                                             </ul>
                                         </div>
                                     )} 
-                                </>
+                                </div>
                                 ) : (
                                     <p><span className={style.withoutRegistration}>No hay cliente asociado a este vehículo.</span></p>
                                 )}
