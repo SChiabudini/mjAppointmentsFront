@@ -161,7 +161,7 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                         <input 
                         type="text" 
                         name="dni" 
-                        min='0'
+                        // min='0'
                         value={editPersonClient.dni} 
                         onChange={handleInputChange} />
                         {alreadyExist && <p>Ya existe un cliente con ese DNI.</p>}

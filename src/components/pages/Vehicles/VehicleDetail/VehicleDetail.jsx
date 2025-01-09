@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getVehicleById } from '../../../../redux/vehicleActions';
+import PutVehicle from '../PutVehicle/PutVehicle.jsx';
+import { getVehicleById } from '../../../../redux/vehicleActions.js';
 
 const VehicleDetail = () => {
 
@@ -31,6 +32,9 @@ const VehicleDetail = () => {
         setShowDeleteModal(!showDeleteModal);
     };
 
+    //----- ABRIR POPUP
+    const [popUpOpen, setPopUpOpen] = useState(false);
+
     return(
         <div className="page">
             {/* {
@@ -41,7 +45,7 @@ const VehicleDetail = () => {
                         <div className="title">
                             <h2>Detalle del vehículo</h2>
                             <div className="titleButtons">
-                                {/* {vehicleDetail.active ? <button onClick={() => navigate(`/main_window/clientes/personas/${id}`)}>Editar</button> : ''} */}
+                                {vehicleDetail.active ? <button onClick={() => setPopUpOpen(true)}>Editar</button> : ''}
                                 {!vehicleDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Activar</button> : <button className="delete" onClick={toggleShowDeleteModal}>Desactivar</button>}
                                 <button onClick={() => navigate(`/main_window/vehiculos`)}>Atrás</button>
                             </div>
@@ -59,54 +63,57 @@ const VehicleDetail = () => {
                                 {(vehicleDetail.personClient || vehicleDetail.companyClient) && (
                                     <p><span>Cliente:&nbsp;</span></p>
                                 )}                 
-                                {vehicleDetail.personClient ? (
-                                    <div>
-                                        {vehicleDetail.personClient.name && <p><span>Nombre:&nbsp;</span>{vehicleDetail.personClient.name}</p>}
-                                        {vehicleDetail.personClient.dni && <p><span>DNI:&nbsp;</span>{vehicleDetail.personClient.dni}</p>}
-                                        {vehicleDetail.personClient.cuilCuit && <p><span>CUIL/CUIT:&nbsp;</span>{vehicleDetail.personClient.cuilCuit}</p>}
-                                        {vehicleDetail.personClient.email && <p><span>Correo electrónico:&nbsp;</span>{vehicleDetail.personClient.email}</p>}
-                                        {vehicleDetail.personClient.phones?.length > 0 ? (
+                                {vehicleDetail.personClient || vehicleDetail.companyClient ? (
+                                    <>
+                                        <p><span>Cliente:&nbsp;</span></p>
+                                        {vehicleDetail.personClient && (
                                             <div>
-                                                <p><span>Teléfonos:&nbsp;</span></p>
-                                                {vehicleDetail.personClient.phones?.map((phone, index) => (
-                                                    <ul key={index}>
-                                                        <li>
-                                                            {<p><span>{phone}</span></p>}
-                                                        </li>
-                                                    </ul>
-                                                ))}
+                                                {vehicleDetail.personClient.name && <p><span>Nombre:&nbsp;</span>{vehicleDetail.personClient.name}</p>}
+                                                {vehicleDetail.personClient.dni && <p><span>DNI:&nbsp;</span>{vehicleDetail.personClient.dni}</p>}
+                                                {vehicleDetail.personClient.cuilCuit && <p><span>CUIL/CUIT:&nbsp;</span>{vehicleDetail.personClient.cuilCuit}</p>}
+                                                {vehicleDetail.personClient.email && <p><span>Correo electrónico:&nbsp;</span>{vehicleDetail.personClient.email}</p>}
+                                                {vehicleDetail.personClient.phones?.length > 0 ? (
+                                                    <div>
+                                                        <p><span>Teléfonos:&nbsp;</span></p>
+                                                        {vehicleDetail.personClient.phones.map((phone, index) => (
+                                                            <ul key={index}>
+                                                                <li>
+                                                                    <p><span>{phone}</span></p>
+                                                                </li>
+                                                            </ul>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <p><span>No tiene teléfono registrado.</span></p>
+                                                )}
                                             </div>
-                                        ) : (
-                                            <p><span>No tiene teléfono registrado.</span></p>
                                         )}
-                                    </div>
-                                ) : (
-                                    <></>
-                                )}      
-                                {vehicleDetail.companyClient ? (
-                                    <div>
-                                        {vehicleDetail.companyClient.name && <p><span>Nombre:&nbsp;</span>{vehicleDetail.companyClient.name}</p>}
-                                        {vehicleDetail.companyClient.cuit && <p><span>CUIT:&nbsp;</span>{vehicleDetail.companyClient.cuit}</p>}
-                                        {vehicleDetail.companyClient.address && <p><span>Dirección:&nbsp;</span>{vehicleDetail.companyClient.address}</p>}
-                                        {vehicleDetail.companyClient.email && <p><span>Correo electrónico:&nbsp;</span>{vehicleDetail.companyClient.email}</p>}
-                                        {vehicleDetail.companyClient.phones?.length > 0 ? (
+                                        {vehicleDetail.companyClient && (
                                             <div>
-                                                <p><span>Teléfonos:&nbsp;</span></p>
-                                                {vehicleDetail.companyClient.phones?.map((phone, index) => (
-                                                    <ul key={index}>
-                                                        <li>
-                                                            {<p><span>{phone}</span></p>}
-                                                        </li>
-                                                    </ul>
-                                                ))}
+                                                {vehicleDetail.companyClient.name && <p><span>Nombre:&nbsp;</span>{vehicleDetail.companyClient.name}</p>}
+                                                {vehicleDetail.companyClient.cuit && <p><span>CUIT:&nbsp;</span>{vehicleDetail.companyClient.cuit}</p>}
+                                                {vehicleDetail.companyClient.address && <p><span>Dirección:&nbsp;</span>{vehicleDetail.companyClient.address}</p>}
+                                                {vehicleDetail.companyClient.email && <p><span>Correo electrónico:&nbsp;</span>{vehicleDetail.companyClient.email}</p>}
+                                                {vehicleDetail.companyClient.phones?.length > 0 ? (
+                                                    <div>
+                                                        <p><span>Teléfonos:&nbsp;</span></p>
+                                                        {vehicleDetail.companyClient.phones.map((phone, index) => (
+                                                            <ul key={index}>
+                                                                <li>
+                                                                    <p><span>{phone}</span></p>
+                                                                </li>
+                                                            </ul>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <p><span>No tiene teléfono registrado.</span></p>
+                                                )}
                                             </div>
-                                        ) : (
-                                            <p><span>No tiene teléfono registrado.</span></p>
                                         )}
-                                    </div>
+                                    </>
                                 ) : (
-                                    <></>
-                                )} 
+                                    <p><span>No hay cliente asociado a este vehículo.</span></p>
+                                )}
                                 {(vehicleDetail.serviceSheets?.length > 0 || vehicleDetail.mechanicalSheets?.length > 0) && (
                                     <p><span>Fichas:&nbsp;</span></p>
                                 )}
@@ -185,7 +192,10 @@ const VehicleDetail = () => {
                     </div>
                 {/* ) */}
             {/* } */}
-            <div>
+            <div className={popUpOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpOpen(false)}>
+              <div onClick={(e) => e.stopPropagation()}>
+                <PutVehicle onVehicleAdded={() => setPopUpOpen(false)}/>
+              </div>
             </div>
         </div>
     )

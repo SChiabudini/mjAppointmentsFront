@@ -160,7 +160,7 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
                         <input 
                         type="text" 
                         name="cuit" 
-                        min='0'
+                        // min='0'
                         value={editCompanyClient.cuit} 
                         onChange={handleInputChange} />
                         {alreadyExist && <p>Ya existe un cliente con ese CUIT.</p>}
