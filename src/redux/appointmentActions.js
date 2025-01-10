@@ -46,3 +46,15 @@ export const postAppointment = (appointmentData) => {
         };
     };
 };
+
+export const putAppointment = (appointmentData) => {
+    return async () => {
+        try {
+            const response = await api.put('/appointment', appointmentData);
+            return response;
+        } catch (error) {
+            console.error("Error editing a appointment: ", error.message);
+            return null;
+        }
+    }
+}
