@@ -23,6 +23,7 @@ import { getCompanyClients } from './redux/companyClientActions.js';
 import { getVehicles } from './redux/vehicleActions.js';
 import { getServiceSheets } from './redux/serviceSheetActions.js';
 import { getMechanicalSheets } from './redux/mechanicalSheetActions.js';
+import { getBudgets } from './redux/budgetActions.js';
 
 const App = () => {
 
@@ -37,6 +38,7 @@ const App = () => {
       dispatch(getVehicles());
       dispatch(getServiceSheets());
       dispatch(getMechanicalSheets());
+      dispatch(getBudgets());
       setHasFetched(true);
     }
   }, [dispatch]);

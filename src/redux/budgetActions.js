@@ -43,7 +43,7 @@ export const getBudgetById = (budgetId) => {
 
 //-----TRAE SOLO LOS ACTIVOS FILTRADOS
 
-export const searchBudgets = (number, vehicle, client) => {
+export const searchBudgets = (number, client, vehicle) => {
 
     return async (dispatch) => {
 
@@ -55,12 +55,12 @@ export const searchBudgets = (number, vehicle, client) => {
                 query += `number=${number}&`
             }
 
-            if(vehicle){
-                query += `vehicle=${vehicle}&`
-            }
-
             if(client){
                 query += `client=${client}&`
+            }
+
+            if(vehicle){
+                query += `vehicle=${vehicle}&`
             }
 
             const { data } = await api.get(query);

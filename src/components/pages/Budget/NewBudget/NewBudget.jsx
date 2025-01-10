@@ -1,6 +1,6 @@
 import React from "react";
 
-const NewBudget = () => {
+const NewBudget = ( onBudgetAdded = () => {} ) => {
 
     const handlePrint = () => {
         window.print();
