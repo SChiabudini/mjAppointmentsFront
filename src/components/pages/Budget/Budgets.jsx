@@ -218,7 +218,7 @@ const Budgets = () => {
                                     <td>{budget.vehicle ? budget.vehicle.licensePlate : 'N/A'}</td>
                                     <td>${budget.total}</td>
                                     <td className='center'>
-                                        <a onClick={() => navigate(`/main_window/vehiculos/${vehicle._id}`)}>
+                                        <a onClick={() => navigate(`/main_window/presupuesto/${budget._id}`)}>
                                             <img src={detail} alt="" className="detailImg" />
                                         </a>
                                     </td>
