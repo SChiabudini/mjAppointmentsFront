@@ -17,6 +17,7 @@ import Sheets from './components/pages/Sheets/Sheets.jsx';
 import ServiceSheetDetail from './components/pages/Sheets/ServiceSheetDetail/ServiceSheetDetail.jsx';
 import MechanicalSheetDetail from './components/pages/Sheets/MechanicalSheetDetail/MechanicalSheetDetail.jsx';
 import Budgets from './components/pages/Budget/Budgets.jsx';
+import BudgetDetail from './components/pages/Budget/BudgetDetail/BudgetDetail.jsx';
 import { getAppointments } from './redux/appointmentActions.js';
 import { getPersonClients } from './redux/personClientActions.js';
 import { getCompanyClients } from './redux/companyClientActions.js';
@@ -62,6 +63,7 @@ const App = () => {
           <Route path='/main_window/fichas/service/:id' element={<ServiceSheetDetail />}/>
           <Route path='/main_window/fichas/mecanica/:id' element={<MechanicalSheetDetail />}/>
           <Route path='/main_window/presupuesto' element={<Budgets />}/>
+          <Route path='/main_window/presupuesto/:id' element={<BudgetDetail />}/>
         </Routes>
       </div>
     </div>

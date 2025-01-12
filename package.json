@@ -1,6 +1,6 @@
 {
   "name": "mj-appointments",
-  "productName": "mj-appointments",
+  "productName": "MJ Turnos",
   "version": "1.0.0",
   "description": "mj-appointments",
   "main": ".webpack/main",
