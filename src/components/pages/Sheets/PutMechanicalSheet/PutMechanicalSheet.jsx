@@ -1,28 +1,58 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getMechanicalSheets, postMechanicalSheet } from "../../../../redux/mechanicalSheetActions.js";
-import { getPersonClients } from "../../../../redux/personClientActions";
-import { getCompanyClients } from "../../../../redux/companyClientActions";
-import { getVehicles } from "../../../../redux/vehicleActions";
+import { useParams } from 'react-router-dom';
 import NewPersonClient from "../../Clients/PersonClient/NewPersonClient/NewPersonClient.jsx";
 import NewCompanyClient from "../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx";
 import NewVehicle from "../../Vehicles/NewVehicle/NewVehicle.jsx";
+import { getMechanicalSheetById, getMechanicalSheets, putMechanicalSheet } from "../../../../redux/mechanicalSheetActions.js";
+import { getPersonClients } from "../../../../redux/personClientActions";
+import { getCompanyClients } from "../../../../redux/companyClientActions";
+import { getVehicles } from "../../../../redux/vehicleActions";
 
-const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
+const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
 
+    let { id } = useParams();
     const dispatch = useDispatch();
 
-    const initialMechanicalSheetState = {
-        personClient: null,
-        companyClient: null,
-        vehicle: null,
-        kilometers: null,
-        keyWords: '',
-        description: '',
-        amount: null
-    }
+    const mechanicalSheetDetail = useSelector(state => state.mechanicalSheet?.mechanicalSheetDetail || {}); 
 
-    const [newMechanicalSheet, setNewMechanicalSheet] = useState(initialMechanicalSheetState);
+    const [editMechanicalSheet, setEditMechanicalSheet] = useState({});
+    const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+    // console.log(editMechanicalSheet);
+
+    useEffect(() => {
+            dispatch(getMechanicalSheetById(id));
+        }, [dispatch, id])
+    
+    useEffect(() => {    
+        if (mechanicalSheetDetail && mechanicalSheetDetail._id === id) {     
+            if (mechanicalSheetDetail.personClient) {
+                setSearchingPerson(true);
+                setSearchTermClients(`${mechanicalSheetDetail.personClient.dni} - ${mechanicalSheetDetail.personClient.name}`);
+            } else if (mechanicalSheetDetail.companyClient) {
+                setSearchingPerson(false);
+                setSearchTermClients(`${mechanicalSheetDetail.companyClient.cuit} - ${mechanicalSheetDetail.companyClient.name}`);
+            } else {
+                setSearchTermClients('');
+            }   
+            if (mechanicalSheetDetail.vehicle) {
+                setSearchTermVehicles(`${mechanicalSheetDetail.vehicle.licensePlate}`);
+            }
+            setEditMechanicalSheet({
+                _id: mechanicalSheetDetail._id,
+                date: mechanicalSheetDetail.date,
+                personClient: mechanicalSheetDetail.personClient ? mechanicalSheetDetail.personClient._id : null,
+                companyClient: mechanicalSheetDetail.companyClient ? mechanicalSheetDetail.companyClient._id : null,
+                vehicle: mechanicalSheetDetail.vehicle ? mechanicalSheetDetail.vehicle._id : null,
+                kilometers: mechanicalSheetDetail.kilometers,
+                keyWords: mechanicalSheetDetail.keyWords,
+                description: mechanicalSheetDetail.description,
+                amount: mechanicalSheetDetail.amount,
+                number: mechanicalSheetDetail.number,
+                active: mechanicalSheetDetail.active,
+            });
+        }
+    }, [dispatch, id, mechanicalSheetDetail]);   
 
     // ----- HANDLE INPUTS
 
@@ -32,8 +62,8 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
         const validFields = ['kilometers','amount', 'personClient', 'companyClient', 'vehicle', 'description', 'keyWords'];
     
         if (validFields.includes(name)) {
-            setNewMechanicalSheet({
-                ...newMechanicalSheet,
+            setEditMechanicalSheet({
+                ...editMechanicalSheet,
                 [name]: ['kilometers', 'amount'].includes(name)
                     ? value === '' 
                         ? '' 
@@ -45,12 +75,23 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
         if (name === 'searchTermClients') {
             setSearchTermClients(value);
             if (value === '') setDropdownVisibleClients(false);
-        }
+        };
     
         if (name === 'searchTermVehicles') {
             setSearchTermVehicles(value);
             if (value === '') setDropdownVisibleVehicles(false);
-        }
+        };
+
+        setEditMechanicalSheet((prevState) => ({
+            ...prevState,
+            ...(name === 'searchTermClients' && value === '' && {
+                personClient: null,
+                companyClient: null,
+            }),
+            ...(name === 'searchTermVehicles' && value === '' && {
+                vehicle: null,
+            }),
+        }));
     };
 
     //----- LOAD CLIENTS AND VEHICLES OPTIONS
@@ -83,14 +124,13 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
         setSearchTermClients(clientName);
         setDropdownVisibleClients(false);
         if (searchingPerson) {
-            setNewMechanicalSheet({ ...newMechanicalSheet, personClient: client._id, companyClient: null });
+            setEditMechanicalSheet({ ...editMechanicalSheet, personClient: client._id, companyClient: null });
         } else {
-            setNewMechanicalSheet({ ...newMechanicalSheet, companyClient: client._id, personClient: null });
+            setEditMechanicalSheet({ ...editMechanicalSheet, companyClient: client._id, personClient: null });
         }
     };
 
     //----- HANDLE VEHICLES
-    
 
     const [searchTermVehicles, setSearchTermVehicles] = useState('');
     const [filteredVehicles, setFilteredVehicles] = useState([]);
@@ -109,7 +149,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
     const handleVehicleSelection = (vehicle) => {
         setSearchTermVehicles(vehicle.licensePlate);
         setDropdownVisibleVehicles(false);
-        setNewMechanicalSheet((prevState) => ({
+        setEditMechanicalSheet((prevState) => ({
             ...prevState,
             vehicle: vehicle._id
         }));
@@ -117,7 +157,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
         // Lógica de asignación para personClient y companyClient
         if (vehicle.personClient) {
             setSearchTermClients(`${vehicle.personClient.dni} - ${vehicle.personClient.name}`);
-            setNewMechanicalSheet((prevState) => ({
+            setEditMechanicalSheet((prevState) => ({
                 ...prevState,
                 personClient: vehicle.personClient._id,
                 companyClient: null
@@ -125,7 +165,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
             setSearchingPerson(true);
         } else if (vehicle.companyClient) {
             setSearchTermClients(`${vehicle.companyClient.cuit} - ${vehicle.companyClient.name}`);
-            setNewMechanicalSheet((prevState) => ({
+            setEditMechanicalSheet((prevState) => ({
                 ...prevState,
                 companyClient: vehicle.companyClient._id,
                 personClient: null
@@ -133,7 +173,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
             setSearchingPerson(false);
         } else {
             setSearchTermClients('');
-            setNewMechanicalSheet((prevState) => ({
+            setEditMechanicalSheet((prevState) => ({
                 ...prevState,
                 personClient: null,
                 companyClient: null
@@ -196,39 +236,40 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
         event.preventDefault();
 
         const mechanicalSheetToSubmit = {
-            ...newMechanicalSheet,
-            kilometers: parseInt(newMechanicalSheet.kilometers, 10) || 0,
-            amount: parseInt(newMechanicalSheet.amount, 10) || 0
+            ...editMechanicalSheet,
+            kilometers: parseInt(editMechanicalSheet.kilometers, 10) || 0,
+            amount: parseInt(editMechanicalSheet.amount, 10) || 0
         }
 
         try {
-            const response = await dispatch(postMechanicalSheet(mechanicalSheetToSubmit));
-            console.log("Mechanical sheet successfully saved");
+            const response = await dispatch(putMechanicalSheet(mechanicalSheetToSubmit));
+            console.log("Mechanical sheet successfully updated");
 
-            if(newMechanicalSheet.personClient){
+            if(editMechanicalSheet.personClient){
                 dispatch(getPersonClients());
             }
 
-            if(newMechanicalSheet.companyClient){
+            if(editMechanicalSheet.companyClient){
                 dispatch(getCompanyClients());
             }
 
             dispatch(getVehicles());
 
-            setNewMechanicalSheet(initialMechanicalSheetState);
+            setEditMechanicalSheet(editMechanicalSheet);
             setSearchTermClients('');
             setSearchTermVehicles('');
             dispatch(getMechanicalSheets());
+            dispatch(getMechanicalSheetById(id));
             onMechanicalSheetAdded(response);
         } catch (error) {
-            console.error("Error saving mechanical sheet:", error.message);
+            console.error("Error updating mechanical sheet:", error.message);
         }
     };
 
     return(
         <div className="formContainer">
             <div className="titleForm">
-                <h2>Nueva ficha mecánica</h2>
+                <h2>Editar ficha mecánica</h2>
                 <div className="titleButtons">
                     {/* <button onClick={handleSetForm} disabled={isClearDisabled}><img src={iconClear} alt="" /></button> */}
                 </div>
@@ -247,14 +288,14 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                             onBlur={handleSearchBlur}
                             onKeyDown={handleKeyDown}
                         />
-                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button" disabled={newMechanicalSheet.vehicle}>
+                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button" disabled={editMechanicalSheet.vehicle}>
                             {showNewVehicle ? '-' : '+'}
                         </button>                                  
                     </div>
                     <div className="searchRow">
-                        {filteredVehicles.length > 0 && dropdownVisibleVehicles && (
+                        {filteredVehicles?.length > 0 && dropdownVisibleVehicles && (
                             <ul className="dropdown">
-                                {filteredVehicles.map((vehicle, index) => (
+                                {filteredVehicles?.map((vehicle, index) => (
                                     <li
                                     key={vehicle._id}
                                     onClick={() => handleVehicleSelection(vehicle)}
@@ -267,7 +308,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                         )}
                     </div>
                 </div>
-                {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true} personClientId={newMechanicalSheet.personClient} companyClientId={newMechanicalSheet.companyClient}/>}
+                {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true} personClientId={editMechanicalSheet.personClient} companyClientId={editMechanicalSheet.companyClient}/>}
                 <div className="clientSelection">
                         <label className="formRow">Cliente</label>
                             <div className="clientSelectionInputs">
@@ -280,6 +321,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                                         onChange={() => {
                                             setSearchingPerson(true);
                                             setSearchTermClients('');
+                                            setEditMechanicalSheet({ ...editMechanicalSheet, personClient: null, companyClient: null });
                                         }}
                                     />
                                     Persona
@@ -293,6 +335,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                                         onChange={() => {
                                             setSearchingPerson(false);
                                             setSearchTermClients('');
+                                            setEditMechanicalSheet({ ...editMechanicalSheet, personClient: null, companyClient: null });
                                         }}
                                     />
                                     Empresa
@@ -309,14 +352,14 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                                 onBlur={handleSearchBlur}
                                 onKeyDown={handleKeyDown}
                             />
-                            <button onClick={() => setShowNewClient(!showNewClient)} type="button" disabled={newMechanicalSheet.personClient || newMechanicalSheet.companyClient}>
+                            <button onClick={() => setShowNewClient(!showNewClient)} type="button" disabled={editMechanicalSheet.personClient || editMechanicalSheet.companyClient}>
                                 {showNewClient ? '-' : '+'}
                             </button>                                 
                         </div>
                         <div className="searchRow">
-                            {filteredClients.length > 0 && dropdownVisibleClients && (
+                            {filteredClients?.length > 0 && dropdownVisibleClients && (
                                 <ul className="dropdown">
-                                    {filteredClients.map((client, index) => (
+                                    {filteredClients?.map((client, index) => (
                                         <li
                                         key={client._id}
                                         onClick={() => handleClientSelection(client)}
@@ -329,26 +372,26 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                             )}
                         </div>
                 </div>
-                {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newMechanicalSheet.vehicle}/>}
-                {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newMechanicalSheet.vehicle}/>}
+                {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true} vehicleId={editMechanicalSheet.vehicle}/>}
+                {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true} vehicleId={editMechanicalSheet.vehicle}/>}
                 <div className="formRow"></div>
                 <form id="mechanicalSheetForm" onSubmit={handleSubmit}>
                     <div className="formRow">
                         <label htmlFor="kilometers">Kilómetros</label>
-                        <input type="text" name="kilometers" value={newMechanicalSheet.kilometers} onChange={handleInputChange}/>
+                        <input type="text" name="kilometers" value={editMechanicalSheet.kilometers} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow">
                         <label htmlFor="amount">Monto</label>
-                        <input type="text" name="amount" value={newMechanicalSheet.amount} onChange={handleInputChange}/>
+                        <input type="text" name="amount" value={editMechanicalSheet.amount} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow">
                         <label htmlFor="keyWords">Palabras clave</label>
-                        <input type="text" name="keyWords" value={newMechanicalSheet.keyWords} onChange={handleInputChange}/>
+                        <input type="text" name="keyWords" value={editMechanicalSheet.keyWords} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow"><label htmlFor="description">Descripción</label></div>
-                    <div className="formRow"><textarea name="description" value={newMechanicalSheet.description} onChange={handleInputChange}/></div>
+                    <div className="formRow"><textarea name="description" value={editMechanicalSheet.description} onChange={handleInputChange}/></div>
                     <div className="submit">
-                        <button type='submit' form="mechanicalSheetForm">Crear ficha</button>
+                        <button type='submit' form="mechanicalSheetForm">Editar ficha</button>
                     </div>
                 </form>
             </div>
@@ -356,4 +399,4 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
     )
 };
 
-export default NewMechanicalSheet;
+export default PutMechanicalSheet;
