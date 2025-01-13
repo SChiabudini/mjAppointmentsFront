@@ -92,3 +92,15 @@ export const postMechanicalSheet = (mechanicalSheetData) => {
         }
     };
 };
+
+export const putMechanicalSheet = (mechanicalSheetData) => {
+    return async () => {
+        try {
+            const response = await api.put('/mechanicalSheet', mechanicalSheetData);
+            return response;
+        } catch (error) {
+            console.error("Error editing a mechanical sheet: ", error.message);
+            return null;
+        }
+    }
+};
