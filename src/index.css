@@ -127,6 +127,7 @@ h2{
     margin: 0 auto;
     padding: 2rem 5rem;
     height: 100%;
+    
 }
 
 .title {
@@ -638,11 +639,17 @@ th div.withFilter button.sort{
         visibility: hidden;
     }
 
+    @page {
+        margin: 0;
+    }
+
     #printable-section, #printable-section * {
         visibility: visible;
     }
 
     #printable-section {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
         position: absolute;
         top: 0;
         left: 0;

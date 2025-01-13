@@ -1,0 +1,45 @@
+.header{
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    padding: 2rem;
+    border-bottom: 1px solid black;
+}
+
+.header1, .header2, .header3{
+    width: 33%;
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+    gap: 0.25rem;
+    border-right: 1px solid black;
+}
+
+.header1{
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+    gap: 0.25rem;
+}
+
+.header1 img{
+    width: 5rem;
+    margin-bottom: 0.25rem;
+}
+
+.header1 span{
+    font-weight: 600;
+}
+
+.body{
+    padding: 2rem;
+}
+
+.footer{
+}
+
+.budget{
+    width: 216mm;
+    height: 279mm;
+    margin: 0 auto;
+}
