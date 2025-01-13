@@ -2,17 +2,17 @@
     height: auto;
     display: flex;
     justify-content: space-between;
-    padding: 2rem;
+    padding-bottom: 2rem;
     border-bottom: 1px solid black;
+    flex: 0 0 auto;
 }
 
-.header1, .header2, .header3{
+.header1, .header2{
     width: 33%;
     display: flex;
     flex-direction: column;
     align-items: baseline;
     gap: 0.25rem;
-    border-right: 1px solid black;
 }
 
 .header1{
@@ -27,19 +27,123 @@
     margin-bottom: 0.25rem;
 }
 
-.header1 span{
+.header1 span, .header3 span, .clientData span{
     font-weight: 600;
 }
 
+.header2{
+    align-items: center !important;
+}
+
+.header2 p.bigP{
+    font-size: 3rem;
+    font-weight: 800;
+    width: 50%;
+    text-align: center;
+    border-bottom: 1px solid black;
+}
+
+.header3{
+    width: 33%;
+    display: flex;
+    justify-content: end;
+}
+
+.header3 div{
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+    gap: 0.25rem;
+}
+
+.header3 span{
+    font-size: 1.25rem;
+}
+
 .body{
-    padding: 2rem;
+    padding: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    flex: 1 1 auto;
+}
+
+.clientData{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-bottom: 1px solid black;
+    padding-bottom: 2rem;
+}
+
+.columns{
+    display: flex;
+    gap: 3rem;
+}
+
+.columns div{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.budget table {
+    width: 100%;
+    table-layout: fixed; /* Hace que las columnas respeten los anchos especificados */
+    border-collapse: collapse;
+}
+
+.budget th,
+.budget td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.budget th:nth-child(1), /* Cantidad */
+.budget td:nth-child(1) {
+    width: 10%; /* Ajusta según el contenido típico de esta columna */
+    text-align: center;
+}
+
+.budget th:nth-child(3), /* Precio unitario */
+.budget td:nth-child(3),
+.budget th:nth-child(4), /* Precio total */
+.budget td:nth-child(4) {
+    width: 15%; /* Ajusta según el contenido típico de estas columnas */
+    text-align: right;
+}
+
+.budget th:nth-child(2), /* Descripción */
+.budget td:nth-child(2) {
+    width: auto; /* Toma el ancho restante */
+    text-align: left;
+}
+
+.budget table thead {
+    background-color: #f9f9f9; /* Color de fondo para la fila de encabezado */
 }
 
 .footer{
+    display: flex;
+    justify-content: end;
+    padding-top: 2rem;
+    border-top: 1px solid black;
+    font-size: 1.5rem;
+    flex: 0 0 auto;
 }
 
 .budget{
     width: 216mm;
     height: 279mm;
     margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.budgetPage{
+    width: 100%;
+    height: 100%;
 }
