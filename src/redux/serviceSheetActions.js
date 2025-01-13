@@ -89,3 +89,15 @@ export const postServiceSheet = (serviceSheetData) => {
         }
     };
 };
+
+export const putServiceSheet = (serviceSheetData) => {
+    return async () => {
+        try {
+            const response = await api.put('/serviceSheet', serviceSheetData);
+            return response;
+        } catch (error) {
+            console.error("Error editing a service sheet: ", error.message);
+            return null;
+        }
+    }
+};

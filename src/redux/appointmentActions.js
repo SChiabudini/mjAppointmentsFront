@@ -57,4 +57,4 @@ export const putAppointment = (appointmentData) => {
             return null;
         }
     }
-}
+};

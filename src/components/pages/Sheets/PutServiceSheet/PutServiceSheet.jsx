@@ -1,32 +1,63 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getServiceSheets, postServiceSheet } from "../../../../redux/serviceSheetActions.js";
-import { getPersonClients } from "../../../../redux/personClientActions";
-import { getCompanyClients } from "../../../../redux/companyClientActions";
-import { getVehicles } from "../../../../redux/vehicleActions";
+import { useParams } from 'react-router-dom';
 import NewPersonClient from "../../Clients/PersonClient/NewPersonClient/NewPersonClient.jsx";
 import NewCompanyClient from "../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx";
 import NewVehicle from "../../Vehicles/NewVehicle/NewVehicle.jsx";
+import { getServiceSheetById, getServiceSheets, putServiceSheet } from "../../../../redux/serviceSheetActions.js";
+import { getPersonClients } from "../../../../redux/personClientActions";
+import { getCompanyClients } from "../../../../redux/companyClientActions";
+import { getVehicles } from "../../../../redux/vehicleActions";
 
-const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
 
+const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
+    
+    let { id } = useParams();
     const dispatch = useDispatch();
 
-    const initialServiceSheetState = {
-        personClient: null,
-        companyClient: null,
-        vehicle: null,
-        kilometers: null,
-        kmsToNextService: null,
-        oil: '',
-        filters: [],
-        notes: '',
-        amount: null
-    }
+    const serviceSheetDetail = useSelector(state => state.serviceSheet?.serviceSheetDetail || {}); 
 
-    const [newServiceSheet, setNewServiceSheet] = useState(initialServiceSheetState);
+    const [editServiceSheet, setEditServiceSheet] = useState({});
+    const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+    // console.log(editServiceSheet);
+      
+    useEffect(() => {
+        dispatch(getServiceSheetById(id));
+    }, [dispatch, id])
 
-    // ----- HANDLE INPUTS
+    useEffect(() => {    
+        if (serviceSheetDetail && serviceSheetDetail._id === id) {     
+            if (serviceSheetDetail.personClient) {
+                setSearchingPerson(true);
+                setSearchTermClients(`${serviceSheetDetail.personClient.dni} - ${serviceSheetDetail.personClient.name}`);
+            } else if (serviceSheetDetail.companyClient) {
+                setSearchingPerson(false);
+                setSearchTermClients(`${serviceSheetDetail.companyClient.cuit} - ${serviceSheetDetail.companyClient.name}`);
+            } else {
+                setSearchTermClients('');
+            }   
+            if (serviceSheetDetail.vehicle) {
+                setSearchTermVehicles(`${serviceSheetDetail.vehicle.licensePlate}`);
+            }
+            setEditServiceSheet({
+                _id: serviceSheetDetail._id,
+                date: serviceSheetDetail.date,
+                personClient: serviceSheetDetail.personClient ? serviceSheetDetail.personClient._id : null,
+                companyClient: serviceSheetDetail.companyClient ? serviceSheetDetail.companyClient._id : null,
+                vehicle: serviceSheetDetail.vehicle ? serviceSheetDetail.vehicle._id : null,
+                kilometers: serviceSheetDetail.kilometers,
+                kmsToNextService: serviceSheetDetail.kmsToNextService,
+                oil: serviceSheetDetail.oil,
+                filters: serviceSheetDetail.filters || [],
+                notes: serviceSheetDetail.notes,
+                amount: serviceSheetDetail.amount,
+                number: serviceSheetDetail.number,
+                active: serviceSheetDetail.active,
+            });
+        }
+    }, [dispatch, id, serviceSheetDetail]);    
+
+    //----- HANDLE INPUTS
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -34,25 +65,36 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
         const validFields = ['kilometers', 'kmsToNextService', 'amount', 'personClient', 'companyClient', 'vehicle', 'oil', 'filters', 'notes'];
     
         if (validFields.includes(name)) {
-            setNewServiceSheet({
-                ...newServiceSheet,
+            setEditServiceSheet({
+                ...editServiceSheet,
                 [name]: ['kilometers', 'kmsToNextService', 'amount'].includes(name)
                     ? value === '' 
                         ? '' 
                         : parseInt(value, 10) || 0
                     : value,
             });
-        }
+        };
     
         if (name === 'searchTermClients') {
             setSearchTermClients(value);
             if (value === '') setDropdownVisibleClients(false);
-        }
+        };
     
         if (name === 'searchTermVehicles') {
             setSearchTermVehicles(value);
             if (value === '') setDropdownVisibleVehicles(false);
-        }
+        };
+
+        setEditServiceSheet((prevState) => ({
+            ...prevState,
+            ...(name === 'searchTermClients' && value === '' && {
+                personClient: null,
+                companyClient: null,
+            }),
+            ...(name === 'searchTermVehicles' && value === '' && {
+                vehicle: null,
+            }),
+        }));
     };
 
     //----- LOAD CLIENTS AND VEHICLES OPTIONS
@@ -63,9 +105,9 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
 
     //----- HANDLE CLIENTS
 
+    const [searchingPerson, setSearchingPerson] = useState(true);
     const [searchTermClients, setSearchTermClients] = useState('');
     const [filteredClients, setFilteredClients] = useState([]);
-    const [searchingPerson, setSearchingPerson] = useState(true);
     const [dropdownVisibleClients, setDropdownVisibleClients] = useState(false);
     const [selectedIndexClients, setSelectedIndexClients] = useState(-1);
     const [showNewClient, setShowNewClient] = useState(false);
@@ -77,7 +119,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                 client.name.toLowerCase().includes(searchTermClients.toLowerCase()) || 
                 (client.dni && client.dni.toString().includes(searchTermClients))
             )
-        );
+        );  
     }, [searchTermClients, searchingPerson, personClients, companyClients]);
 
     const handleClientSelection = (client) => {
@@ -85,13 +127,13 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
         setSearchTermClients(clientName);
         setDropdownVisibleClients(false);
         if (searchingPerson) {
-            setNewServiceSheet({ ...newServiceSheet, personClient: client._id, companyClient: null });
+            setEditServiceSheet({ ...editServiceSheet, personClient: client._id, companyClient: null });
         } else {
-            setNewServiceSheet({ ...newServiceSheet, companyClient: client._id, personClient: null });
+            setEditServiceSheet({ ...editServiceSheet, companyClient: client._id, personClient: null });
         }
     };
 
-    //----- HANDLE VEHICLES
+    //----- VEHICLES
 
     const [searchTermVehicles, setSearchTermVehicles] = useState('');
     const [filteredVehicles, setFilteredVehicles] = useState([]);
@@ -110,7 +152,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     const handleVehicleSelection = (vehicle) => {
         setSearchTermVehicles(vehicle.licensePlate);
         setDropdownVisibleVehicles(false);
-        setNewServiceSheet((prevState) => ({
+        setEditServiceSheet((prevState) => ({
             ...prevState,
             vehicle: vehicle._id
         }));
@@ -118,7 +160,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
         // Lógica de asignación para personClient y companyClient
         if (vehicle.personClient) {
             setSearchTermClients(`${vehicle.personClient.dni} - ${vehicle.personClient.name}`);
-            setNewServiceSheet((prevState) => ({
+            setEditServiceSheet((prevState) => ({
                 ...prevState,
                 personClient: vehicle.personClient._id,
                 companyClient: null
@@ -126,7 +168,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
             setSearchingPerson(true);
         } else if (vehicle.companyClient) {
             setSearchTermClients(`${vehicle.companyClient.cuit} - ${vehicle.companyClient.name}`);
-            setNewServiceSheet((prevState) => ({
+            setEditServiceSheet((prevState) => ({
                 ...prevState,
                 companyClient: vehicle.companyClient._id,
                 personClient: null
@@ -134,7 +176,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
             setSearchingPerson(false);
         } else {
             setSearchTermClients('');
-            setNewServiceSheet((prevState) => ({
+            setEditServiceSheet((prevState) => ({
                 ...prevState,
                 personClient: null,
                 companyClient: null
@@ -142,7 +184,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
             setSearchingPerson(true);
         }
     };
-    
+
     //----- DROPDOWN
 
     const handleSearchBlur = (event) => {
@@ -196,7 +238,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     const handleFilterChange = (event) => {
         const { value, checked } = event.target;
 
-        setNewServiceSheet((prevState) => {
+        setEditServiceSheet((prevState) => {
             const updatedFilters = checked
                 ? [...prevState.filters, value] // Agregar el valor si está seleccionado
                 : prevState.filters.filter((filter) => filter !== value); // Quitar el valor si no está seleccionado
@@ -211,41 +253,43 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
         event.preventDefault();
 
         const serviceSheetToSubmit = {
-            ...newServiceSheet,
-            kilometers: parseInt(newServiceSheet.kilometers, 10) || 0,
-            kmsToNextService: parseInt(newServiceSheet.kmsToNextService, 10) || 0,
-            amount: parseInt(newServiceSheet.amount, 10) || 0
+            ...editServiceSheet,
+            kilometers: parseInt(editServiceSheet.kilometers, 10) || 0,
+            kmsToNextService: parseInt(editServiceSheet.kmsToNextService, 10) || 0,
+            amount: parseInt(editServiceSheet.amount, 10) || 0
         };
 
         try {
             console.log(serviceSheetToSubmit);
-            const response = await dispatch(postServiceSheet(serviceSheetToSubmit));
-            console.log("Service sheet successfully saved");
+            const response = await dispatch(putServiceSheet(serviceSheetToSubmit));
+            console.log("Service sheet successfully updated");
 
-            if(newServiceSheet.personClient){
+            if(editServiceSheet.personClient){
                 dispatch(getPersonClients());
             }
 
-            if(newServiceSheet.companyClient){
+            if(editServiceSheet.companyClient){
                 dispatch(getCompanyClients());
             }
 
             dispatch(getVehicles());
 
-            setNewServiceSheet(initialServiceSheetState);
+            setEditServiceSheet(editServiceSheet);
             setSearchTermClients('');
             setSearchTermVehicles('');
             dispatch(getServiceSheets());
+            dispatch(getServiceSheetById(id));
             onServiceSheetAdded(response);
+
         } catch (error) {
-            console.error("Error saving service sheet:", error.message);
+            console.error("Error updating service sheet:", error.message);
         }
     };
 
     return(
         <div className="formContainer">
             <div className="titleForm">
-                <h2>Nueva ficha service</h2>
+                <h2>Editar ficha service</h2>
                 <div className="titleButtons">
                     {/* <button onClick={handleSetForm} disabled={isClearDisabled}><img src={iconClear} alt="" /></button> */}
                 </div>
@@ -264,14 +308,14 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                             onBlur={handleSearchBlur}
                             onKeyDown={handleKeyDown}
                         />
-                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button" disabled={newServiceSheet.vehicle}>
+                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button" disabled={editServiceSheet.vehicle}>
                             {showNewVehicle ? '-' : '+'}
-                        </button>                                
+                        </button>                             
                     </div>
                     <div className="searchRow">
-                        {filteredVehicles.length > 0 && dropdownVisibleVehicles && (
+                        {filteredVehicles?.length > 0 && dropdownVisibleVehicles && (
                             <ul className="dropdown">
-                                {filteredVehicles.map((vehicle, index) => (
+                                {filteredVehicles?.map((vehicle, index) => (
                                     <li
                                     key={vehicle._id}
                                     onClick={() => handleVehicleSelection(vehicle)}
@@ -284,43 +328,39 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                         )}
                     </div>
                 </div>
-                {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true} personClientId={newServiceSheet.personClient} companyClientId={newServiceSheet.companyClient}/>}
+                {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true} personClientId={editServiceSheet.personClient} companyClientId={editServiceSheet.companyClient}/>}
                 <div className="clientSelection">
                     <label className="formRow">Cliente</label>
-                    {newServiceSheet.personClient || newServiceSheet.companyClient ? 
-                        <></> :
-                        (
-                            <div className="clientSelectionInputs">
-                                <label>
-                                    <input
-                                        type="radio"
-                                        name="clientType"
-                                        value="person"
-                                        checked={searchingPerson}
-                                        onChange={() => {
-                                            setSearchingPerson(true);
-                                            setSearchTermClients('');
-                                        }}
-                                    />
-                                    Persona
-                                </label>
-                                <label>
-                                    <input
-                                        type="radio"
-                                        name="clientType"
-                                        value="company"
-                                        checked={!searchingPerson}
-                                        onChange={() => {
-                                            setSearchingPerson(false);
-                                            setSearchTermClients('');
-                                        }}
-                                    />
-                                    Empresa
-                                </label>
-                            </div>
-                        )
-                    }
-
+                    <div className="clientSelectionInputs">
+                        <label>
+                            <input
+                                type="radio"
+                                name="clientType"
+                                value="person"
+                                checked={searchingPerson}
+                                onChange={() => {
+                                    setSearchingPerson(true);
+                                    setSearchTermClients('');
+                                    setEditServiceSheet({ ...editServiceSheet, personClient: null, companyClient: null });
+                                }}
+                            />
+                            Persona
+                        </label>
+                        <label>
+                            <input
+                                type="radio"
+                                name="clientType"
+                                value="company"
+                                checked={!searchingPerson}
+                                onChange={() => {
+                                    setSearchingPerson(false);
+                                    setSearchTermClients('');
+                                    setEditServiceSheet({ ...editServiceSheet, personClient: null, companyClient: null });
+                                }}
+                            />
+                            Empresa
+                        </label>
+                    </div>
                     <div className="searchRow">
                         <input
                             type="text"
@@ -332,14 +372,14 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                             onBlur={handleSearchBlur}
                             onKeyDown={handleKeyDown}
                         />
-                        <button onClick={() => setShowNewClient(!showNewClient)} type="button" disabled={newServiceSheet.personClient || newServiceSheet.companyClient}>
+                        <button onClick={() => setShowNewClient(!showNewClient)} type="button" disabled={editServiceSheet.personClient || editServiceSheet.companyClient}>
                             {showNewClient ? '-' : '+'}
                         </button>                                 
                     </div>
                     <div className="searchRow">
-                        {filteredClients.length > 0 && dropdownVisibleClients && (
+                        {filteredClients?.length > 0 && dropdownVisibleClients && (
                             <ul className="dropdown">
-                                {filteredClients.map((client, index) => (
+                                {filteredClients?.map((client, index) => (
                                     <li
                                     key={client._id}
                                     onClick={() => handleClientSelection(client)}
@@ -352,21 +392,21 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                         )}
                     </div>
                 </div>
-                {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newServiceSheet.vehicle}/>}
-                {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newServiceSheet.vehicle}/>}
+                {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true} vehicleId={editServiceSheet.vehicle}/>}
+                {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true} vehicleId={editServiceSheet.vehicle}/>}
                 <div className="formRow"></div>
                 <form id="serviceSheetForm" onSubmit={handleSubmit}>
                     <div className="formRow">
                         <label htmlFor="kilometers">Kilómetros</label>
-                        <input type="text" name="kilometers" value={newServiceSheet.kilometers} onChange={handleInputChange}/>
+                        <input type="text" name="kilometers" value={editServiceSheet.kilometers} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow">
                         <label htmlFor="kmsToNextService">Kms próximo service</label>
-                        <input type="text" name="kmsToNextService" value={newServiceSheet.kmsToNextService} onChange={handleInputChange}/>
+                        <input type="text" name="kmsToNextService" value={editServiceSheet.kmsToNextService} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow">
                         <label htmlFor="oil">Aceite</label>
-                        <input type="text" name="oil" value={newServiceSheet.oil} onChange={handleInputChange}/>
+                        <input type="text" name="oil" value={editServiceSheet.oil} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow"><label>Filtros</label></div>
                     <div className="filterSelectionInputs">
@@ -375,6 +415,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                                 type="checkbox"
                                 name="filter"
                                 value="Aceite"
+                                checked={editServiceSheet.filters?.includes("Aceite")} // Verificar si está seleccionado
                                 onChange={handleFilterChange}
                             />
                             Aceite
@@ -384,6 +425,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                                 type="checkbox"
                                 name="filter"
                                 value="Aire"
+                                checked={editServiceSheet.filters?.includes("Aire")}
                                 onChange={handleFilterChange}
                             />
                             Aire
@@ -393,6 +435,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                                 type="checkbox"
                                 name="filter"
                                 value="Habitáculo"
+                                checked={editServiceSheet.filters?.includes("Habitáculo")}
                                 onChange={handleFilterChange}
                             />
                             Habitáculo
@@ -402,6 +445,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                                 type="checkbox"
                                 name="filter"
                                 value="Combustible"
+                                checked={editServiceSheet.filters?.includes("Combustible")}
                                 onChange={handleFilterChange}
                             />
                             Combustible
@@ -409,12 +453,12 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                     </div>
                     <div className="formRow">
                         <label htmlFor="amount">Monto</label>
-                        <input type="text" name="amount" value={newServiceSheet.amount} onChange={handleInputChange}/>
+                        <input type="text" name="amount" value={editServiceSheet.amount} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow"><label htmlFor="notes">Notas</label></div>
-                    <div className="formRow"><textarea name="notes" value={newServiceSheet.notes} onChange={handleInputChange}/></div>
+                    <div className="formRow"><textarea name="notes" value={editServiceSheet.notes} onChange={handleInputChange}/></div>
                     <div className="submit">
-                        <button type='submit' form="serviceSheetForm">Crear ficha</button>
+                        <button type='submit' form="serviceSheetForm">Editar ficha</button>
                     </div>
                 </form>
             </div>
@@ -422,4 +466,4 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     )
 };
 
-export default NewServiceSheet;
+export default PutServiceSheet;
