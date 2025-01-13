@@ -29,6 +29,14 @@ const VehicleDetail = () => {
         };
         fetchData();
     }, [dispatch, id]);
+
+    // if (loading) {
+    //     return <div>Cargando...</div>;
+    // };
+
+    // if (!vehicleDetail || Object.keys(vehicleDetail)?.length === 0) {
+    //     return <div>No se encontraron detalles de este vehículo.</div>;
+    // };
     
     const toggleShowDeleteModal = () => {
         setShowDeleteModal(!showDeleteModal);
