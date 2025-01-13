@@ -95,7 +95,14 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
         }, 150);
     };
 
+    const handleNoSend = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+        }
+    };
+
     const handleKeyDown = (e) => {
+
         if (e.key === 'ArrowDown') {
             setSelectedIndex(prev => (prev + 1) % filteredVehicles.length);
         } else if (e.key === 'ArrowUp') {
@@ -139,7 +146,7 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                 </div>
             </div>
             <div className="container">
-                <form id="personClientForm" onSubmit={handleSubmit}>                    
+                <form id="personClientForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>                    
                     <div className="formRow">
                         <label>DNI</label>
                         <input type="text" name="dni" value={newPersonClient.dni} onChange={handleInputChange} />

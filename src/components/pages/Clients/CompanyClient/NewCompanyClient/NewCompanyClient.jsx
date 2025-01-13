@@ -117,23 +117,29 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
 
     //----- SUBMIT
 
-    const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-        const response = await dispatch(postCompanyClient(newCompanyClient));
-        console.log("Client successfully saved");
-
-        if(newCompanyClient.vehicles.length > 0){
-            dispatch(getVehicles());
+    const handleNoSend = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
         }
+    };
 
-        setNewCompanyClient(initialCompanyClientState);
-        dispatch(getCompanyClients());
-        onClientAdded(response);
-    } catch (error) {
-        console.error("Error saving company client:", error.message);
-        if (error.message.includes('already exist')) setAlreadyExist(true);
-    }
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        try {
+            const response = await dispatch(postCompanyClient(newCompanyClient));
+            console.log("Client successfully saved");
+
+            if(newCompanyClient.vehicles.length > 0){
+                dispatch(getVehicles());
+            }
+
+            setNewCompanyClient(initialCompanyClientState);
+            dispatch(getCompanyClients());
+            onClientAdded(response);
+        } catch (error) {
+            console.error("Error saving company client:", error.message);
+            if (error.message.includes('already exist')) setAlreadyExist(true);
+        }
     };
 
     return (
@@ -145,7 +151,7 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
             </div>
         </div>
         <div className="container">
-            <form id="companyClientForm" onSubmit={handleSubmit}>
+            <form id="companyClientForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
                 <div className="formRow">
                     <label htmlFor="cuit">CUIT</label>
                     <input type="text" name="cuit" value={newCompanyClient.cuit} onChange={handleInputChange}/>

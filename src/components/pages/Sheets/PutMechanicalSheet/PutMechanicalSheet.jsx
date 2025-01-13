@@ -232,6 +232,12 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
 
     //----- SUBMIT
 
+    const handleNoSend = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+        }
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -375,7 +381,7 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                 {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true} vehicleId={editMechanicalSheet.vehicle}/>}
                 {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true} vehicleId={editMechanicalSheet.vehicle}/>}
                 <div className="formRow"></div>
-                <form id="mechanicalSheetForm" onSubmit={handleSubmit}>
+                <form id="mechanicalSheetForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
                     <div className="formRow">
                         <label htmlFor="kilometers">Kilómetros</label>
                         <input type="text" name="kilometers" value={editMechanicalSheet.kilometers} onChange={handleInputChange}/>
