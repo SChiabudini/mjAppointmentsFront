@@ -639,10 +639,6 @@ th div.withFilter button.sort{
         visibility: hidden;
     }
 
-    @page {
-        margin: 0;
-    }
-
     #printable-section, #printable-section * {
         visibility: visible;
     }
