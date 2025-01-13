@@ -248,9 +248,9 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                             onBlur={handleSearchBlur}
                             onKeyDown={handleKeyDown}
                         />
-                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button">
+                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button" disabled={newMechanicalSheet.vehicle}>
                             {showNewVehicle ? '-' : '+'}
-                        </button>                                 
+                        </button>                                  
                     </div>
                     <div className="searchRow">
                         {filteredVehicles.length > 0 && dropdownVisibleVehicles && (

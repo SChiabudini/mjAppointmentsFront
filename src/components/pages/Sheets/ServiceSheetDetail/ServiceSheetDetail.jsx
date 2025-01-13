@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
+import PutServiceSheet from '../PutServiceSheet/PutServiceSheet.jsx';
 import { getServiceSheetById } from '../../../../redux/serviceSheetActions.js';
 
 const ServiceSheetDetail = () => {
@@ -17,7 +18,8 @@ const ServiceSheetDetail = () => {
 	// console.log(serviceSheetDetail);
 
 	const [loading, setLoading] = useState(true);
-	const [showDeleteModal, setShowDeleteModal] = useState(false);        
+	const [showDeleteModal, setShowDeleteModal] = useState(false);     
+    const [popUpOpen, setPopUpOpen] = useState(false);      
 	
 	useEffect(() => {
 		const fetchData = async () => {
@@ -46,7 +48,7 @@ const ServiceSheetDetail = () => {
                         <div className="title">
                             <h2>Detalle de la ficha service</h2>
                             <div className="titleButtons">
-                                {/* {serviceSheetDetail.active ? <button onClick={() => navigate(`/main_window/clientes/personas/${id}`)}>Editar</button> : ''} */}
+                                {serviceSheetDetail.active ? <button onClick={() => setPopUpOpen(true)}>Editar</button> : ''}
                                 {!serviceSheetDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Activar</button> : <button className="delete" onClick={toggleShowDeleteModal}>Desactivar</button>}
                                 <button onClick={() => navigate(`/main_window/fichas`)}>Atrás</button>
                             </div>
@@ -154,7 +156,10 @@ const ServiceSheetDetail = () => {
                     </div>
                 {/* ) */}
             {/* } */}
-            <div>
+            <div className={popUpOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpOpen(false)}>
+              <div onClick={(e) => e.stopPropagation()}>
+                <PutServiceSheet onServiceSheetAdded={() => setPopUpOpen(false)}/>
+              </div>
             </div>
         </div>
 	)
