@@ -16,10 +16,6 @@ const PersonClientDetail = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);    
 
     useEffect(() => {
-        dispatch(getPersonClientById(id))
-    }, [dispatch, id]);
-
-    useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             await dispatch(getPersonClientById(id));
@@ -27,6 +23,14 @@ const PersonClientDetail = () => {
         };
         fetchData();
     }, [dispatch, id]);
+
+    // if (loading) {
+    //     return <div>Cargando...</div>;
+    // };
+
+    // if (!personClientDetail || Object.keys(personClientDetail).length === 0) {
+    //     return <div>No se encontraron detalles de este cliente.</div>;
+    // };
 
     const toggleShowDeleteModal = () => {
         setShowDeleteModal(!showDeleteModal);

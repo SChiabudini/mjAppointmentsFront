@@ -241,9 +241,9 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                                     <ul className="dropdown">
                                         {filteredClients?.map((client, index) => (
                                             <li
+                                            className={index === selectedIndex ? 'highlight' : ''}
                                             key={client._id}
                                             onClick={() => handleClientSelection(client)}
-                                            className={index === selectedIndex ? 'highlight' : ''}
                                             >
                                             {client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`}
                                             </li>

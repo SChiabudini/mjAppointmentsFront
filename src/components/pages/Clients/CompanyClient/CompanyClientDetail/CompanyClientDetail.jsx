@@ -16,10 +16,6 @@ const CompanyClientDetail = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);    
 
     useEffect(() => {
-        dispatch(getCompanyClientById(id))
-    }, [dispatch, id]);
-
-    useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             await dispatch(getCompanyClientById(id));
@@ -27,6 +23,14 @@ const CompanyClientDetail = () => {
         };
         fetchData();
     }, [dispatch, id]);
+
+    // if (loading) {
+    //     return <div>Cargando...</div>;
+    // };
+
+    // if (!companyClientDetail || Object.keys(companyClientDetail).length === 0) {
+    //     return <div>No se encontraron detalles de este cliente.</div>;
+    // };
 
     const toggleShowDeleteModal = () => {
         setShowDeleteModal(!showDeleteModal);

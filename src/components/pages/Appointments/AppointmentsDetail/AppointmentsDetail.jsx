@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
+import PutAppointment from '../PutAppointment/PutAppointment.jsx';
 import { getAppointmentById } from '../../../../redux/appointmentActions.js';
 
 const AppointmentsDetail = () => {
@@ -9,15 +10,12 @@ const AppointmentsDetail = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        dispatch(getAppointmentById(id))
-    }, [dispatch, id]);
-
     const appointmentDetail = useSelector(state => state.appointment?.appointmentDetail || {});    
     // console.log(appointmentDetail);
 
     const [loading, setLoading] = useState(true);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);        
+    const [showDeleteModal, setShowDeleteModal] = useState(false);     
+    const [popUpOpen, setPopUpOpen] = useState(false);   
     
     useEffect(() => {
         const fetchData = async () => {
@@ -51,8 +49,10 @@ const AppointmentsDetail = () => {
                         <div className="title">
                             <h2>Detalle del turno</h2>
                             <div className="titleButtons">
-                                {/* {appointmentDetail.active ? <button onClick={() => navigate(`/main_window/clientes/personas/${id}`)}>Editar</button> : ''} */}
-                                {!appointmentDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Activar</button> : <button className="delete" onClick={toggleShowDeleteModal}>Desactivar</button>}
+                                {appointmentDetail.active ? <button onClick={() => setPopUpOpen(true)}>Editar</button> : ''}
+                                {!appointmentDetail.active 
+                                    ? <button className="add" onClick={toggleShowDeleteModal}>Activar</button> 
+                                    : <button className="delete" onClick={toggleShowDeleteModal}>Desactivar</button>}
                                 <button onClick={() => navigate(`/`)}>Atrás</button>
                             </div>
                         </div>
@@ -159,7 +159,10 @@ const AppointmentsDetail = () => {
                     </div>
                 {/* ) */}
             {/* } */}
-            <div>
+            <div className={popUpOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpOpen(false)}>
+              <div onClick={(e) => e.stopPropagation()}>
+                <PutAppointment onAppointmentAdded={() => setPopUpOpen(false)}/>
+              </div>
             </div>
         </div>
     )
