@@ -241,6 +241,12 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
 
     //----- SUBMIT
 
+    const handleNoSend = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+        }
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
@@ -272,7 +278,7 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                 <h2>Editar turno</h2>
             </div>
             <div className="container">
-                <form onSubmit={handleSubmit} id="appointmentForm">
+                <form onSubmit={handleSubmit} id="appointmentForm" onKeyDown={handleNoSend}>
                     <div>
                         <div className="formRow">
                             <div>Fecha y horario</div>

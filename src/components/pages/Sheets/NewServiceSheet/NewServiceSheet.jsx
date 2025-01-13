@@ -207,6 +207,12 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
 
     //----- SUBMIT
 
+    const handleNoSend = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+        }
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -355,7 +361,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                 {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newServiceSheet.vehicle}/>}
                 {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newServiceSheet.vehicle}/>}
                 <div className="formRow"></div>
-                <form id="serviceSheetForm" onSubmit={handleSubmit}>
+                <form id="serviceSheetForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
                     <div className="formRow">
                         <label htmlFor="kilometers">Kilómetros</label>
                         <input type="text" name="kilometers" value={newServiceSheet.kilometers} onChange={handleInputChange}/>

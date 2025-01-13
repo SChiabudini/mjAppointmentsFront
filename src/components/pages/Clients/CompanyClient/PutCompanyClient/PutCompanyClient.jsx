@@ -127,6 +127,12 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
 
     //----- SUBMIT
 
+    const handleNoSend = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+        }
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
@@ -154,7 +160,7 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
                 <h2>Editar empresa</h2>
             </div>
             <div className="container">
-                <form id="personClientForm" onSubmit={handleSubmit}>                    
+                <form id="personClientForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>                    
                     <div className="formRow">
                         <label>CUIT</label>
                         <input 

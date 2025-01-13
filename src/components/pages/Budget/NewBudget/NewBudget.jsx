@@ -214,6 +214,14 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
         }
     };
 
+    //----- SUBMIT
+
+    const handleNoSend = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+        }
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -354,7 +362,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                 {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newBudget.vehicle}/>}
                 {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newBudget.vehicle}/>}
                 <div className="formRow"></div>
-                <form id="budgetForm" onSubmit={handleSubmit}>
+                <form id="budgetForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
                     <div className="formRow">
                         <label>
                             Vencimiento

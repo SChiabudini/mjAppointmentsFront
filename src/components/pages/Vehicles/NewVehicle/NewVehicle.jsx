@@ -97,6 +97,12 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
 
     //----- SUBMIT
 
+    const handleNoSend = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+        }
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -136,7 +142,7 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                 </div>
             </div>
             <div className="container">
-                <form id="vehicleForm" onSubmit={handleSubmit}>
+                <form id="vehicleForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
                     <div className="formRow">
                         <label htmlFor="licensePlate">Patente</label>
                         <input type="text" 
