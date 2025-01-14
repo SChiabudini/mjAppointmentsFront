@@ -249,6 +249,9 @@ button.add:hover{
     border-bottom: 1px solid var(--orange);
     padding-bottom: 1rem;
     margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .titleForm h2{
@@ -256,6 +259,14 @@ button.add:hover{
     font-size: 1.1rem;
     text-transform: none;
     letter-spacing: 0;
+}
+
+.titleForm .titleButtons button{
+    padding: 0.5rem 0.75rem;
+}
+
+.titleForm .titleButtons button img{
+    width: 0.8rem;
 }
 
 .formContainer .container, .formContainerNested .container{

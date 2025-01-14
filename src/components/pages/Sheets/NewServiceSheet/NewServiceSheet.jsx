@@ -7,6 +7,8 @@ import { getVehicles } from "../../../../redux/vehicleActions";
 import NewPersonClient from "../../Clients/PersonClient/NewPersonClient/NewPersonClient.jsx";
 import NewCompanyClient from "../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx";
 import NewVehicle from "../../Vehicles/NewVehicle/NewVehicle.jsx";
+import clear from "../../../../assets/img/clear.png";
+import clearHover from "../../../../assets/img/clearHover.png";
 
 const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
 
@@ -16,12 +18,12 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
         personClient: null,
         companyClient: null,
         vehicle: null,
-        kilometers: null,
-        kmsToNextService: null,
+        kilometers: 0,
+        kmsToNextService: 0,
         oil: '',
         filters: [],
         notes: '',
-        amount: null
+        amount: 0
     }
 
     const [newServiceSheet, setNewServiceSheet] = useState(initialServiceSheetState);
@@ -205,6 +207,15 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
         });
     };
 
+    //----- RESET
+
+    const resetForm = () => {
+        setSearchingPerson(true);
+        setNewServiceSheet(initialServiceSheetState);
+        setSearchTermClients('');
+        setSearchTermVehicles('');
+    }
+
     //----- SUBMIT
 
     const handleNoSend = (event) => {
@@ -239,6 +250,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
             dispatch(getVehicles());
 
             setNewServiceSheet(initialServiceSheetState);
+            setSearchingPerson(true);
             setSearchTermClients('');
             setSearchTermVehicles('');
             dispatch(getServiceSheets());
@@ -253,7 +265,13 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
             <div className="titleForm">
                 <h2>Nueva ficha service</h2>
                 <div className="titleButtons">
-                    {/* <button onClick={handleSetForm} disabled={isClearDisabled}><img src={iconClear} alt="" /></button> */}
+                    <button 
+                        onClick={resetForm} 
+                        onMouseEnter={(e) => e.currentTarget.firstChild.src = clearHover} 
+                        onMouseLeave={(e) => e.currentTarget.firstChild.src = clear}
+                    >
+                        <img src={clear} alt="Print"/>
+                    </button>
                 </div>
             </div>
             <div className="container">
@@ -364,11 +382,11 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                 <form id="serviceSheetForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
                     <div className="formRow">
                         <label htmlFor="kilometers">Kilómetros</label>
-                        <input type="text" name="kilometers" value={newServiceSheet.kilometers} onChange={handleInputChange}/>
+                        <input type="number" name="kilometers" value={newServiceSheet.kilometers || ""} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow">
                         <label htmlFor="kmsToNextService">Kms próximo service</label>
-                        <input type="text" name="kmsToNextService" value={newServiceSheet.kmsToNextService} onChange={handleInputChange}/>
+                        <input type="number" name="kmsToNextService" value={newServiceSheet.kmsToNextService || ""} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow">
                         <label htmlFor="oil">Aceite</label>
@@ -381,6 +399,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                                 type="checkbox"
                                 name="filter"
                                 value="Aceite"
+                                checked={newServiceSheet.filters.includes("Aceite")}
                                 onChange={handleFilterChange}
                             />
                             Aceite
@@ -391,6 +410,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                                 name="filter"
                                 value="Aire"
                                 onChange={handleFilterChange}
+                                checked={newServiceSheet.filters.includes("Aire")}
                             />
                             Aire
                         </label>
@@ -400,6 +420,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                                 name="filter"
                                 value="Habitáculo"
                                 onChange={handleFilterChange}
+                                checked={newServiceSheet.filters.includes("Habitáculo")}
                             />
                             Habitáculo
                         </label>
@@ -409,13 +430,14 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                                 name="filter"
                                 value="Combustible"
                                 onChange={handleFilterChange}
+                                checked={newServiceSheet.filters.includes("Combustible")}
                             />
                             Combustible
                         </label>
                     </div>
                     <div className="formRow">
                         <label htmlFor="amount">Monto</label>
-                        <input type="text" name="amount" value={newServiceSheet.amount} onChange={handleInputChange}/>
+                        <input type="number" name="amount" value={newServiceSheet.amount || ""} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow"><label htmlFor="notes">Notas</label></div>
                     <div className="formRow"><textarea name="notes" value={newServiceSheet.notes} onChange={handleInputChange}/></div>

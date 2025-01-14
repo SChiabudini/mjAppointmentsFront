@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getPersonClients, postPersonClient } from "../../../../../redux/personClientActions.js";
 import { getVehicles } from "../../../../../redux/vehicleActions.js";
 import NewVehicle from '../../../Vehicles/NewVehicle/NewVehicle.jsx';
+import clear from "../../../../../assets/img/clear.png";
+import clearHover from "../../../../../assets/img/clearHover.png";
 
 const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId = null }) => {
     
@@ -95,12 +97,6 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
         }, 150);
     };
 
-    const handleNoSend = (event) => {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-        }
-    };
-
     const handleKeyDown = (e) => {
 
         if (e.key === 'ArrowDown') {
@@ -115,7 +111,21 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
         }
     };
 
+    //----- RESET
+
+    const resetForm = () => {
+        setNewPersonClient(initialPersonClientState);
+        setCurrentPhone('');
+        setSearchTerm('');
+    }
+
     //----- SUBMIT
+
+    const handleNoSend = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+        }
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -142,7 +152,13 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
             <div className="titleForm">
                 <h2>Nuevo cliente</h2>
                 <div className="titleButtons">
-                    {/* <button onClick={handleSetForm} disabled={isClearDisabled}><img src={iconClear} alt="" /></button> */}
+                    <button 
+                        onClick={resetForm} 
+                        onMouseEnter={(e) => e.currentTarget.firstChild.src = clearHover} 
+                        onMouseLeave={(e) => e.currentTarget.firstChild.src = clear}
+                    >
+                        <img src={clear} alt="Print"/>
+                    </button>
                 </div>
             </div>
             <div className="container">

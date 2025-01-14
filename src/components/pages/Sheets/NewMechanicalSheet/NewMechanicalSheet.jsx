@@ -7,6 +7,8 @@ import { getVehicles } from "../../../../redux/vehicleActions";
 import NewPersonClient from "../../Clients/PersonClient/NewPersonClient/NewPersonClient.jsx";
 import NewCompanyClient from "../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx";
 import NewVehicle from "../../Vehicles/NewVehicle/NewVehicle.jsx";
+import clear from "../../../../assets/img/clear.png";
+import clearHover from "../../../../assets/img/clearHover.png";
 
 const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
 
@@ -16,10 +18,10 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
         personClient: null,
         companyClient: null,
         vehicle: null,
-        kilometers: null,
+        kilometers: 0,
         keyWords: '',
         description: '',
-        amount: null
+        amount: 0
     }
 
     const [newMechanicalSheet, setNewMechanicalSheet] = useState(initialMechanicalSheetState);
@@ -190,6 +192,15 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
         }
     };
 
+    //----- RESET
+
+    const resetForm = () => {
+        setSearchingPerson(true);
+        setNewMechanicalSheet(initialMechanicalSheetState);
+        setSearchTermClients('');
+        setSearchTermVehicles('');
+    }
+
     //----- SUBMIT
 
     const handleNoSend = (event) => {
@@ -222,6 +233,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
             dispatch(getVehicles());
 
             setNewMechanicalSheet(initialMechanicalSheetState);
+            setSearchingPerson(true);
             setSearchTermClients('');
             setSearchTermVehicles('');
             dispatch(getMechanicalSheets());
@@ -236,7 +248,13 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
             <div className="titleForm">
                 <h2>Nueva ficha mecánica</h2>
                 <div className="titleButtons">
-                    {/* <button onClick={handleSetForm} disabled={isClearDisabled}><img src={iconClear} alt="" /></button> */}
+                    <button 
+                        onClick={resetForm} 
+                        onMouseEnter={(e) => e.currentTarget.firstChild.src = clearHover} 
+                        onMouseLeave={(e) => e.currentTarget.firstChild.src = clear}
+                    >
+                        <img src={clear} alt="Print"/>
+                    </button>
                 </div>
             </div>
             <div className="container">
@@ -341,11 +359,11 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                 <form id="mechanicalSheetForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
                     <div className="formRow">
                         <label htmlFor="kilometers">Kilómetros</label>
-                        <input type="text" name="kilometers" value={newMechanicalSheet.kilometers} onChange={handleInputChange}/>
+                        <input type="number" name="kilometers" value={newMechanicalSheet.kilometers || ""} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow">
                         <label htmlFor="amount">Monto</label>
-                        <input type="text" name="amount" value={newMechanicalSheet.amount} onChange={handleInputChange}/>
+                        <input type="number" name="amount" value={newMechanicalSheet.amount || ""} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow">
                         <label htmlFor="keyWords">Palabras clave</label>

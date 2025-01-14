@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCompanyClients, postCompanyClient } from "../../../../../redux/companyClientActions";
 import { getVehicles } from "../../../../../redux/vehicleActions";
 import NewVehicle from '../../../Vehicles/NewVehicle/NewVehicle.jsx';
+import clear from "../../../../../assets/img/clear.png";
+import clearHover from "../../../../../assets/img/clearHover.png";
 
 const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleId = null }) => {
 
@@ -115,6 +117,15 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
         }
     };
 
+    //----- RESET
+
+    const resetForm = () => {
+        setNewCompanyClient(initialCompanyClientState);
+        setCurrentPhone('');
+        setSearchTerm('');
+    }
+
+
     //----- SUBMIT
 
     const handleNoSend = (event) => {
@@ -147,7 +158,13 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
         <div className="titleForm">
             <h2>Nuevo cliente empresa</h2>
             <div className="titleButtons">
-                {/* <button onClick={handleSetForm} disabled={isClearDisabled}><img src={iconClear} alt="" /></button> */}
+                <button 
+                    onClick={resetForm} 
+                    onMouseEnter={(e) => e.currentTarget.firstChild.src = clearHover} 
+                    onMouseLeave={(e) => e.currentTarget.firstChild.src = clear}
+                >
+                    <img src={clear} alt="Print"/>
+                </button>
             </div>
         </div>
         <div className="container">
