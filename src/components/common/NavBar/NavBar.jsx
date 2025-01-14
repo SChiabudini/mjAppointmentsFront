@@ -20,15 +20,20 @@ const NavBar = () => {
         setIsDropdownOpen(false);
     };
 
+    const toggleDropdown = () => {
+        setIsDropdownOpen(true); 
+    };
+
     return (
         <div className={style.NavBar}>
-            <div className={`${style.NavLink} ${location.pathname === '/' ? style.selected : ''}`} onClick={() => handleClick('turnos')}>
+            <div className={`${style.NavLink} ${location.pathname === '/' || location.pathname.startsWith('/main_window/turnos') ? style.selected : ''}`} onClick={() => handleClick('turnos')}>
                 Turnos
             </div>         
             <div
                 className={`${style.NavLink} ${location.pathname.startsWith('/main_window/clientes') ? style.selected : ''}`}
                 onMouseEnter={() => setIsDropdownOpen(true)}
                 onMouseLeave={() => setIsDropdownOpen(false)}
+                onClick={toggleDropdown} 
             >
                 Clientes
                 {isDropdownOpen && (
@@ -44,13 +49,13 @@ const NavBar = () => {
                     </div>
                 )}
             </div>       
-            <div className={`${style.NavLink} ${location.pathname === '/main_window/vehiculos' ? style.selected : ''}`} onClick={() => handleClick('vehiculos')}>
+            <div className={`${style.NavLink} ${location.pathname.startsWith('/main_window/vehiculos') ? style.selected : ''}`} onClick={() => handleClick('vehiculos')}>
                 Vehículos
             </div>
-            <div className={`${style.NavLink} ${location.pathname === '/main_window/fichas' ? style.selected : ''}`} onClick={() => handleClick('fichas')}>
+            <div className={`${style.NavLink} ${location.pathname.startsWith('/main_window/fichas') ? style.selected : ''}`} onClick={() => handleClick('fichas')}>
                 Fichas
             </div>
-            <div className={`${style.NavLink} ${location.pathname === '/main_window/presupuesto' ? style.selected : ''}`} onClick={() => handleClick('presupuesto')}>
+            <div className={`${style.NavLink} ${location.pathname.startsWith('/main_window/presupuesto') ? style.selected : ''}`} onClick={() => handleClick('presupuesto')}>
                 Presupuesto
             </div>
         </div>

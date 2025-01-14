@@ -58,3 +58,16 @@ export const putAppointment = (appointmentData) => {
         }
     }
 };
+
+export const deleteExpiredAppointments = () => {
+    return async () => {
+        try {
+            const response = await api.delete('/appointment');
+            return response;
+            
+        } catch (error) {
+            console.error("Error when deleting expired shifts: ", error.message);
+            return null;
+        }
+    }
+};
