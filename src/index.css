@@ -513,14 +513,55 @@ th div.withFilter button.sort{
     padding: 0.5rem 0;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+}
+
+.formRowWithButton {
+    padding: 0.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .formRow label{
     width: 35%;
 }
 
+.formRowWithButton label {
+    width: 35%;
+    
+}
+
+
 .formRow input{
     width: 60%;
+    box-sizing: border-box;
+}
+
+.formRowWithButton div{
+    width: 60%;
+    display: flex;
+    align-items: center;
+}
+
+.formRowWithButton div input{
+    width: calc(93% - 0.5rem);
+    box-sizing: border-box;
+}
+
+.formRowWithButton button {
+    border: 1px solid var(--dark-grey);
+    padding: 0;
+    margin: 0;
+    margin-left: 0.5rem;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    height: 100%;
+    width: 7%;
+}
+
+.formRowWithButton button:hover{
+    border-color: var(--orange);
 }
 
 .formRow textarea{
