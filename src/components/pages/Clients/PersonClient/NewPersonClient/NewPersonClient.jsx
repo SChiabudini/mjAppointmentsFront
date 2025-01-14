@@ -176,17 +176,20 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                         <label>Email</label>
                         <input type="text" name="email" value={newPersonClient.email} onChange={handleInputChange} />
                     </div>
-                    <div className="formRow">
+                    <div className="formRowWithButton">
                         <label>Teléfono(s)</label>
-                        <input 
-                            type="text" 
-                            value={currentPhone} 
-                            onChange={(e) => setCurrentPhone(e.target.value)} 
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') addPhone();
-                            }} 
-                        />
-
+                        <div>
+                            <input 
+                                type="text" 
+                                value={currentPhone} 
+                                onChange={(e) => setCurrentPhone(e.target.value)} 
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') addPhone();
+                                }} 
+                            />
+                            <button onClick={() => addPhone()} type="button">+</button>
+                        </div>
+                                
                     </div>
                     {newPersonClient.phones.length > 0 ? (
                         <div className="formRow">

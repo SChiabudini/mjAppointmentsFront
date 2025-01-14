@@ -182,17 +182,20 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
                     <label htmlFor="email">Email</label>
                     <input type="text" name="email" value={newCompanyClient.email} onChange={handleInputChange}/>
                 </div>
-                <div className="formRow">
-                    <label htmlFor="phones">Teléfono(s)</label>
-                    
-                    <input
-                        type="text"
-                        value={currentPhone}
-                        onChange={(e) => setCurrentPhone(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') addPhone();
-                        }} 
-                    />
+                <div className="formRowWithButton">
+                    <label>Teléfono(s)</label>
+                    <div>
+                        <input 
+                            type="text" 
+                            value={currentPhone} 
+                            onChange={(e) => setCurrentPhone(e.target.value)} 
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') addPhone();
+                            }} 
+                        />
+                        <button onClick={() => addPhone()} type="button">+</button>
+                    </div>
+                            
                 </div>
                 {newCompanyClient.phones.length > 0 ? (
                     <div className="formRow">
@@ -200,7 +203,7 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
                             {newCompanyClient.phones.map((phone, index) => (
                                 <li key={index}>
                                     {phone}
-                                    <button type="button" onClick={() => removePhone(index)}>Eliminar</button>
+                                    <button type="button" onClick={() => removePhone(index)}>x</button>
                                 </li>
                             ))}
                         </ul>
