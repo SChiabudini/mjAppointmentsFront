@@ -116,7 +116,7 @@ const Appointments = () => {
         </div>
         <div className={popUpOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpOpen(false)}>
             <div onClick={(e) => e.stopPropagation()}>
-              <NewAppointment onClientAdded={() => setPopUpOpen(false)}/>
+              <NewAppointment onAppointmentAdded={() => setPopUpOpen(false)}/>
             </div>
           </div>
       </div>

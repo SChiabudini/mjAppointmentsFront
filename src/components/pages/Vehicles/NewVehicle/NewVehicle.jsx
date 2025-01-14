@@ -5,6 +5,8 @@ import { getPersonClients } from '../../../../redux/personClientActions.js';
 import { getCompanyClients } from '../../../../redux/companyClientActions.js';
 import NewPersonClient from '../../Clients/PersonClient/NewPersonClient/NewPersonClient.jsx';
 import NewCompanyClient from '../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx';
+import clear from  "../../../../assets/img/clear.png";
+import clearHover from "../../../../assets/img/clearHover.png";
 
 const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientId = null, companyClientId = null }) => {
 
@@ -14,7 +16,7 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
         licensePlate: '',
         brand: '',
         model: '',
-        year: null,
+        year: 0,
         engine: '',
         personClient: personClientId,
         companyClient: companyClientId
@@ -95,6 +97,14 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
         }
     };
 
+    //----- RESET
+
+    const resetForm = () => {
+        setNewVehicle(initialVehicleState);
+        setSearchTerm('');
+        setSearchingPerson(true);
+    }
+
     //----- SUBMIT
 
     const handleNoSend = (event) => {
@@ -124,7 +134,8 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
             }
 
             setNewVehicle(initialVehicleState);
-            setSearchTerm('');
+            setSearchTerm('');            
+            setSearchingPerson(true);
             dispatch(getVehicles());
             onVehicleAdded(response);
         } catch (error) {
@@ -138,7 +149,13 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
             <div className="titleForm">
                 <h2>Nuevo vehículo</h2>
                 <div className="titleButtons">
-                    {/* <button onClick={handleSetForm} disabled={isClearDisabled}><img src={iconClear} alt="" /></button> */}
+                    <button 
+                        onClick={resetForm} 
+                        onMouseEnter={(e) => e.currentTarget.firstChild.src = clearHover} 
+                        onMouseLeave={(e) => e.currentTarget.firstChild.src = clear}
+                    >
+                        <img src={clear} alt="Print"/>
+                    </button>
                 </div>
             </div>
             <div className="container">
@@ -161,7 +178,7 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                     </div>
                     <div className="formRow">
                         <label htmlFor="year">Año</label>
-                        <input type="text" name="year" value={newVehicle.year || ''} onChange={handleInputChange}/>
+                        <input type="number" name="year" value={newVehicle.year || ''} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow">
                         <label htmlFor="engine">Motor</label>

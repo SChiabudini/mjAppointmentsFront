@@ -7,6 +7,8 @@ import { getVehicles } from "../../../../redux/vehicleActions";
 import NewPersonClient from "../../Clients/PersonClient/NewPersonClient/NewPersonClient.jsx";
 import NewCompanyClient from "../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx";
 import NewVehicle from "../../Vehicles/NewVehicle/NewVehicle.jsx";
+import clear from  "../../../../assets/img/clear.png";
+import clearHover from "../../../../assets/img/clearHover.png";
 
 const NewBudget = ({ onBudgetAdded = () => {} }) => {
 
@@ -16,7 +18,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
         personClient: null,
         companyClient: null,
         vehicle: null,
-        end: null,
+        end: '',
         items: [],
     };
 
@@ -27,10 +29,6 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
     
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-    
-        if(name === 'end'){
-            setNewBudget({...newBudget, end: `${value}T00:00:00.000Z`})
-        }
 
         if (name === 'searchTermClients') {
             setSearchTermClients(value);
@@ -214,6 +212,21 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
         }
     };
 
+    //----- RESET
+
+    const resetForm = () => {
+        setNewBudget(initialBudgetState);
+        setSearchTermClients('');
+        setSearchTermVehicles('');
+        setSearchingPerson(true);
+        setCurrentItem({
+            quantity: 0,
+            description: "",
+            price: 0,
+        });
+        setTotal(0);
+    }
+
     //----- SUBMIT
 
     const handleNoSend = (event) => {
@@ -225,10 +238,17 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        const formattedEndDate = `${newBudget.end}T00:00:00.000Z`;
+
+        const budgetToSubmit = {
+            ...newBudget,
+            end: formattedEndDate, // Actualiza el valor de 'end' con el formato correcto
+        };
+
         try {
-            console.log(newBudget);
-            const response = await dispatch(postBudget(newBudget));
-            console.log("Service sheet successfully saved");
+            console.log(budgetToSubmit);
+            const response = await dispatch(postBudget(budgetToSubmit));
+            console.log("Budget successfully saved");
 
             if(newBudget.personClient){
                 dispatch(getPersonClients());
@@ -245,6 +265,13 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
             setNewBudget(initialBudgetState);
             setSearchTermClients('');
             setSearchTermVehicles('');
+            setSearchingPerson(true);
+            setCurrentItem({
+                quantity: 0,
+                description: "",
+                price: 0,
+            });
+            setTotal(0);
             dispatch(getBudgets());
             onBudgetAdded(response);
         } catch (error) {
@@ -256,6 +283,15 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
         <div className="formContainer">
             <div className="titleForm">
                 <h2>Nuevo presupuesto</h2>
+                <div className="titleButtons">
+                    <button 
+                        onClick={resetForm} 
+                        onMouseEnter={(e) => e.currentTarget.firstChild.src = clearHover} 
+                        onMouseLeave={(e) => e.currentTarget.firstChild.src = clear}
+                    >
+                        <img src={clear} alt="Print"/>
+                    </button>
+                </div>
             </div>
             <div className="container">
                 <div className="clientSelection">
@@ -369,7 +405,8 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                             <input
                                 type="date"
                                 name="end"
-                                onChange={handleInputChange}
+                                onChange={(event) => setNewBudget({...newBudget, end: event.target.value})}
+                                value={newBudget.end}
                             />
                         </label>
                     </div>

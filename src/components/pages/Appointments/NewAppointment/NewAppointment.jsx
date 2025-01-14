@@ -4,6 +4,8 @@ import NewCompanyClient from '../../Clients/CompanyClient/NewCompanyClient/NewCo
 import NewPersonClient from '../../Clients/PersonClient/NewPersonClient/NewPersonClient.jsx';
 import NewVehicle from '../../Vehicles/NewVehicle/NewVehicle.jsx';
 import { getAppointments, postAppointment } from '../../../../redux/appointmentActions.js';
+import clear from  "../../../../assets/img/clear.png";
+import clearHover from "../../../../assets/img/clearHover.png";
 
 const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => {
     
@@ -218,6 +220,16 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
         dispatch(getAppointments);
         validateForm();
     }, [newAppointment]);
+
+    //----- RESET
+
+    const resetForm = () => {
+        setNewAppointment(initialAppointmentState);
+        setNewProcedure(initialProcedure);
+        setSearchingPerson(true);
+        setSearchClient('');
+        setSearchVehicle('');
+    }
     
     //-----------SUBMIT-----------//
 
@@ -252,6 +264,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                 setSearchVehicle('');
                 setShowNewClient(false);
                 setShowNewVehicle(false);
+                setSearchingPerson(true);
             };
 
         } catch (error) {
@@ -263,6 +276,15 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
         <div className={isNested? "formContainerNested" : "formContainer"}>
             <div className="titleForm">
                 <h2>Nuevo turno</h2>
+                <div className="titleButtons">
+                    <button 
+                        onClick={resetForm} 
+                        onMouseEnter={(e) => e.currentTarget.firstChild.src = clearHover} 
+                        onMouseLeave={(e) => e.currentTarget.firstChild.src = clear}
+                    >
+                        <img src={clear} alt="Print"/>
+                    </button>
+                </div>
             </div>
             <div className="container">
                 <form onSubmit={handleSubmit} id="appointmentForm" onKeyDown={handleNoSend}>
