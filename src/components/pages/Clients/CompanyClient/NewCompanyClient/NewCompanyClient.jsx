@@ -15,6 +15,7 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
         name: '',
         email: '',
         phones: [],
+        phoneWsp: '',
         address: '',
         vehicles: vehicleId ? [vehicleId] : []   
     };
@@ -27,7 +28,7 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
     const [ disabled, setDisabled ] = useState(true);
 
     useEffect(() => {
-        if(newCompanyClient.cuit !== '' && newCompanyClient.name !== '' && newCompanyClient.email !== '' && newCompanyClient.phones.length > 0 ){
+        if(newCompanyClient.cuit !== '' && newCompanyClient.name !== '' && newCompanyClient.email !== '' && (newCompanyClient?.phones?.length > 0 || phoneWsp !== '')){
             setDisabled(false);
         } else {
             setDisabled(true);
@@ -54,6 +55,15 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
     //----- HANDLE PHONES
 
     const [currentPhone, setCurrentPhone] = useState("");
+    const [phoneWsp, setPhoneWsp] = useState('');
+    const [phonePrefix, setPhonePrefix] = useState('54');
+
+    useEffect(() => {
+        setNewCompanyClient(prevState => ({
+            ...prevState,
+            phoneWsp: '+' + phonePrefix + phoneWsp
+        }));
+    }, [phonePrefix, phoneWsp]); 
 
     const addPhone = () => {
     if (currentPhone.trim() !== "") {
@@ -61,15 +71,25 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
             ...prevState,
             phones: [...prevState.phones, currentPhone.trim()]
         }));
-        setCurrentPhone(""); 
+        setCurrentPhone("");
     }
     };
 
     const removePhone = (index) => {
-    setNewCompanyClient((prevState) => ({
-        ...prevState,
-        phones: prevState.phones.filter((_, i) => i !== index)
-    }));
+        setNewCompanyClient((prevState) => ({
+            ...prevState,
+            phones: prevState.phones.filter((_, i) => i !== index)
+        }));
+    };
+
+    const handlePhoneWspChange = (event) => {
+        const { name, value } = event.target;
+    
+        if (name === 'phoneWsp') {
+            setPhoneWsp(value);
+        } else if (name === 'phonePrefix') {
+            setPhonePrefix(value);
+        }
     };
 
     //----- HANDLE VEHICLES
@@ -222,7 +242,23 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
                     </div>                    
                 ) : (
                     <></>
-                )}                
+                )}  
+                <div className="formRow">
+                    <label>Whatsapp</label>
+                    <span>+</span>
+                    <input
+                        type="text"
+                        name="phonePrefix"
+                        value={phonePrefix}
+                        onChange={handlePhoneWspChange}
+                    />
+                    <input
+                        type="text"
+                        name="phoneWsp"
+                        value={phoneWsp}
+                        onChange={handlePhoneWspChange}
+                    />
+                </div>               
                 <div className="formRow">
                     <label htmlFor="address">Dirección</label>
                     <input type="text" name="address" value={newCompanyClient.address} onChange={handleInputChange}/>
