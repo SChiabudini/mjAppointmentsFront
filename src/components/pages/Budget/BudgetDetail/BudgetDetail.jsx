@@ -20,10 +20,7 @@ const BudgetDetail = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-
         dispatch(getBudgetById(id)).then(() => setLoading(false));
-
-
         return () => {
             dispatch(clearBudgetDetailReducer());
         };
@@ -66,6 +63,7 @@ const BudgetDetail = () => {
                                 >
                                     <img src={print} alt="Print"/>
                                 </button>
+                                <button onClick={() => navigate(`/main_window/presupuesto`)}>Atrás</button>
                             </div>
                         </div>                    
                     </div>
@@ -106,7 +104,12 @@ const BudgetDetail = () => {
                                         </div>
                                         <div>
                                             {budgetDetail.personClient.cuilCuit && <p><span>CUIL/CUIT:</span> {budgetDetail.personClient.cuilCuit}</p>}
-                                            {budgetDetail.personClient.phones?.length && <p><span>Teléfonos:</span> {budgetDetail.personClient.phones.join(', ')}</p>}
+                                            {budgetDetail.personClient.phones?.length && <p><span>Teléfonos:</span> {budgetDetail.personClient.phones?.join(', ')}</p>}
+                                            {budgetDetail.personClient.phoneWsp ? (
+                                                <p><span>Whatsapp:&nbsp;</span>{budgetDetail.personClient.phoneWsp}</p>
+                                            ) : (
+                                                <p>No hay teléfono con Whatsapp registrado.</p>
+                                            )}
                                             {budgetDetail.vehicle && <p><span>Vehículo:</span> {budgetDetail.vehicle.licensePlate}</p>}
                                         </div>
                                     </div>
@@ -120,13 +123,16 @@ const BudgetDetail = () => {
 
                                         <div>
                                             {budgetDetail.companyClient.address && <p><span>Dirección:</span> {budgetDetail.companyClient.address}</p>}
+                                            {budgetDetail.companyClient.phoneWsp ? (
+                                                <p><span>Whatsapp:&nbsp;</span>{budgetDetail.companyClient.phoneWsp}</p>
+                                            ) : (
+                                                <p>No hay teléfono con Whatsapp registrado.</p>
+                                            )}
                                             {budgetDetail.companyClient.phones?.length && <p><span>Teléfonos:</span> {budgetDetail.companyClient.phones.join(', ')}</p>}
                                             {budgetDetail.vehicle && <p><span>Vehículo:</span> {budgetDetail.vehicle.licensePlate}</p>}
                                         </div>
                                     </div>
                                 )}
-                                
-                                
                             </div>
                             <table>
                                 <thead>

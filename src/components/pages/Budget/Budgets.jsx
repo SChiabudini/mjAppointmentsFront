@@ -31,18 +31,6 @@ const Budgets = () => {
     const [popUpOpen, setPopUpOpen] = useState(false);
 
     //----- BUSCAR VEHÍCULO
-    
-    const handleChangeNumber = (event) => {
-        setNumber(event.target.value);
-    };
-
-    const handleChangeClient = (event) => {
-        setClient(event.target.value);
-    };
-
-    const handleChangeVehicle = (event) => {
-        setVehicle(event.target.value);
-    };
 
     const handleSearch = (event) => {
         if (event.key === "Enter") {

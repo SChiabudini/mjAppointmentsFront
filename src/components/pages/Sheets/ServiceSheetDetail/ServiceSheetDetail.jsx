@@ -76,6 +76,11 @@ const ServiceSheetDetail = () => {
                                         {serviceSheetDetail.personClient.dni && <p><span>DNI:&nbsp;</span>{serviceSheetDetail.personClient.dni}</p>}
                                         {serviceSheetDetail.personClient.cuilCuit && <p><span>CUIL/CUIT:&nbsp;</span>{serviceSheetDetail.personClient.cuilCuit}</p>}
                                         {serviceSheetDetail.personClient.email && <p><span>Correo electrónico:&nbsp;</span>{serviceSheetDetail.personClient.email}</p>}
+                                        {serviceSheetDetail.personClient.phoneWsp ? (
+                                            <p><span>Whatsapp:&nbsp;</span>{serviceSheetDetail.personClient.phoneWsp}</p>
+                                        ) : (
+                                            <p>No hay teléfono con Whatsapp registrado.</p>
+                                        )} 
                                         {serviceSheetDetail.personClient.phones?.length > 0 ? (
                                             <div>
                                                 <p><span>Teléfonos:&nbsp;</span></p>
@@ -100,6 +105,11 @@ const ServiceSheetDetail = () => {
                                         {serviceSheetDetail.companyClient.cuit && <p><span>CUIT:&nbsp;</span>{serviceSheetDetail.companyClient.cuit}</p>}
                                         {serviceSheetDetail.companyClient.address && <p><span>Dirección:&nbsp;</span>{serviceSheetDetail.companyClient.address}</p>}
                                         {serviceSheetDetail.companyClient.email && <p><span>Correo electrónico:&nbsp;</span>{serviceSheetDetail.companyClient.email}</p>}
+                                        {serviceSheetDetail.personClient.phoneWsp ? (
+                                            <p><span>Whatsapp:&nbsp;</span>{serviceSheetDetail.personClient.phoneWsp}</p>
+                                        ) : (
+                                            <p>No hay teléfono con Whatsapp registrado.</p>
+                                        )} 
                                         {serviceSheetDetail.companyClient.phones?.length > 0 ? (
                                             <div>
                                                 <p><span>Teléfonos:&nbsp;</span></p>

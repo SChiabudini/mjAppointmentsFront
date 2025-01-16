@@ -205,6 +205,22 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
                         <input type="text" name="email" value={editCompanyClient.email} onChange={handleInputChange} />
                     </div>
                     <div className="formRow">
+                        <label>Whatsapp</label>
+                        <span>+</span>
+                        <input
+                            type="text"
+                            name="phonePrefix"
+                            value={phonePrefix}
+                            onChange={handlePhoneWspChange}
+                        />
+                        <input
+                            type="text"
+                            name="phoneWsp"
+                            value={phoneWsp}
+                            onChange={handlePhoneWspChange}
+                        />
+                    </div> 
+                    <div className="formRow">
                         <label>Teléfono(s)</label>
                         <input 
                             type="text" 
@@ -230,22 +246,6 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
                     ) : ( 
                         <></>
                     )}                    
-                    <div className="formRow">
-                        <label>Whatsapp</label>
-                        <span>+</span>
-                        <input
-                            type="text"
-                            name="phonePrefix"
-                            value={phonePrefix}
-                            onChange={handlePhoneWspChange}
-                        />
-                        <input
-                            type="text"
-                            name="phoneWsp"
-                            value={phoneWsp}
-                            onChange={handlePhoneWspChange}
-                        />
-                    </div>  
                     <div className="formRow">
                         <label>Dirección</label>
                         <input type="text" name="address" value={editCompanyClient.address} onChange={handleInputChange} />

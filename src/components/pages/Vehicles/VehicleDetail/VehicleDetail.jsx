@@ -79,6 +79,11 @@ const VehicleDetail = () => {
                                                 {vehicleDetail.personClient.dni && <li><span>DNI:&nbsp;</span>{vehicleDetail.personClient.dni}</li>}
                                                 {vehicleDetail.personClient.cuilCuit && <li><span>CUIL/CUIT:&nbsp;</span>{vehicleDetail.personClient.cuilCuit}</li>}
                                                 {vehicleDetail.personClient.email && <li><span>Correo electrónico:&nbsp;</span>{vehicleDetail.personClient.email}</li>}
+                                                {vehicleDetail.personClient.phoneWsp ? (
+                                                    <p><span>Whatsapp:&nbsp;</span>{vehicleDetail.personClient.phoneWsp}</p>
+                                                ) : (
+                                                    <p>No hay teléfono con Whatsapp registrado.</p>
+                                                )} 
                                                 {vehicleDetail.personClient.phones?.length > 0 ? (
                                                     <div>
                                                         <li>
@@ -99,6 +104,11 @@ const VehicleDetail = () => {
                                                 {vehicleDetail.companyClient.cuit && <li><span>CUIT:&nbsp;</span>{vehicleDetail.companyClient.cuit}</li>}
                                                 {vehicleDetail.companyClient.address && <li><span>Dirección:&nbsp;</span>{vehicleDetail.companyClient.address}</li>}
                                                 {vehicleDetail.companyClient.email && <li><span>Correo electrónico:&nbsp;</span>{vehicleDetail.companyClient.email}</li>}
+                                                {vehicleDetail.companyClient.phoneWsp ? (
+                                                    <p><span>Whatsapp:&nbsp;</span>{vehicleDetail.companyClient.phoneWsp}</p>
+                                                ) : (
+                                                    <p>No hay teléfono con Whatsapp registrado.</p>
+                                                )} 
                                                 {vehicleDetail.companyClient.phones?.length > 0 ? (
                                                     <div>
                                                         <li>
@@ -161,20 +171,20 @@ const VehicleDetail = () => {
                                             <p><span>Mecánica&nbsp;</span></p>
                                             {[...vehicleDetail.mechanicalSheets]?.reverse().map((mechanicalSheet, index) => (
                                                 <ul key={index}>                                                    
-                                                        {mechanicalSheet.number && <li>Número de ficha:&nbsp;{mechanicalSheet.number}</li>}
-                                                        {mechanicalSheet.date && 
-                                                            <li>Fecha: {new Date(mechanicalSheet.date).toLocaleString('es-ES', { 
-                                                                day: '2-digit', 
-                                                                month: '2-digit', 
-                                                                year: '2-digit', 
-                                                                hour: '2-digit', 
-                                                                minute: '2-digit', 
-                                                            })}</li>
-                                                        }
-                                                        {mechanicalSheet.kilometers && <li>Kilometraje:&nbsp;{mechanicalSheet.kilometers}</li>}
-                                                        {mechanicalSheet.keyWords && <li>Palabras clave:&nbsp;{mechanicalSheet.keyWords}</li>}
-                                                        {mechanicalSheet.description && <li>Descripción:&nbsp;{mechanicalSheet.description}</li>}
-                                                        {mechanicalSheet.amount && <li>Monto:&nbsp;${mechanicalSheet.amount}</li>}                                                   
+                                                    {mechanicalSheet.number && <li>Número de ficha:&nbsp;{mechanicalSheet.number}</li>}
+                                                    {mechanicalSheet.date && 
+                                                        <li>Fecha: {new Date(mechanicalSheet.date).toLocaleString('es-ES', { 
+                                                            day: '2-digit', 
+                                                            month: '2-digit', 
+                                                            year: '2-digit', 
+                                                            hour: '2-digit', 
+                                                            minute: '2-digit', 
+                                                        })}</li>
+                                                    }
+                                                    {mechanicalSheet.kilometers && <li>Kilometraje:&nbsp;{mechanicalSheet.kilometers}</li>}
+                                                    {mechanicalSheet.keyWords && <li>Palabras clave:&nbsp;{mechanicalSheet.keyWords}</li>}
+                                                    {mechanicalSheet.description && <li>Descripción:&nbsp;{mechanicalSheet.description}</li>}
+                                                    {mechanicalSheet.amount && <li>Monto:&nbsp;${mechanicalSheet.amount}</li>}                                                   
                                                 </ul>
                                             ))}
                                         </div>

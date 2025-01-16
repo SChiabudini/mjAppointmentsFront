@@ -214,35 +214,6 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
                     <label htmlFor="email">Email</label>
                     <input type="text" name="email" value={newCompanyClient.email} onChange={handleInputChange}/>
                 </div>
-                <div className="formRowWithButton">
-                    <label>Teléfono(s)</label>
-                    <div>
-                        <input 
-                            type="text" 
-                            value={currentPhone} 
-                            onChange={(e) => setCurrentPhone(e.target.value)} 
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') addPhone();
-                            }} 
-                        />
-                        <button onClick={() => addPhone()} type="button">+</button>
-                    </div>
-                            
-                </div>
-                {newCompanyClient.phones.length > 0 ? (
-                    <div className="formRow">
-                        <ul>
-                            {newCompanyClient.phones.map((phone, index) => (
-                                <li key={index}>
-                                    {phone}
-                                    <button type="button" onClick={() => removePhone(index)}>x</button>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>                    
-                ) : (
-                    <></>
-                )}  
                 <div className="formRow">
                     <label>Whatsapp</label>
                     <span>+</span>
@@ -258,7 +229,35 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
                         value={phoneWsp}
                         onChange={handlePhoneWspChange}
                     />
-                </div>               
+                </div> 
+                <div className="formRowWithButton">
+                    <label>Teléfono(s)</label>
+                    <div>
+                        <input 
+                            type="text" 
+                            value={currentPhone} 
+                            onChange={(e) => setCurrentPhone(e.target.value)} 
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') addPhone();
+                            }} 
+                        />
+                        <button onClick={() => addPhone()} type="button">+</button>
+                    </div>
+                </div>
+                {newCompanyClient.phones?.length > 0 ? (
+                    <div className="formRow">
+                        <ul>
+                            {newCompanyClient.phones?.map((phone, index) => (
+                                <li key={index}>
+                                    {phone}
+                                    <button type="button" onClick={() => removePhone(index)}>x</button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>                    
+                ) : (
+                    <></>
+                )}  
                 <div className="formRow">
                     <label htmlFor="address">Dirección</label>
                     <input type="text" name="address" value={newCompanyClient.address} onChange={handleInputChange}/>
@@ -275,21 +274,19 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
                             </button>
                         </div>
                         <div className="searchRow">
-                               
-                            {dropdownVisible && filteredVehicles.length > 0 && (
+                            {dropdownVisible && filteredVehicles?.length > 0 && (
                                 <ul className="dropdown">
-                                    {filteredVehicles.map((vehicle, index) => (
+                                    {filteredVehicles?.map((vehicle, index) => (
                                         <li key={vehicle._id} onClick={() => handleVehicleSelection(vehicle)} className={index === selectedIndex ? 'highlight' : ''}>
                                             {vehicle.licensePlate}
                                         </li>
                                     ))}
                                 </ul>
                             )}
-
                         </div>
                         <div className="formRow">                            
                             <ul>
-                                {newCompanyClient.vehicles.map((vehicle, index) => (
+                                {newCompanyClient.vehicles?.map((vehicle, index) => (
                                     <li key={index}>
                                         {vehicle.licensePlate}
                                         <button type="button" onClick={() => removeVehicle(index)}>Eliminar</button>

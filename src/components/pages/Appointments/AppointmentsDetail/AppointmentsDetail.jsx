@@ -86,6 +86,11 @@ const AppointmentsDetail = () => {
                                         {appointmentDetail.personClient.dni && <p><span>DNI:&nbsp;</span>{appointmentDetail.personClient.dni}</p>}
                                         {appointmentDetail.personClient.cuilCuit && <p><span>CUIL/CUIT:&nbsp;</span>{appointmentDetail.personClient.cuilCuit}</p>}
                                         {appointmentDetail.personClient.email && <p><span>Correo electrónico:&nbsp;</span>{appointmentDetail.personClient.email}</p>}
+                                        {appointmentDetail.personClient.phoneWsp ? (
+                                            <p><span>Whatsapp:&nbsp;</span>{appointmentDetail.personClient.phoneWsp}</p>
+                                        ) : (
+                                            <p>No hay teléfono con Whatsapp registrado.</p>
+                                        )}
                                         {appointmentDetail.personClient.phones?.length > 0 ? (
                                             <div>
                                                 <p><span>Teléfonos:&nbsp;</span></p>
@@ -123,6 +128,11 @@ const AppointmentsDetail = () => {
                                             </div>
                                         ) : (
                                             <p><span>No tiene teléfono registrado.</span></p>
+                                        )}
+                                        {appointmentDetail.companyClient.phoneWsp ? (
+                                            <p><span>Whatsapp:&nbsp;</span>{appointmentDetail.companyClient.phoneWsp}</p>
+                                        ) : (
+                                            <p>No hay teléfono con Whatsapp registrado.</p>
                                         )}
                                     </div>
                                 ) : (

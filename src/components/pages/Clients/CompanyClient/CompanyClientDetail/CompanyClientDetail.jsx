@@ -55,6 +55,11 @@ const CompanyClientDetail = () => {
                                 <p><span>Estado:&nbsp;</span>{companyClientDetail.active ? 'Activo' : 'Inactivo'}</p>
                                 {companyClientDetail.cuit && <p><span>CUIT:&nbsp;</span>{companyClientDetail.cuit}</p>}
                                 {companyClientDetail.name && <p><span>Nombre:&nbsp;</span>{companyClientDetail.name}</p>}
+                                {companyClientDetail.phoneWsp ? (
+                                    <p><span>Whatsapp:&nbsp;</span>{companyClientDetail.phoneWsp}</p>
+                                ) : (
+                                    <p>No hay teléfono con Whatsapp registrado.</p>
+                                )}                          
                                 {companyClientDetail.phones && <p><span>Teléfono:&nbsp;</span></p>}
                                 {companyClientDetail.phones?.length > 0 ? (
                                     <div>
@@ -69,7 +74,6 @@ const CompanyClientDetail = () => {
                                 ) : (
                                     <p>No hay teléfono registrado.</p>
                                 )}   
-                                {companyClientDetail.phoneWsp && <p><span>Whatsapp:&nbsp;</span>{companyClientDetail.phoneWsp}</p>}                           
                                 {companyClientDetail.email && <p><span>Correo electrónico:&nbsp;</span>{companyClientDetail.email}</p>}
                                 {companyClientDetail.address && <p><span>Dirección:&nbsp;</span>{companyClientDetail.address}</p>}
                                 {companyClientDetail.vehicles && <p><span>Vehículos:&nbsp;</span></p>}

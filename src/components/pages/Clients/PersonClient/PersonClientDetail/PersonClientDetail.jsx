@@ -57,6 +57,11 @@ const PersonClientDetail = () => {
                                 {personClientDetail.dni && <p><span>DNI:&nbsp;</span>{personClientDetail.dni}</p>}
                                 {personClientDetail.cuilCuit && <p><span>CUIL/CUIT:&nbsp;</span>{personClientDetail.cuilCuit}</p>}
                                 {personClientDetail.name && <p><span>Nombre:&nbsp;</span>{personClientDetail.name}</p>}
+                                {personClientDetail.phoneWsp ? (
+                                    <p><span>Whatsapp:&nbsp;</span>{personClientDetail.phoneWsp}</p>
+                                ) : (
+                                    <p>No hay teléfono con Whatsapp registrado.</p>
+                                )}  
                                 {personClientDetail.phones && <p><span>Teléfono:&nbsp;</span></p>}
                                 {personClientDetail.phones?.length > 0 ? (
                                     <div>
@@ -71,7 +76,6 @@ const PersonClientDetail = () => {
                                 ) : (
                                     <p>No hay teléfono registrado.</p>
                                 )}       
-                                {personClientDetail.phoneWsp && <p><span>Whatsapp:&nbsp;</span>{personClientDetail.phoneWsp}</p>}                       
                                 {personClientDetail.email && <p><span>Correo electrónico:&nbsp;</span>{personClientDetail.email}</p>}
                                 {personClientDetail.vehicles && <p><span>Vehículos:&nbsp;</span></p>}
                                 {personClientDetail.vehicles?.length > 0 ? (
