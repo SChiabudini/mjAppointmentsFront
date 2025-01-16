@@ -22,6 +22,18 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     const [newPersonClient, setNewPersonClient] = useState(initialPersonClientState);
     const [alreadyExist, setAlreadyExist] = useState(false);
 
+    //----- DISABLE BUTTON
+
+    const [ disabled, setDisabled ] = useState(true);
+
+    useEffect(() => {
+        if(newPersonClient.dni !== '' && newPersonClient.name !== '' && newPersonClient.email !== '' && newPersonClient?.phones?.length > 0 ){
+            setDisabled(false);
+        } else {
+            setDisabled(true);
+        }
+    }, [newPersonClient]);
+
     //----- HANDLE INPUTS
 
     const handleInputChange = (event) => {
@@ -248,7 +260,7 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                 </form>
                 <div className={isNested ? "submitNested" : "submit"}>                    
                     {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true}/>}
-                    <button type="submit" form="personClientForm">Crear cliente</button>
+                    <button type="submit" form="personClientForm" disabled={disabled}>Crear cliente</button>
                 </div>
             </div>
         </div>

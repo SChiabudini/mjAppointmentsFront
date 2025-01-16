@@ -36,6 +36,18 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
         }
     }, [dispatch, id, companyClientDetail]);    
 
+    //----- DISABLE BUTTON
+    
+    const [ disabled, setDisabled ] = useState(true);
+
+    useEffect(() => {
+        if(editCompanyClient.cuit !== '' && editCompanyClient.name !== '' && editCompanyClient.email !== '' && editCompanyClient?.phones?.length > 0 ){
+            setDisabled(false);
+        } else {
+            setDisabled(true);
+        }
+    }, [editCompanyClient]);
+
     //----- HANDLE INPUTS
 
     const handleInputChange = (event) => {
@@ -261,7 +273,7 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
                 </form>
                 <div className={isNested ? "submitNested" : "submit"}>                    
                     {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true}/>}
-                    <button type="submit" form="personClientForm">Editar cliente</button>
+                    <button type="submit" form="personClientForm" disabled={disabled}>Editar cliente</button>
                 </div>
             </div>
         </div>
