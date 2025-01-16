@@ -14,6 +14,7 @@ const CompanyClientDetail = () => {
 
     const [loading, setLoading] = useState(true);
     const [showDeleteModal, setShowDeleteModal] = useState(false);    
+    const [popUpOpen, setPopUpOpen] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -28,16 +29,9 @@ const CompanyClientDetail = () => {
     //     return <div>Cargando...</div>;
     // };
 
-    // if (!companyClientDetail || Object.keys(companyClientDetail).length === 0) {
-    //     return <div>No se encontraron detalles de este cliente.</div>;
-    // };
-
     const toggleShowDeleteModal = () => {
         setShowDeleteModal(!showDeleteModal);
-    };
-
-    //----- ABRIR POPUP
-    const [popUpOpen, setPopUpOpen] = useState(false);
+    };    
 
     return(
         <div className="page">
@@ -74,7 +68,8 @@ const CompanyClientDetail = () => {
                                     </div>
                                 ) : (
                                     <p>No hay teléfono registrado.</p>
-                                )}                              
+                                )}   
+                                {companyClientDetail.phoneWsp && <p><span>Whatsapp:&nbsp;</span>{companyClientDetail.phoneWsp}</p>}                           
                                 {companyClientDetail.email && <p><span>Correo electrónico:&nbsp;</span>{companyClientDetail.email}</p>}
                                 {companyClientDetail.address && <p><span>Dirección:&nbsp;</span>{companyClientDetail.address}</p>}
                                 {companyClientDetail.vehicles && <p><span>Vehículos:&nbsp;</span></p>}

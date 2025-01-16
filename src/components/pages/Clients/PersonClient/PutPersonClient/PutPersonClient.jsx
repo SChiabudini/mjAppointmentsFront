@@ -30,7 +30,8 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                 name: personClientDetail.name,
                 email: personClientDetail.email,
                 phones: personClientDetail.phones,
-                vehicles: personClientDetail.vehicles,
+                phoneWsp: personClientDetail.phoneWsp,
+                vehicles: personClientDetail.veihcles,
                 active: personClientDetail.active
             };
             setEditPersonClient(updatedEditPersonClient);
@@ -63,6 +64,8 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     //----- HANDLE PHONES
 
     const [currentPhone, setCurrentPhone] = useState("");
+    const [phoneWsp, setPhoneWsp] = useState('');
+    const [phonePrefix, setPhonePrefix] = useState('549');
     
     const addPhone = () => {
         if (currentPhone.trim() !== "") {
@@ -217,7 +220,23 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                         </div>
                     ) : ( 
                         <></>
-                    )}                    
+                    )}                  
+                    <div className="formRow">
+                        <label>Whatsapp</label>
+                        <span>+</span>
+                        <input
+                            type="text"
+                            name="phonePrefix"
+                            value={phonePrefix}
+                            onChange={handlePhoneWspChange}
+                        />
+                        <input
+                            type="text"
+                            name="phoneWsp"
+                            value={phoneWsp}
+                            onChange={handlePhoneWspChange}
+                        />
+                    </div>   
                     <div className="formRow">
                         <label>CUIL/CUIT</label>
                         <input type="text" name="cuilCuit" value={editPersonClient.cuilCuit} onChange={handleInputChange} />
