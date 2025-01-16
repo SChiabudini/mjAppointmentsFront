@@ -17,8 +17,6 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
     const mechanicalSheetDetail = useSelector(state => state.mechanicalSheet?.mechanicalSheetDetail || {}); 
 
     const [editMechanicalSheet, setEditMechanicalSheet] = useState({});
-    const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-    // console.log(editMechanicalSheet);
 
     useEffect(() => {
             dispatch(getMechanicalSheetById(id));
@@ -53,6 +51,18 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
             });
         }
     }, [dispatch, id, mechanicalSheetDetail]);   
+
+    //----- DISABLE BUTTON
+    
+        const [ disabled, setDisabled ] = useState(true);
+    
+        useEffect(() => {
+            if(editMechanicalSheet.vehicle && editMechanicalSheet.kilometers && editMechanicalSheet.keyWords !== '' && editMechanicalSheet.description !== '' && editMechanicalSheet.amount){
+                setDisabled(false);
+            } else {
+                setDisabled(true);
+            }
+        }, [editMechanicalSheet]);
 
     // ----- HANDLE INPUTS
 
@@ -281,8 +291,9 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                 </div>
             </div>
             <div className="container">
+                <div className="formRow">Los campos con (*) son obligatorios.</div>
                 <div className="clientSelection">
-                    <label className="formRow">Vehículo</label>
+                    <label className="formRow">Vehículo*</label>
                     <div className="searchRow">
                         <input
                             type="text"
@@ -383,21 +394,21 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                 <div className="formRow"></div>
                 <form id="mechanicalSheetForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
                     <div className="formRow">
-                        <label htmlFor="kilometers">Kilómetros</label>
-                        <input type="text" name="kilometers" value={editMechanicalSheet.kilometers} onChange={handleInputChange}/>
+                        <label htmlFor="kilometers">Kilómetros*</label>
+                        <input type="number" name="kilometers" value={editMechanicalSheet.kilometers} onChange={handleInputChange} min={0}/>
                     </div>
                     <div className="formRow">
-                        <label htmlFor="amount">Monto</label>
-                        <input type="text" name="amount" value={editMechanicalSheet.amount} onChange={handleInputChange}/>
+                        <label htmlFor="amount">Monto*</label>
+                        <input type="number" name="amount" value={editMechanicalSheet.amount} onChange={handleInputChange} min={0}/>
                     </div>
                     <div className="formRow">
-                        <label htmlFor="keyWords">Palabras clave</label>
+                        <label htmlFor="keyWords">Palabras clave*</label>
                         <input type="text" name="keyWords" value={editMechanicalSheet.keyWords} onChange={handleInputChange}/>
                     </div>
-                    <div className="formRow"><label htmlFor="description">Descripción</label></div>
+                    <div className="formRow"><label htmlFor="description">Descripción*</label></div>
                     <div className="formRow"><textarea name="description" value={editMechanicalSheet.description} onChange={handleInputChange}/></div>
                     <div className="submit">
-                        <button type='submit' form="mechanicalSheetForm">Editar ficha</button>
+                        <button type='submit' form="mechanicalSheetForm" disabled={disabled}>Editar ficha</button>
                     </div>
                 </form>
             </div>

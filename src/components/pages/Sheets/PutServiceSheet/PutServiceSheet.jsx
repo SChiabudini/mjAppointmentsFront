@@ -18,7 +18,6 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     const serviceSheetDetail = useSelector(state => state.serviceSheet?.serviceSheetDetail || {}); 
 
     const [editServiceSheet, setEditServiceSheet] = useState({});
-    const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     // console.log(editServiceSheet);
       
     useEffect(() => {
@@ -56,6 +55,18 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
             });
         }
     }, [dispatch, id, serviceSheetDetail]);    
+
+    //----- DISABLE BUTTON
+
+    const [ disabled, setDisabled ] = useState(true);
+
+    useEffect(() => {
+        if(editServiceSheet.vehicle && editServiceSheet.kilometers && editServiceSheet.kmsToNextService && editServiceSheet.oil !== '' && editServiceSheet.filters?.length > 0 && editServiceSheet.amount){
+            setDisabled(false);
+        } else {
+            setDisabled(true);
+        }
+    }, [editServiceSheet]);
 
     //----- HANDLE INPUTS
 
@@ -301,8 +312,9 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                 </div>
             </div>
             <div className="container">
+                <div className="formRow">Los campos con (*) son obligatorios.</div>
                 <div className="clientSelection">
-                    <label className="formRow">Vehículo</label>
+                    <label className="formRow">Vehículo*</label>
                     <div className="searchRow">
                         <input
                             type="text"
@@ -403,25 +415,25 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                 <div className="formRow"></div>
                 <form id="serviceSheetForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
                     <div className="formRow">
-                        <label htmlFor="kilometers">Kilómetros</label>
-                        <input type="text" name="kilometers" value={editServiceSheet.kilometers} onChange={handleInputChange}/>
+                        <label htmlFor="kilometers">Kilómetros*</label>
+                        <input type="number" name="kilometers" value={editServiceSheet.kilometers} onChange={handleInputChange} min={0}/>
                     </div>
                     <div className="formRow">
-                        <label htmlFor="kmsToNextService">Kms próximo service</label>
-                        <input type="text" name="kmsToNextService" value={editServiceSheet.kmsToNextService} onChange={handleInputChange}/>
+                        <label htmlFor="kmsToNextService">Kms próximo service*</label>
+                        <input type="number" name="kmsToNextService" value={editServiceSheet.kmsToNextService} onChange={handleInputChange} min={0}/>
                     </div>
                     <div className="formRow">
-                        <label htmlFor="oil">Aceite</label>
+                        <label htmlFor="oil">Aceite*</label>
                         <input type="text" name="oil" value={editServiceSheet.oil} onChange={handleInputChange}/>
                     </div>
-                    <div className="formRow"><label>Filtros</label></div>
+                    <div className="formRow"><label>Filtros*</label></div>
                     <div className="filterSelectionInputs">
                         <label>
                             <input
                                 type="checkbox"
                                 name="filter"
                                 value="Aceite"
-                                checked={editServiceSheet.filters?.includes("Aceite")} // Verificar si está seleccionado
+                                checked={editServiceSheet.filters?.includes("Aceite")}
                                 onChange={handleFilterChange}
                             />
                             Aceite
@@ -458,13 +470,13 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                         </label>
                     </div>
                     <div className="formRow">
-                        <label htmlFor="amount">Monto</label>
-                        <input type="text" name="amount" value={editServiceSheet.amount} onChange={handleInputChange}/>
+                        <label htmlFor="amount">Monto*</label>
+                        <input type="number" name="amount" value={editServiceSheet.amount} onChange={handleInputChange} min={0}/>
                     </div>
                     <div className="formRow"><label htmlFor="notes">Notas</label></div>
                     <div className="formRow"><textarea name="notes" value={editServiceSheet.notes} onChange={handleInputChange}/></div>
                     <div className="submit">
-                        <button type='submit' form="serviceSheetForm">Editar ficha</button>
+                        <button type='submit' form="serviceSheetForm" disabled={disabled}>Editar ficha</button>
                     </div>
                 </form>
             </div>
