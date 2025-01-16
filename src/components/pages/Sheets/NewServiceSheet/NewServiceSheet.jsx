@@ -28,6 +28,18 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
 
     const [newServiceSheet, setNewServiceSheet] = useState(initialServiceSheetState);
 
+    //----- DISABLE BUTTON
+
+    const [ disabled, setDisabled ] = useState(true);
+
+    useEffect(() => {
+        if(newServiceSheet.vehicle && newServiceSheet.kilometers && newServiceSheet.kmsToNextService && newServiceSheet.oil !== '' && newServiceSheet.filters?.length > 0 && newServiceSheet.amount){
+            setDisabled(false);
+        } else {
+            setDisabled(true);
+        }
+    }, [newServiceSheet]);
+
     // ----- HANDLE INPUTS
 
     const handleInputChange = (event) => {
@@ -275,8 +287,9 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                 </div>
             </div>
             <div className="container">
+                <div className="formRow">Los campos con (*) son obligatorios.</div>
                 <div className="clientSelection">
-                    <label className="formRow">Vehículo</label>
+                    <label className="formRow">Vehículo*</label>
                     <div className="searchRow">
                         <input
                             type="text"
@@ -381,18 +394,18 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                 <div className="formRow"></div>
                 <form id="serviceSheetForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
                     <div className="formRow">
-                        <label htmlFor="kilometers">Kilómetros</label>
-                        <input type="number" name="kilometers" value={newServiceSheet.kilometers || ""} onChange={handleInputChange}/>
+                        <label htmlFor="kilometers">Kilómetros*</label>
+                        <input type="number" name="kilometers" value={newServiceSheet.kilometers || ""} onChange={handleInputChange} min={0}/>
                     </div>
                     <div className="formRow">
-                        <label htmlFor="kmsToNextService">Kms próximo service</label>
-                        <input type="number" name="kmsToNextService" value={newServiceSheet.kmsToNextService || ""} onChange={handleInputChange}/>
+                        <label htmlFor="kmsToNextService">Kms próximo service*</label>
+                        <input type="number" name="kmsToNextService" value={newServiceSheet.kmsToNextService || ""} min={0} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow">
-                        <label htmlFor="oil">Aceite</label>
+                        <label htmlFor="oil">Aceite*</label>
                         <input type="text" name="oil" value={newServiceSheet.oil} onChange={handleInputChange}/>
                     </div>
-                    <div className="formRow"><label>Filtros</label></div>
+                    <div className="formRow"><label>Filtros*</label></div>
                     <div className="filterSelectionInputs">
                         <label>
                             <input
@@ -436,13 +449,13 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                         </label>
                     </div>
                     <div className="formRow">
-                        <label htmlFor="amount">Monto</label>
-                        <input type="number" name="amount" value={newServiceSheet.amount || ""} onChange={handleInputChange}/>
+                        <label htmlFor="amount">Monto*</label>
+                        <input type="number" name="amount" value={newServiceSheet.amount || ""} min={0} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow"><label htmlFor="notes">Notas</label></div>
                     <div className="formRow"><textarea name="notes" value={newServiceSheet.notes} onChange={handleInputChange}/></div>
                     <div className="submit">
-                        <button type='submit' form="serviceSheetForm">Crear ficha</button>
+                        <button type='submit' form="serviceSheetForm" disabled={disabled}>Crear ficha</button>
                     </div>
                 </form>
             </div>

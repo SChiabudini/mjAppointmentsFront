@@ -30,12 +30,6 @@ const BudgetDetail = () => {
 
     }, [dispatch, id]);
 
-    useEffect(() => {
-
-        console.log(budgetDetail);
-
-    }, [budgetDetail]);
-
     const total = budgetDetail.items?.reduce((sum, item) => {
         return sum + item.price * item.quantity;
     }, 0) || 0;
