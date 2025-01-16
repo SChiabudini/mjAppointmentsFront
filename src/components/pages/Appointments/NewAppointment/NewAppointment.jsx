@@ -31,6 +31,18 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
 
     const [newAppointment, setNewAppointment] = useState(initialAppointmentState); 
     
+    //----- DISABLE BUTTON
+    
+    const [ disabled, setDisabled ] = useState(true);
+
+    useEffect(() => {
+        if(newAppointment.start !== "" && newAppointment.end !== "" && newAppointment.vehicle && (newAppointment.personClient || newAppointment.companyClient) && newAppointment.procedure.title !== "" && (newAppointment.procedure.service || newAppointment.procedure.mechanical) && newAppointment.procedure.description !== ""){
+            setDisabled(false);
+        } else {
+            setDisabled(true);
+        }
+    }, [newAppointment]);
+
     //-----------HANDLE INPUTS-----------//
 
     const handleInputChange = (event) => {
@@ -244,6 +256,8 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
         };
     
         try {
+            console.log(appointmentData);
+
             const response = await dispatch(postAppointment(appointmentData));
     
             if (response) {
@@ -290,7 +304,6 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                             type="text" 
                             name="searchVehicle" 
                             value={searchVehicle} 
-                            // onChange={handleInputChange} 
                             onChange={(e) => setSearchVehicle(e.target.value)}
                             onFocus={handleSearchFocus} 
                             onBlur={handleSearchBlur} 
@@ -315,7 +328,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                 </div>
                 {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true}/>}
                 <div className="clientSelection">                            
-                    <label>Cliente</label>
+                    <label>Cliente*</label>
                     <div className="clientSelectionInputs">
                         <label htmlFor="personClient">
                             <input 
@@ -428,7 +441,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                                 onChange={handleProcedureChange} 
                             />
                         </div>               
-                        <div className="formRow"><label htmlFor="description">Descripción</label></div> 
+                        <div className="formRow"><label htmlFor="description">Descripción*</label></div> 
                         <div className="formRow">
                             <textarea
                                 name="description" 
@@ -438,7 +451,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                         </div>                        
                     </div>
                     <div className="submit">
-                        <button type='submit' form="appointmentForm">Crear turno</button>
+                        <button type='submit' form="appointmentForm" disabled={disabled}>Crear turno</button>
                     </div>
                 </form>
 
