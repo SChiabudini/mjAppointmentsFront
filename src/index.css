@@ -640,7 +640,7 @@ th div.withFilter button.sort{
     border-color: var(--orange);
 }
 
-.filterSelectionInputs{
+.filterSelectionInputs, .procedureSelectionInputs{
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -649,11 +649,16 @@ th div.withFilter button.sort{
     background-color: var(--light-grey);
 }
 
-.filterSelectionInputs label{
+.procedureSelectionInputs{
+    justify-content: start;
+    gap: 1rem;
+}
+
+.filterSelectionInputs label, .procedureSelectionInputs label{
     display: flex;
     align-items: center;
 }
-.filterSelectionInputs label input{
+.filterSelectionInputs label input, .procedureSelectionInputs label input{
     margin-right: 0.25rem;
 }
 
