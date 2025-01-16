@@ -7,22 +7,9 @@ import { getAppointments, postAppointment } from '../../../../redux/appointmentA
 import clear from  "../../../../assets/img/clear.png";
 import clearHover from "../../../../assets/img/clearHover.png";
 
-const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => {
+const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
     
     const dispatch = useDispatch();
-
-    const personClients = useSelector(state => state.personClient.personClients);
-    const companyClients = useSelector(state => state.companyClient.companyClients);
-    const vehicles = useSelector(state => state.vehicle.vehicles);
-
-    const initialAppointmentState = {
-        start: null,
-        end: null,
-        personClient: null,
-        companyClient: null,
-        vehicle: null,
-        procedure: null
-    };
 
     const initialProcedure = {
         title: '',       
@@ -31,22 +18,47 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
         mechanical: false,
     };
 
-    const [newAppointment, setNewAppointment] = useState(initialAppointmentState);
     const [newProcedure, setNewProcedure] = useState(initialProcedure);
+
+    const initialAppointmentState = {
+        start: '',
+        end: '',
+        personClient: null,
+        companyClient: null,
+        vehicle: null,
+        procedure: {newProcedure}
+    };
+
+    const [newAppointment, setNewAppointment] = useState(initialAppointmentState); 
+    
+    //-----------HANDLE INPUTS-----------//
+
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+
+        if (name === 'start' || name === 'end') {
+            // Almacena el valor directamente en su formato local
+            setNewAppointment({
+                ...newAppointment,
+                [name]: value,
+            });
+        }
+    };
+
+    //----- LOAD CLIENTS AND VEHICLES OPTIONS
+
+    const personClients = useSelector(state => state.personClient.personClients);
+    const companyClients = useSelector(state => state.companyClient.companyClients);
+    const vehicles = useSelector(state => state.vehicle.vehicles);
+
+    //----- HANDLE CLIENTS
+
     const [dropdownClientsVisible, setDropdownClientsVisible] = useState(false);
     const [showNewClient, setShowNewClient] = useState(false);
     const [searchingPerson, setSearchingPerson] = useState(true);
     const [filteredClients, setFilteredClients] = useState([]);
     const [searchClient, setSearchClient] = useState('');
     const [selectedClientIndex, setSelectedClientIndex] = useState(-1);
-    const [dropdownVehiclesVisible, setDropdownVehicleVisible] = useState(false);
-    const [filteredVehicles, setFilteredVehicles] = useState([]);
-    const [searchVehicle, setSearchVehicle] = useState('');
-    const [selectedVehicleIndex, setSelectedVehicleIndex] = useState(-1);
-    const [showNewVehicle, setShowNewVehicle] = useState(false);
-    // const [errorMessage, setErrorMessage] = useState('');
-    const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-// console.log(newAppointment);
 
     useEffect(() => {
         const clients = searchingPerson ? personClients : companyClients;
@@ -58,70 +70,6 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
         );
     }, [searchClient, searchingPerson, personClients, companyClients]);    
 
-    useEffect(() => {
-        setFilteredVehicles(
-            vehicles.filter(vehicle => 
-                vehicle.licensePlate.toLowerCase().includes(searchVehicle.toLowerCase())
-            )
-        );
-    }, [searchVehicle, vehicles]);
-    
-    //-----------HANDLE INPUTS-----------//
-    const handleInputChange = (event) => {
-        const { name, value } = event.target;
-    
-        // if (event.target.value) {
-        //     setIsClearDisabled(false);
-        // }
-
-        if (name === 'start' || name === 'end') {
-            // Almacena el valor directamente en su formato local
-            setNewAppointment({
-                ...newAppointment,
-                [name]: value,
-            });
-        }
-    };
-
-    //-----------PROCEDURE-----------//
-    const handleCheckboxProcedureChange = (option) => {
-
-        setNewProcedure((prevProcedure) => {
-            const updatedProcedure = {
-                ...prevProcedure,
-                [option]: !prevProcedure[option], // Cambiar el valor del procedimiento (service o mechanical)
-            };
-    
-            // Actualizar el estado de newAppointment
-            setNewAppointment((prevAppointment) => ({
-                ...prevAppointment,
-                procedure: updatedProcedure,
-            }));
-    
-            return updatedProcedure;
-        });
-    };
-
-    const handleProcedureChange = (event) => {
-        const { name, value } = event.target;
-
-        setNewProcedure((prevProcedure) => {
-            const updatedProcedure = {
-                ...prevProcedure,
-                [name]: value, // Actualizar el campo correspondiente (title o description)
-            };
-
-            // Actualizar el estado de newAppointment
-            setNewAppointment((prevAppointment) => ({
-                ...prevAppointment,
-                procedure: updatedProcedure,
-            }));
-
-            return updatedProcedure;
-        });
-    }; 
-
-    //-----------CLIENT-----------//  
     const handleClientSelection = (client) => {
         const clientName = client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`;
     
@@ -134,8 +82,23 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
             companyClient: searchingPerson ? null : client._id,
         });
     };
-    
-    //-----------VEHICLE-----------//
+
+    //----- HANDLE VEHICLES
+
+    const [dropdownVehiclesVisible, setDropdownVehicleVisible] = useState(false);
+    const [filteredVehicles, setFilteredVehicles] = useState([]);
+    const [searchVehicle, setSearchVehicle] = useState('');
+    const [selectedVehicleIndex, setSelectedVehicleIndex] = useState(-1);
+    const [showNewVehicle, setShowNewVehicle] = useState(false);
+
+    useEffect(() => {
+        setFilteredVehicles(
+            vehicles.filter(vehicle => 
+                vehicle.licensePlate.toLowerCase().includes(searchVehicle.toLowerCase())
+            )
+        );
+    }, [searchVehicle, vehicles]);
+
     const handleVehicleSelection = (vehicle) => {
         setSearchVehicle(vehicle.licensePlate);
         setDropdownVehicleVisible(false);
@@ -146,7 +109,8 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
         });
     };
 
-    //-----------ATRIBUTES INPUTS-----------//
+    //----- DROPDOWN
+
     const handleSearchFocus = (event) => {
         const { name } = event.target;
 
@@ -204,21 +168,49 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
             }
         };
         
-    };  
-
-    //-----------VALIDATE-----------//
-    const validateForm = () => {
-        const isDateValid = newAppointment.start && newAppointment.end !== null;
-        const isClientValid = newAppointment.personClient !== null || newAppointment.companyClient !== null;
-        const isVehicleValid = newAppointment.vehicle !== null;
-        const isProcedureValid = newAppointment.procedure !== '';
-
-        setIsSubmitDisabled(!(isDateValid && isClientValid && isVehicleValid && isProcedureValid));
     };
+
+    //-----------PROCEDURE-----------//
+    
+    const handleCheckboxProcedureChange = (option) => {
+
+        setNewProcedure((prevProcedure) => {
+            const updatedProcedure = {
+                ...prevProcedure,
+                [option]: !prevProcedure[option], // Cambiar el valor del procedimiento (service o mechanical)
+            };
+    
+            // Actualizar el estado de newAppointment
+            setNewAppointment((prevAppointment) => ({
+                ...prevAppointment,
+                procedure: updatedProcedure,
+            }));
+    
+            return updatedProcedure;
+        });
+    };
+
+    const handleProcedureChange = (event) => {
+        const { name, value } = event.target;
+
+        setNewProcedure((prevProcedure) => {
+            const updatedProcedure = {
+                ...prevProcedure,
+                [name]: value, // Actualizar el campo correspondiente (title o description)
+            };
+
+            // Actualizar el estado de newAppointment
+            setNewAppointment((prevAppointment) => ({
+                ...prevAppointment,
+                procedure: updatedProcedure,
+            }));
+
+            return updatedProcedure;
+        });
+    }; 
 
     useEffect(() => {
         dispatch(getAppointments);
-        validateForm();
     }, [newAppointment]);
 
     //----- RESET
@@ -256,7 +248,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
     
             if (response) {
                 console.log("Appointment successfully saved");
-                dispatch(getAppointments()); // Actualizar los turnos tras guardar
+                dispatch(getAppointments());
                 setNewAppointment(initialAppointmentState); // Resetear el formulario
                 onAppointmentAdded(response);
                 setNewProcedure(initialProcedure);
@@ -273,7 +265,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
     };
     
     return (
-        <div className={isNested? "formContainerNested" : "formContainer"}>
+        <div className="formContainer">
             <div className="titleForm">
                 <h2>Nuevo turno</h2>
                 <div className="titleButtons">
@@ -287,13 +279,107 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                 </div>
             </div>
             <div className="container">
+                <div className="formRow">Los campos con (*) son obligatorios.</div>
+                
+                <div className="clientSelection">
+                    <div className="formRow">
+                        <label>Vehículo*</label>
+                    </div>
+                    <div className="searchRow">
+                        <input 
+                            type="text" 
+                            name="searchVehicle" 
+                            value={searchVehicle} 
+                            // onChange={handleInputChange} 
+                            onChange={(e) => setSearchVehicle(e.target.value)}
+                            onFocus={handleSearchFocus} 
+                            onBlur={handleSearchBlur} 
+                            onKeyDown={handleKeyDown} 
+                            placeholder="Buscar vehículo" 
+                        />
+                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button">
+                            {showNewVehicle ? '-' : '+'}
+                        </button>                                
+                    </div>
+                    <div className="searchRow">
+                        {filteredVehicles.length > 0 && dropdownVehiclesVisible && (
+                            <ul className="dropdown">
+                                {filteredVehicles.map((vehicle, index) => (
+                                    <li className={index === selectedClientIndex ? 'highlight' : ''} key={vehicle._id} onClick={() => handleVehicleSelection(vehicle)} >
+                                        {vehicle.licensePlate}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>     
+                </div>
+                {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true}/>}
+                <div className="clientSelection">                            
+                    <label>Cliente</label>
+                    <div className="clientSelectionInputs">
+                        <label htmlFor="personClient">
+                            <input 
+                            type="radio" 
+                            name="clientType" 
+                            value="person" 
+                            checked={searchingPerson}
+                            onChange={() => (setSearchingPerson(true), setSearchClient(''))}
+                            />
+                            Persona
+                        </label>
+                        <label htmlFor="companyClient">
+                            <input 
+                                type="radio" 
+                                name="clientType" 
+                                value="company"
+                                checked={!searchingPerson}
+                                onChange={() => (setSearchingPerson(false), setSearchClient(''))}
+                            />
+                            Empresa
+                        </label>
+                    </div>
+                    <div className="searchRow">
+                        <input
+                            type="text"
+                            name="searchClient"
+                            placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
+                            value={searchClient}
+                            // onChange={handleInputChange}
+                            onChange={(e) => setSearchClient(e.target.value)}
+                            onFocus={handleSearchFocus}
+                            onBlur={handleSearchBlur}
+                            onKeyDown={handleKeyDown}
+                        />
+                        <button type="button" onClick={() => setShowNewClient(!showNewClient)}>
+                            {showNewClient ? '-' : '+'}
+                        </button>                                 
+                    </div>
+                    <div className="searchRow">
+                        {filteredClients.length > 0 && dropdownClientsVisible && (
+                            <ul className="dropdown">
+                                {filteredClients.map((client, index) => (
+                                    <li
+                                    className={index === selectedClientIndex ? 'highlight' : ''}
+                                    key={client._id}
+                                    onClick={() => handleClientSelection(client)}
+                                    >
+                                    {client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>                               
+                </div>
+                {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true}/>}
+                {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true}/>}
+               
                 <form onSubmit={handleSubmit} id="appointmentForm" onKeyDown={handleNoSend}>
                     <div>
                         <div className="formRow">
                             <div>Fecha y horario</div>
                         </div>
                         <div className="formRow">
-                            <label htmlFor="start">Inicio</label>
+                            <label htmlFor="start">Inicio*</label>
                             <input 
                                 type="datetime-local" 
                                 name="start" 
@@ -302,7 +388,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                             />
                         </div>
                         <div className="formRow">
-                            <label htmlFor="end">Finalización</label>
+                            <label htmlFor="end">Finalización*</label>
                             <input 
                                 type="datetime-local" 
                                 name="end" 
@@ -310,152 +396,52 @@ const NewAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                                 onChange={handleInputChange} 
                             />
                         </div>
-                        <div className="clientSelection">
-                            <label>Procedimiento</label>
-                            <div className="clientSelectionInputs">
-                                <label htmlFor="service">
-                                    <input 
-                                        type="checkbox" 
-                                        name="service" 
-                                        id="service" 
-                                        checked={newProcedure.service || false} 
-                                        onChange={() => handleCheckboxProcedureChange('service')} 
-                                    />
-                                    Service
-                                </label>                               
-                                <label htmlFor="mechanical">
-                                    <input 
-                                        type="checkbox" 
-                                        name="mechanical" 
-                                        id="mechanical" 
-                                        checked={newProcedure.mechanical || false} 
-                                        onChange={() => handleCheckboxProcedureChange('mechanical')} 
-                                    />
-                                    Mecánica
-                                </label>                                
-                            </div>    
-                            <div className="formRow">
-                                <label htmlFor="title">Título</label>
+                        <div className="formRow"><label>Procedimiento*</label></div>
+                        <div className="procedureSelectionInputs">
+                            <label htmlFor="service">
                                 <input 
-                                    type="text" 
-                                    name="title" 
-                                    value={newProcedure.title || ''} 
-                                    onChange={handleProcedureChange} 
+                                    type="checkbox" 
+                                    name="service" 
+                                    id="service" 
+                                    checked={newProcedure.service || false} 
+                                    onChange={() => handleCheckboxProcedureChange('service')} 
                                 />
-                            </div>               
-                            <div className="formRow">
-                                <label htmlFor="description">Descripción</label>
-                                <textarea
-                                    name="description" 
-                                    value={newProcedure.description || ''} 
-                                    onChange={handleProcedureChange} 
+                                Service
+                            </label>                               
+                            <label htmlFor="mechanical">
+                                <input 
+                                    type="checkbox" 
+                                    name="mechanical" 
+                                    id="mechanical" 
+                                    checked={newProcedure.mechanical || false} 
+                                    onChange={() => handleCheckboxProcedureChange('mechanical')} 
                                 />
-                            </div> 
+                                Mecánica
+                            </label>       
                         </div>
-                        {!isNested ? (
-                            <div className="clientSelection">                            
-                                <label>Cliente</label>
-                                <div className="clientSelectionInputs">
-                                    <label htmlFor="personClient">
-                                        <input 
-                                        type="radio" 
-                                        name="clientType" 
-                                        value="person" 
-                                        checked={searchingPerson}
-                                        onChange={() => (setSearchingPerson(true), setSearchClient(''))}
-                                        />
-                                        Persona
-                                    </label>
-                                    <label htmlFor="companyClient">
-                                        <input 
-                                            type="radio" 
-                                            name="clientType" 
-                                            value="company"
-                                            checked={!searchingPerson}
-                                            onChange={() => (setSearchingPerson(false), setSearchClient(''))}
-                                        />
-                                        Empresa
-                                    </label>
-                                </div>
-                                <div className="searchRow">
-                                    <input
-                                        type="text"
-                                        name="searchClient"
-                                        placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
-                                        value={searchClient}
-                                        // onChange={handleInputChange}
-                                        onChange={(e) => setSearchClient(e.target.value)}
-                                        onFocus={handleSearchFocus}
-                                        onBlur={handleSearchBlur}
-                                        onKeyDown={handleKeyDown}
-                                    />
-                                    <button type="button" onClick={() => setShowNewClient(!showNewClient)}>
-                                        {showNewClient ? '-' : '+'}
-                                    </button>                                 
-                                </div>
-                                <div className="searchRow">
-                                    {filteredClients.length > 0 && dropdownClientsVisible && (
-                                        <ul className="dropdown">
-                                            {filteredClients.map((client, index) => (
-                                                <li
-                                                className={index === selectedClientIndex ? 'highlight' : ''}
-                                                key={client._id}
-                                                onClick={() => handleClientSelection(client)}
-                                                >
-                                                {client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    )}
-                                </div>                               
-                            </div>
-                        ) : (<></>)} 
-                        {!isNested ? (
-                            <div>
-                                <div className="formRow">
-                                    <label>Vehículo</label>
-                                </div>
-                                <div className="searchRow">
-                                    <input 
-                                        type="text" 
-                                        name="searchVehicle" 
-                                        value={searchVehicle} 
-                                        // onChange={handleInputChange} 
-                                        onChange={(e) => setSearchVehicle(e.target.value)}
-                                        onFocus={handleSearchFocus} 
-                                        onBlur={handleSearchBlur} 
-                                        onKeyDown={handleKeyDown} 
-                                        placeholder="Buscar vehículo" 
-                                    />
-                                    <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button">
-                                        {showNewVehicle ? '-' : '+'}
-                                    </button>                                
-                                </div>
-                                <div className="searchRow">
-                                    {filteredVehicles.length > 0 && dropdownVehiclesVisible && (
-                                        <ul className="dropdown">
-                                            {filteredVehicles.map((vehicle, index) => (
-                                                <li className={index === selectedClientIndex ? 'highlight' : ''} key={vehicle._id} onClick={() => handleVehicleSelection(vehicle)} >
-                                                    {vehicle.licensePlate}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    )}
-                                </div>     
-                            </div>
-                        ) : (
-                            <></>
-                        )}                 
-                        {/* {errorMessage && <p className={style.errorMessage}>{errorMessage}</p>} */}                       
+                        <div className="formRow">
+                            <label htmlFor="title">Título*</label>
+                            <input 
+                                type="text" 
+                                name="title" 
+                                value={newProcedure.title || ''} 
+                                onChange={handleProcedureChange} 
+                            />
+                        </div>               
+                        <div className="formRow"><label htmlFor="description">Descripción</label></div> 
+                        <div className="formRow">
+                            <textarea
+                                name="description" 
+                                value={newProcedure.description || ''} 
+                                onChange={handleProcedureChange} 
+                            />
+                        </div>                        
+                    </div>
+                    <div className="submit">
+                        <button type='submit' form="appointmentForm">Crear turno</button>
                     </div>
                 </form>
-                {/* <div className="submit"> */}
-                <div className={isNested ? "submitNested" : "submit"}>
-                    {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true}/>}
-                    {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true}/>}
-                    {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true}/>}
-                    <button type='submit' form="appointmentForm">Crear turno</button>
-                </div>
+
             </div>
         </div>
     );
