@@ -196,6 +196,22 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                         <input type="text" name="email" value={editPersonClient.email} onChange={handleInputChange} />
                     </div>
                     <div className="formRow">
+                        <label>Whatsapp</label>
+                        <span>+</span>
+                        <input
+                            type="text"
+                            name="phonePrefix"
+                            value={phonePrefix}
+                            onChange={handlePhoneWspChange}
+                        />
+                        <input
+                            type="text"
+                            name="phoneWsp"
+                            value={phoneWsp}
+                            onChange={handlePhoneWspChange}
+                        />
+                    </div> 
+                    <div className="formRow">
                         <label>Teléfono(s)</label>
                         <input 
                             type="text" 
@@ -221,22 +237,6 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                     ) : ( 
                         <></>
                     )}                  
-                    <div className="formRow">
-                        <label>Whatsapp</label>
-                        <span>+</span>
-                        <input
-                            type="text"
-                            name="phonePrefix"
-                            value={phonePrefix}
-                            onChange={handlePhoneWspChange}
-                        />
-                        <input
-                            type="text"
-                            name="phoneWsp"
-                            value={phoneWsp}
-                            onChange={handlePhoneWspChange}
-                        />
-                    </div>   
                     <div className="formRow">
                         <label>CUIL/CUIT</label>
                         <input type="text" name="cuilCuit" value={editPersonClient.cuilCuit} onChange={handleInputChange} />

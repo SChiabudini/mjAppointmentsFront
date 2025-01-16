@@ -169,6 +169,9 @@ const PersonClients = () => {
                                     Email    
                                 </th>
                                 <th>
+                                    Whatsapp    
+                                </th>
+                                <th>
                                     Teléfonos    
                                 </th>
                                 <th>
@@ -196,19 +199,20 @@ const PersonClients = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {paginatedPersonClients.map(personClient => (
+                            {paginatedPersonClients?.map(personClient => (
                                 <tr key={personClient._id}>
                                     <td>{personClient.dni}</td>
                                     <td>{personClient.name}</td>
                                     <td>{personClient.email}</td>
+                                    <td>{personClient.phoneWsp}</td>
                                     <td>
-                                        {personClient.phones.length 
+                                        {personClient.phones?.length 
                                             ? personClient.phones.join(', ') 
                                             : 'N/A'}
                                     </td>
                                     <td>{personClient.cuilCuit ? personClient.cuilCuit : 'N/A'}</td>
                                     <td>
-                                        {personClient.vehicles.length 
+                                        {personClient.vehicles?.length 
                                             ? personClient.vehicles.map(vehicle => vehicle.licensePlate).join(', ') 
                                             : 'N/A'}
                                     </td>
