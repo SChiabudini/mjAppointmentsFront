@@ -42,7 +42,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
     };
 
     const today = new Date();
-    const offset = today.getTimezoneOffset(); // Obtiene el desfase de la zona horaria en minutos
+    const offset = today.getTimezoneOffset();
     const localDate = new Date(today.getTime() - offset * 60 * 1000).toISOString().split("T")[0];
 
     const [ disabled, setDisabled ] = useState(true);
@@ -50,6 +50,8 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
     useEffect(() => {
         if((newBudget.companyClient || newBudget.personClient) && newBudget.end !== '' && newBudget.items.length > 0){
             setDisabled(false);
+        } else {
+            setDisabled(true);
         }
     }, [newBudget]);
 
@@ -208,12 +210,6 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                 items: [...prevBudget.items, currentItem],
             }));
 
-            const newItems = [...newBudget.items, currentItem];
-            setTotal(newItems.reduce(
-                (sum, item) => sum + item.price * item.quantity,
-                0
-            ))
-
             setCurrentItem({
                 quantity: 0,
                 description: "",
@@ -231,6 +227,24 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
         }));
     };
 
+    useEffect(() => {
+        const newTotal = newBudget.items.reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0
+        );
+        setTotal(newTotal);
+    }, [newBudget.items]);
+
+    const [ disabledNewItem, setDisabledNewItem ] = useState(true);
+
+    useEffect(() => {
+        if(currentItem.quantity && currentItem.description !== '' && currentItem.price){
+            setDisabledNewItem(false);
+        } else {
+            setDisabledNewItem(true);
+        }
+    }, [currentItem]);
+
     //----- RESET
 
     const resetForm = () => {
@@ -244,7 +258,6 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
             price: 0,
         });
         setTotal(0);
-        setDisabled(true);
     }
 
     //----- SUBMIT
@@ -292,7 +305,6 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                 price: 0,
             });
             setTotal(0);
-            setDisabled(true);
             dispatch(getBudgets());
             onBudgetAdded(response);
         } catch (error) {
@@ -477,7 +489,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                                 />
                             </div>
                             <div className="formRow">                            
-                                <button type="button" onClick={handleNewItem}>
+                                <button type="button" onClick={handleNewItem} disabled={disabledNewItem}>
                                     Añadir ítem
                                 </button>
                             </div>
