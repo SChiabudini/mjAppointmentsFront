@@ -29,6 +29,7 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
                 email: companyClientDetail.email,
                 address: companyClientDetail.address,
                 phones: companyClientDetail.phones,
+                phoneWsp: companyClientDetail.phoneWsp,
                 vehicles: companyClientDetail.vehicles,
                 active: companyClientDetail.active
             };
@@ -41,7 +42,7 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
     const [ disabled, setDisabled ] = useState(true);
 
     useEffect(() => {
-        if(editCompanyClient.cuit !== '' && editCompanyClient.name !== '' && editCompanyClient.email !== '' && editCompanyClient?.phones?.length > 0 ){
+        if(editCompanyClient.cuit !== '' && editCompanyClient.name !== '' && editCompanyClient.email !== '' && (editCompanyClient?.phones?.length > 0 || phoneWsp !== '')){
             setDisabled(false);
         } else {
             setDisabled(true);
@@ -62,6 +63,8 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
     //----- HANDLE PHONES
 
     const [currentPhone, setCurrentPhone] = useState("");
+    const [phoneWsp, setPhoneWsp] = useState('');
+    const [phonePrefix, setPhonePrefix] = useState('549');
     
     const addPhone = () => {
         if (currentPhone.trim() !== "") {
@@ -78,6 +81,16 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
             ...prevState,
             phones: prevState.phones.filter((_, i) => i !== index)
         }));
+    };
+
+    const handlePhoneWspChange = (event) => {
+        const { name, value } = event.target;
+    
+        if (name === 'phoneWsp') {
+            setPhoneWsp(value);
+        } else if (name === 'phonePrefix') {
+            setPhonePrefix(value);
+        }
     };
 
     //----- HANDLE VEHÍCLES
@@ -217,6 +230,22 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
                     ) : ( 
                         <></>
                     )}                    
+                    <div className="formRow">
+                        <label>Whatsapp</label>
+                        <span>+</span>
+                        <input
+                            type="text"
+                            name="phonePrefix"
+                            value={phonePrefix}
+                            onChange={handlePhoneWspChange}
+                        />
+                        <input
+                            type="text"
+                            name="phoneWsp"
+                            value={phoneWsp}
+                            onChange={handlePhoneWspChange}
+                        />
+                    </div>  
                     <div className="formRow">
                         <label>Dirección</label>
                         <input type="text" name="address" value={editCompanyClient.address} onChange={handleInputChange} />

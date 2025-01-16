@@ -22,6 +22,8 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     
     const [newPersonClient, setNewPersonClient] = useState(initialPersonClientState);
     const [alreadyExist, setAlreadyExist] = useState(false);
+    console.log(newPersonClient);
+    
 
     //----- DISABLE BUTTON
 
@@ -49,14 +51,15 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
 
     const [currentPhone, setCurrentPhone] = useState("");
     const [phoneWsp, setPhoneWsp] = useState('');
-    const [phonePrefix, setPhonePrefix] = useState('54');
+    const [phonePrefix, setPhonePrefix] = useState('549');
 
     useEffect(() => {
+        const phoneNumber = parseFloat('+' + phonePrefix + phoneWsp);
         setNewPersonClient(prevState => ({
             ...prevState,
-            phoneWsp: '+' + phonePrefix + phoneWsp
+            phoneWsp: phoneNumber
         }));
-    }, [phonePrefix, phoneWsp]); 
+    }, [phonePrefix, phoneWsp]);
     
     const addPhone = () => {
         if (currentPhone.trim() !== "") {
@@ -170,6 +173,8 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
             }
 
             setNewPersonClient(initialPersonClientState);
+            setPhonePrefix('549');
+            setPhoneWsp('');
             dispatch(getPersonClients());
             onClientAdded(response);
 

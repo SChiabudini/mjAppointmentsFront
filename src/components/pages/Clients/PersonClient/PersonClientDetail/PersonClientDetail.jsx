@@ -14,6 +14,7 @@ const PersonClientDetail = () => {
 
     const [loading, setLoading] = useState(true);
     const [showDeleteModal, setShowDeleteModal] = useState(false);    
+    const [popUpOpen, setPopUpOpen] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -28,16 +29,9 @@ const PersonClientDetail = () => {
     //     return <div>Cargando...</div>;
     // };
 
-    // if (!personClientDetail || Object.keys(personClientDetail).length === 0) {
-    //     return <div>No se encontraron detalles de este cliente.</div>;
-    // };
-
     const toggleShowDeleteModal = () => {
         setShowDeleteModal(!showDeleteModal);
-    };
-
-    //----- ABRIR POPUP
-    const [popUpOpen, setPopUpOpen] = useState(false);
+    };    
 
     return(
         <div className="page">
@@ -76,7 +70,8 @@ const PersonClientDetail = () => {
                                     </div>
                                 ) : (
                                     <p>No hay teléfono registrado.</p>
-                                )}                              
+                                )}       
+                                {personClientDetail.phoneWsp && <p><span>Whatsapp:&nbsp;</span>{personClientDetail.phoneWsp}</p>}                       
                                 {personClientDetail.email && <p><span>Correo electrónico:&nbsp;</span>{personClientDetail.email}</p>}
                                 {personClientDetail.vehicles && <p><span>Vehículos:&nbsp;</span></p>}
                                 {personClientDetail.vehicles?.length > 0 ? (
