@@ -274,6 +274,7 @@ button.add:hover{
 
 .titleForm .titleButtons button{
     padding: 0.5rem 0.75rem;
+    border-width: 1px;
 }
 
 .titleForm .titleButtons button img{
