@@ -112,6 +112,17 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+input, textarea, select, button {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+input[type="text"], 
+input[type="date"], 
+input[type="number"], 
+textarea {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
 h2{
     color: var(--orange);
     letter-spacing: 0.2rem;
@@ -532,7 +543,6 @@ th div.withFilter button.sort{
     
 }
 
-
 .formRow input{
     width: 60%;
     box-sizing: border-box;
@@ -646,6 +656,18 @@ th div.withFilter button.sort{
     margin-right: 0.25rem;
 }
 
+.newItem{
+    padding: 1rem 1rem 0.5rem 1rem;
+    box-sizing: border-box;
+    border: 1px solid var(--dark-grey);
+    border-radius: 2px;
+    margin: 0.5rem 0;
+}
+
+.newItem button{
+    margin: 0 0 0 auto;
+}
+
 .submit{
     display: flex;
     flex-direction: column;
@@ -661,14 +683,14 @@ th div.withFilter button.sort{
     margin-top: 1rem;
 }
 
-.submitNested button{
+.submitNested button, .newItem button{
     width: fit-content;
     background-color: var(--light-grey);
     border: 1px solid var(--dark-grey);
     font-size: 0.75rem;
 }
 
-.submitNested button:hover{
+.submitNested button:hover, .newItem button:hover{
     border-color: var(--orange);
 }
 

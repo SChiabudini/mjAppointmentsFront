@@ -41,6 +41,18 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
         }
     };
 
+    const today = new Date();
+    const offset = today.getTimezoneOffset(); // Obtiene el desfase de la zona horaria en minutos
+    const localDate = new Date(today.getTime() - offset * 60 * 1000).toISOString().split("T")[0];
+
+    const [ disabled, setDisabled ] = useState(true);
+
+    useEffect(() => {
+        if((newBudget.companyClient || newBudget.personClient) && newBudget.end !== '' && newBudget.items.length > 0){
+            setDisabled(false);
+        }
+    }, [newBudget]);
+
     //----- LOAD CLIENTS AND VEHICLES OPTIONS
 
     const personClients = useSelector(state => state.personClient.personClients);
@@ -212,6 +224,13 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
         }
     };
 
+    const removeItem = (index) => {
+        setNewBudget((prevState) => ({
+            ...prevState,
+            items: prevState.items.filter((_, i) => i !== index)
+        }));
+    };
+
     //----- RESET
 
     const resetForm = () => {
@@ -225,6 +244,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
             price: 0,
         });
         setTotal(0);
+        setDisabled(true);
     }
 
     //----- SUBMIT
@@ -272,6 +292,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                 price: 0,
             });
             setTotal(0);
+            setDisabled(true);
             dispatch(getBudgets());
             onBudgetAdded(response);
         } catch (error) {
@@ -294,6 +315,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                 </div>
             </div>
             <div className="container">
+                <div className="formRow">Los campos con (*) son obligatorios.</div>
                 <div className="clientSelection">
                     <label className="formRow">Vehículo</label>
                     <div className="searchRow">
@@ -329,7 +351,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                 </div>
                 {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true} personClientId={newBudget.personClient} companyClientId={newBudget.companyClient}/>}
                 <div className="clientSelection">
-                        <label className="formRow">Cliente</label>
+                        <label className="formRow">Cliente*</label>
                         {newBudget.personClient || newBudget.companyClient ? 
                             <></> :
                             (
@@ -400,22 +422,21 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                 <div className="formRow"></div>
                 <form id="budgetForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
                     <div className="formRow">
-                        <label>
-                            Vencimiento
-                            <input
-                                type="date"
-                                name="end"
-                                onChange={(event) => setNewBudget({...newBudget, end: event.target.value})}
-                                value={newBudget.end}
-                            />
-                        </label>
+                        <label>Vencimiento*</label>                            
+                    <input
+                            type="date"
+                            name="end"
+                            onChange={(event) => setNewBudget({...newBudget, end: event.target.value})}
+                            value={newBudget.end}
+                            min={localDate}
+                        />
                     </div>
                         <div className="formRow">
-                            <label>Items</label>
+                            <label>Items*</label>
                         </div>
                         <div className="newItem">
                             <div className="formRow">
-                                <label>Cantidad:</label>
+                                <label>Cantidad*</label>
                                 <input
                                     type="number"
                                     value={currentItem.quantity || ""}
@@ -425,10 +446,11 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                                             quantity: parseInt(event.target.value, 10) || 0,
                                         })
                                     }
+                                    min={0}
                                 />
                             </div>
                             <div className="formRow">
-                                <label>Descripción:</label>
+                                <label>Descripción*</label>
                                 <input
                                     type="text"
                                     value={currentItem.description}
@@ -441,7 +463,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                                 />
                             </div>
                             <div className="formRow">
-                                <label>Precio unitario:</label>
+                                <label>Precio unitario*</label>
                                 <input
                                     type="number"
                                     value={currentItem.price || ""}
@@ -451,11 +473,14 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                                             price: parseInt(event.target.value, 10) || 0,
                                         })
                                     }
+                                    min={0}
                                 />
                             </div>
-                            <button type="button" onClick={handleNewItem}>
-                                Añadir ítem
-                            </button>
+                            <div className="formRow">                            
+                                <button type="button" onClick={handleNewItem}>
+                                    Añadir ítem
+                                </button>
+                            </div>
                         </div>
                         {newBudget.items.length > 0 && (
                             <div className="formRow">
@@ -464,6 +489,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                                         <li key={index}>
                                             {item.quantity} x {item.description} - $
                                             {item.price} - Subtotal: ${item.quantity * item.price}
+                                            <button type="button" onClick={() => removeItem(index)}>x</button>
                                         </li>
                                     ))}
                                 </ul>
@@ -471,7 +497,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                         )}
                         <div className="formRow"><label>Total: ${total}</label></div>
                     <div className="submit">
-                        <button type='submit' form="budgetForm">Crear presupuesto</button>
+                        <button type='submit' form="budgetForm" disabled={disabled}>Crear presupuesto</button>
                     </div>
                 </form>
             </div>

@@ -153,6 +153,14 @@ const Sheets = () => {
                     </button>
                 </div>
                 <div>
+                    <input
+                        type="date"
+                    />
+                    <input
+                        type="date"
+                    />
+                </div>
+                <div>
                     <button onClick={() => setPopUpServiceOpen(true)} style={{marginRight: '1rem'}}>+ F. service</button>
                     <button onClick={() => setPopUpMechanicalOpen(true)}>+ F. mecánica</button>
                 </div>                
