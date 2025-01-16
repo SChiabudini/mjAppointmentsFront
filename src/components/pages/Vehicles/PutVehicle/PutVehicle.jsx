@@ -45,7 +45,29 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                 active: vehicleDetail.active,
             });
         }
-    }, [dispatch, id, vehicleDetail]);    
+    }, [dispatch, id, vehicleDetail]);
+
+     //----- DISABLE BUTTON
+        
+    const [ disabled, setDisabled ] = useState(true);
+    const [yearTooHigh, setYearTooHigh] = useState(false);
+
+    useEffect(() => {
+
+        const currentYear = new Date().getFullYear();
+
+        if(editVehicle.licensePlate !== '' && editVehicle.brand !== '' && editVehicle.model !== '' && editVehicle.engine !== '' && editVehicle.year >= 1000 && editVehicle.year <= currentYear){
+            setDisabled(false);
+        } else {
+            setDisabled(true);
+        }
+
+        if(editVehicle.year > currentYear){
+            setYearTooHigh(true);
+        } else {
+            setYearTooHigh(false);
+        }
+    }, [editVehicle]);
 
     //----- HANDLE INPUTS
 
@@ -169,27 +191,35 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                 <h2>Editar vehículo</h2>
             </div>
             <div className="container">
+                <div className="formRow">Los campos con (*) son obligatorios.</div>
                 <form id="vehicleForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>                    
                     <div className="formRow">
-                        <label htmlFor="licensePlate">Patente</label>
+                        <label htmlFor="licensePlate">Patente*</label>
                         <input type="text" 
                         name="licensePlate" 
                         value={editVehicle.licensePlate} 
                         onChange={handleInputChange}/>
-                        {alreadyExist && <p>Ya existe un vehículo con esa patente.</p>}
                     </div>
+                    {alreadyExist && <div className="formRow"><p>Ya existe un vehículo con esa patente.</p></div>}         
                     <div className="formRow">
-                        <label htmlFor="brand">Marca</label>
+                        <label htmlFor="brand">Marca*</label>
                         <input type="text" name="brand" value={editVehicle.brand} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow">
-                        <label htmlFor="model">Modelo</label>
+                        <label htmlFor="model">Modelo*</label>
                         <input type="text" name="model" value={editVehicle.model} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow">
-                        <label htmlFor="year">Año</label>
-                        <input type="text" name="year" value={editVehicle.year || ''} onChange={handleInputChange}/>
+                        <label htmlFor="year">Año*</label>
+                        <input type="text" name="year" value={editVehicle.year || ''} onChange={(e) => {
+                            const value = e.target.value;
+
+                            if (value.length <= 4) {
+                                handleInputChange(e);
+                            }
+                        }}/>
                     </div>
+                    {yearTooHigh && <div className="formRow"><p>No puede ingresar un año superior al presente.</p></div>}
                     <div className="formRow">
                         <label htmlFor="engine">Motor</label>
                         <input type="text" name="engine" value={editVehicle.engine} onChange={handleInputChange}/>
@@ -263,7 +293,7 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                 <div className={isNested ? "submitNested" : "submit"}>
                     {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true}/>}
                     {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true}/>}
-                    <button type='submit' form="vehicleForm">Editar vehículo</button>
+                    <button type='submit' form="vehicleForm" disabled={disabled}>Editar vehículo</button>
                 </div>
             </div>
         </div>
