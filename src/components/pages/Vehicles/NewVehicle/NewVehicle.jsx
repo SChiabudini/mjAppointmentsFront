@@ -25,6 +25,28 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
     const [newVehicle, setNewVehicle] = useState(initialVehicleState);
     const [alreadyExist, setAlreadyExist] = useState(false);
 
+    //----- DISABLE BUTTON
+    
+    const [ disabled, setDisabled ] = useState(true);
+    const [yearTooHigh, setYearTooHigh] = useState(false);
+
+    useEffect(() => {
+
+        const currentYear = new Date().getFullYear();
+
+        if(newVehicle.licensePlate !== '' && newVehicle.brand !== '' && newVehicle.model !== '' && newVehicle.engine !== '' && newVehicle.year >= 1000 && newVehicle.year <= currentYear){
+            setDisabled(false);
+        } else {
+            setDisabled(true);
+        }
+
+        if(newVehicle.year > currentYear){
+            setYearTooHigh(true);
+        } else {
+            setYearTooHigh(false);
+        }
+    }, [newVehicle]);
+
     // ----- HANDLE INPUTS
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -159,29 +181,37 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                 </div>
             </div>
             <div className="container">
+                <div className="formRow">Los campos con (*) son obligatorios.</div>
                 <form id="vehicleForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
                     <div className="formRow">
-                        <label htmlFor="licensePlate">Patente</label>
+                        <label htmlFor="licensePlate">Patente*</label>
                         <input type="text" 
                         name="licensePlate" 
                         value={newVehicle.licensePlate} 
                         onChange={handleInputChange}/>
-                        {alreadyExist && <p>Ya existe un vehículo con esa patente.</p>}
                     </div>
+                    {alreadyExist && <div className="formRow"><p>Ya existe un vehículo con esa patente.</p></div>}
                     <div className="formRow">
-                        <label htmlFor="brand">Marca</label>
+                        <label htmlFor="brand">Marca*</label>
                         <input type="text" name="brand" value={newVehicle.brand} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow">
-                        <label htmlFor="model">Modelo</label>
+                        <label htmlFor="model">Modelo*</label>
                         <input type="text" name="model" value={newVehicle.model} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow">
-                        <label htmlFor="year">Año</label>
-                        <input type="number" name="year" value={newVehicle.year || ''} onChange={handleInputChange}/>
+                        <label htmlFor="year">Año*</label>
+                        <input type="number" name="year" value={newVehicle.year || ''} onChange={(e) => {
+                            const value = e.target.value;
+
+                            if (value.length <= 4) {
+                                handleInputChange(e);
+                            }
+                        }}/>
                     </div>
+                    {yearTooHigh && <div className="formRow"><p>No puede ingresar un año superior al presente.</p></div>}
                     <div className="formRow">
-                        <label htmlFor="engine">Motor</label>
+                        <label htmlFor="engine">Motor*</label>
                         <input type="text" name="engine" value={newVehicle.engine} onChange={handleInputChange}/>
                     </div>
                     {!isNested ? (
@@ -245,7 +275,7 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                 <div className={isNested ? "submitNested" : "submit"}>
                     {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true}/>}
                     {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true}/>}
-                    <button type='submit' form="vehicleForm">Crear vehículo</button>
+                    <button type='submit' form="vehicleForm" disabled={disabled}>Crear vehículo</button>
                 </div>
             </div>
         </div>
