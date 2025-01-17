@@ -84,6 +84,16 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
         }));
     };
 
+    const handlePhoneWspChange = (event) => {
+        const { name, value } = event.target;
+    
+        if (name === 'phoneWsp') {
+            setPhoneWsp(value);
+        } else if (name === 'phonePrefix') {
+            setPhonePrefix(value);
+        }
+    };
+
     //----- HANDLE VEHÍCLES
 
     const vehicles = useSelector(state => state.vehicle.vehicles);

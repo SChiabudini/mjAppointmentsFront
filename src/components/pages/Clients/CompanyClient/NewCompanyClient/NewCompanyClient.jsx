@@ -56,7 +56,7 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
 
     const [currentPhone, setCurrentPhone] = useState("");
     const [phoneWsp, setPhoneWsp] = useState('');
-    const [phonePrefix, setPhonePrefix] = useState('54');
+    const [phonePrefix, setPhonePrefix] = useState('549');
 
     useEffect(() => {
         setNewCompanyClient(prevState => ({
