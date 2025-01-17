@@ -31,11 +31,6 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
 
     const [newAppointment, setNewAppointment] = useState(initialAppointmentState);
 
-    const today = new Date();
-    const offset = today.getTimezoneOffset();
-    const localDate = new Date(today.getTime() - offset * 60 * 1000).toISOString().split("T")[0];
-    const minDateTime = localDate + "T00:00";
-    
     //----- DISABLE BUTTON
     
     const [ disabled, setDisabled ] = useState(true);
@@ -47,6 +42,13 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
             setDisabled(true);
         }
     }, [newAppointment]);
+
+    //----- DATE
+
+    const today = new Date();
+    const offset = today.getTimezoneOffset();
+    const localDate = new Date(today.getTime() - offset * 60 * 1000).toISOString().split("T")[0];
+    const minDateTime = localDate + "T00:00";
 
     //-----------HANDLE INPUTS-----------//
 
@@ -261,8 +263,6 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
         };
     
         try {
-            console.log(appointmentData);
-
             const response = await dispatch(postAppointment(appointmentData));
     
             if (response) {
@@ -390,7 +390,6 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                 </div>
                 {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true}/>}
                 {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true}/>}
-               
                 <form onSubmit={handleSubmit} id="appointmentForm" onKeyDown={handleNoSend}>
                     <div>
                         <div className="formRow">

@@ -305,65 +305,65 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                 </div>
                 {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true} personClientId={newMechanicalSheet.personClient} companyClientId={newMechanicalSheet.companyClient}/>}
                 <div className="clientSelection">
-                        <label className="formRow">Cliente</label>
-                            <div className="clientSelectionInputs">
-                                <label>
-                                    <input
-                                        type="radio"
-                                        name="clientType"
-                                        value="person"
-                                        checked={searchingPerson}
-                                        onChange={() => {
-                                            setSearchingPerson(true);
-                                            setSearchTermClients('');
-                                        }}
-                                    />
-                                    Persona
-                                </label>
-                                <label>
-                                    <input
-                                        type="radio"
-                                        name="clientType"
-                                        value="company"
-                                        checked={!searchingPerson}
-                                        onChange={() => {
-                                            setSearchingPerson(false);
-                                            setSearchTermClients('');
-                                        }}
-                                    />
-                                    Empresa
-                                </label>
-                            </div>
-                        <div className="searchRow">
+                    <label className="formRow">Cliente</label>
+                    <div className="clientSelectionInputs">
+                        <label>
                             <input
-                                type="text"
-                                name="searchTermClients"
-                                placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
-                                value={searchTermClients}
-                                onChange={handleInputChange}
-                                onFocus={() => setSelectedIndexClients(-1)}
-                                onBlur={handleSearchBlur}
-                                onKeyDown={handleKeyDown}
+                                type="radio"
+                                name="clientType"
+                                value="person"
+                                checked={searchingPerson}
+                                onChange={() => {
+                                    setSearchingPerson(true);
+                                    setSearchTermClients('');
+                                }}
                             />
-                            <button onClick={() => setShowNewClient(!showNewClient)} type="button" disabled={newMechanicalSheet.personClient || newMechanicalSheet.companyClient}>
-                                {showNewClient ? '-' : '+'}
-                            </button>                                 
-                        </div>
-                        <div className="searchRow">
-                            {filteredClients?.length > 0 && dropdownVisibleClients && (
-                                <ul className="dropdown">
-                                    {filteredClients?.map((client, index) => (
-                                        <li
-                                        key={client._id}
-                                        onClick={() => handleClientSelection(client)}
-                                        className={index === selectedIndexClients ? 'highlight' : ''}
-                                        >
-                                        {client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`}
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </div>
+                            Persona
+                        </label>
+                        <label>
+                            <input
+                                type="radio"
+                                name="clientType"
+                                value="company"
+                                checked={!searchingPerson}
+                                onChange={() => {
+                                    setSearchingPerson(false);
+                                    setSearchTermClients('');
+                                }}
+                            />
+                            Empresa
+                        </label>
+                    </div>
+                    <div className="searchRow">
+                        <input
+                            type="text"
+                            name="searchTermClients"
+                            placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
+                            value={searchTermClients}
+                            onChange={handleInputChange}
+                            onFocus={() => setSelectedIndexClients(-1)}
+                            onBlur={handleSearchBlur}
+                            onKeyDown={handleKeyDown}
+                        />
+                        <button onClick={() => setShowNewClient(!showNewClient)} type="button" disabled={newMechanicalSheet.personClient || newMechanicalSheet.companyClient}>
+                            {showNewClient ? '-' : '+'}
+                        </button>                                 
+                    </div>
+                    <div className="searchRow">
+                        {filteredClients?.length > 0 && dropdownVisibleClients && (
+                            <ul className="dropdown">
+                                {filteredClients?.map((client, index) => (
+                                    <li
+                                    key={client._id}
+                                    onClick={() => handleClientSelection(client)}
+                                    className={index === selectedIndexClients ? 'highlight' : ''}
+                                    >
+                                    {client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
                 </div>
                 {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newMechanicalSheet.vehicle}/>}
                 {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newMechanicalSheet.vehicle}/>}

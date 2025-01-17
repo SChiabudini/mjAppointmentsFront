@@ -356,7 +356,6 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                             </div>
                         )
                     }
-
                     <div className="searchRow">
                         <input
                             type="text"
