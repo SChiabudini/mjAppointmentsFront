@@ -22,7 +22,6 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     
     const [newPersonClient, setNewPersonClient] = useState(initialPersonClientState);
     const [alreadyExist, setAlreadyExist] = useState(false);
-    console.log(newPersonClient);
     
 
     //----- DISABLE BUTTON

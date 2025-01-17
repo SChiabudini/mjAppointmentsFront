@@ -204,7 +204,7 @@ const PersonClients = () => {
                                     <td>{personClient.dni}</td>
                                     <td>{personClient.name}</td>
                                     <td>{personClient.email}</td>
-                                    <td>{personClient.phoneWsp}</td>
+                                    <td>+{personClient.phoneWsp}</td>
                                     <td>
                                         {personClient.phones?.length 
                                             ? personClient.phones.join(', ') 
@@ -213,7 +213,7 @@ const PersonClients = () => {
                                     <td>{personClient.cuilCuit ? personClient.cuilCuit : 'N/A'}</td>
                                     <td>
                                         {personClient.vehicles?.length 
-                                            ? personClient.vehicles.map(vehicle => vehicle.licensePlate).join(', ') 
+                                            ? personClient.vehicles?.map(vehicle => vehicle.licensePlate).join(', ') 
                                             : 'N/A'}
                                     </td>
                                     <td className="center">

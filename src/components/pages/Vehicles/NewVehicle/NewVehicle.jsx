@@ -78,17 +78,19 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
 
     useEffect(() => {
         const clients = searchingPerson ? personClients : companyClients;
-        setFilteredClients(
-            clients.filter(client => 
-                client.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                (client.dni && client.dni.toString().includes(searchTerm))
-            )
-        );
+        if (Array.isArray(clients)) {
+            setFilteredClients(
+                clients.filter(client => 
+                    client.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                    (client.dni && client.dni.toString().includes(searchTerm))
+                )
+            );
+        } else {
+            setFilteredClients([]);
+        }
     }, [searchTerm, searchingPerson, personClients, companyClients]);
 
     const handleClientSelection = (client) => {
-        console.log(client);
-        
         const clientName = client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`;
         setSearchTerm(clientName);
         setDropdownVisible(false);

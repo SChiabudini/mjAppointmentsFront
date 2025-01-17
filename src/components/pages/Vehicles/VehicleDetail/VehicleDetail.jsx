@@ -80,7 +80,7 @@ const VehicleDetail = () => {
                                                 {vehicleDetail.personClient.cuilCuit && <li><span>CUIL/CUIT:&nbsp;</span>{vehicleDetail.personClient.cuilCuit}</li>}
                                                 {vehicleDetail.personClient.email && <li><span>Correo electrónico:&nbsp;</span>{vehicleDetail.personClient.email}</li>}
                                                 {vehicleDetail.personClient.phoneWsp ? (
-                                                    <p><span>Whatsapp:&nbsp;</span>{vehicleDetail.personClient.phoneWsp}</p>
+                                                    <li><span>Whatsapp:&nbsp;</span>+{vehicleDetail.personClient.phoneWsp}</li>
                                                 ) : (
                                                     <p>No hay teléfono con Whatsapp registrado.</p>
                                                 )} 
@@ -105,7 +105,7 @@ const VehicleDetail = () => {
                                                 {vehicleDetail.companyClient.address && <li><span>Dirección:&nbsp;</span>{vehicleDetail.companyClient.address}</li>}
                                                 {vehicleDetail.companyClient.email && <li><span>Correo electrónico:&nbsp;</span>{vehicleDetail.companyClient.email}</li>}
                                                 {vehicleDetail.companyClient.phoneWsp ? (
-                                                    <p><span>Whatsapp:&nbsp;</span>{vehicleDetail.companyClient.phoneWsp}</p>
+                                                    <li><span>Whatsapp:&nbsp;</span>{vehicleDetail.companyClient.phoneWsp}</li>
                                                 ) : (
                                                     <p>No hay teléfono con Whatsapp registrado.</p>
                                                 )} 
