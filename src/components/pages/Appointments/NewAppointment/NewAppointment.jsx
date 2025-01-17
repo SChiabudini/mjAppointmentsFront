@@ -41,7 +41,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
     const [ disabled, setDisabled ] = useState(true);
 
     useEffect(() => {
-        if(newAppointment.start !== "" && newAppointment.end !== "" && newAppointment.vehicle && (newAppointment.personClient || newAppointment.companyClient) && newAppointment.procedure.title !== "" && (newAppointment.procedure.service || newAppointment.procedure.mechanical) && newAppointment.procedure.description !== ""){
+        if(newAppointment.start !== "" && newAppointment.end !== "" && newAppointment.vehicle && (newAppointment.personClient || newAppointment.companyClient) && newAppointment.procedure.title !== "" && (newAppointment.procedure.service || newAppointment.procedure.mechanical)){
             setDisabled(false);
         } else {
             setDisabled(true);
@@ -80,10 +80,10 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
     useEffect(() => {
         const clients = searchingPerson ? personClients : companyClients;
         setFilteredClients(
-        clients.filter(client => 
-            client.name.toLowerCase().includes(searchClient.toLowerCase()) || 
-            (client.dni && client.dni.toString().includes(searchClient))
-        )
+            clients.filter(client => 
+                client.name.toLowerCase().includes(searchClient.toLowerCase()) || 
+                (client.dni && client.dni.toString().includes(searchClient))
+            )
         );
     }, [searchClient, searchingPerson, personClients, companyClients]);    
 
@@ -320,9 +320,9 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                         </button>                                
                     </div>
                     <div className="searchRow">
-                        {filteredVehicles.length > 0 && dropdownVehiclesVisible && (
+                        {filteredVehicles?.length > 0 && dropdownVehiclesVisible && (
                             <ul className="dropdown">
-                                {filteredVehicles.map((vehicle, index) => (
+                                {filteredVehicles?.map((vehicle, index) => (
                                     <li className={index === selectedClientIndex ? 'highlight' : ''} key={vehicle._id} onClick={() => handleVehicleSelection(vehicle)} >
                                         {vehicle.licensePlate}
                                     </li>
@@ -373,9 +373,9 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                         </button>                                 
                     </div>
                     <div className="searchRow">
-                        {filteredClients.length > 0 && dropdownClientsVisible && (
+                        {filteredClients?.length > 0 && dropdownClientsVisible && (
                             <ul className="dropdown">
-                                {filteredClients.map((client, index) => (
+                                {filteredClients?.map((client, index) => (
                                     <li
                                     className={index === selectedClientIndex ? 'highlight' : ''}
                                     key={client._id}
@@ -448,7 +448,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                                 onChange={handleProcedureChange} 
                             />
                         </div>               
-                        <div className="formRow"><label htmlFor="description">Descripción*</label></div> 
+                        <div className="formRow"><label htmlFor="description">Descripción</label></div> 
                         <div className="formRow">
                             <textarea
                                 name="description" 
