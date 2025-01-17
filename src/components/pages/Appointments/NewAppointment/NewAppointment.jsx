@@ -293,7 +293,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                         onMouseEnter={(e) => e.currentTarget.firstChild.src = clearHover} 
                         onMouseLeave={(e) => e.currentTarget.firstChild.src = clear}
                     >
-                        <img src={clear} alt="Print"/>
+                        <img src={clear} alt="Clear"/>
                     </button>
                 </div>
             </div>
