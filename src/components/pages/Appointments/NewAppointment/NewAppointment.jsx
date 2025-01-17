@@ -29,7 +29,12 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
         procedure: {newProcedure}
     };
 
-    const [newAppointment, setNewAppointment] = useState(initialAppointmentState); 
+    const [newAppointment, setNewAppointment] = useState(initialAppointmentState);
+
+    const today = new Date();
+    const offset = today.getTimezoneOffset();
+    const localDate = new Date(today.getTime() - offset * 60 * 1000).toISOString().split("T")[0];
+    const minDateTime = localDate + "T00:00";
     
     //----- DISABLE BUTTON
     
@@ -396,8 +401,9 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                             <input 
                                 type="datetime-local" 
                                 name="start" 
-                                value={newAppointment.start || ''}
-                                onChange={handleInputChange} 
+                                value={newAppointment.start}
+                                onChange={handleInputChange}
+                                min={minDateTime}
                             />
                         </div>
                         <div className="formRow">
@@ -405,8 +411,9 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                             <input 
                                 type="datetime-local" 
                                 name="end" 
-                                value={newAppointment.end || ''}
-                                onChange={handleInputChange} 
+                                value={newAppointment.end}
+                                onChange={handleInputChange}
+                                min={minDateTime}
                             />
                         </div>
                         <div className="formRow"><label>Procedimiento*</label></div>
