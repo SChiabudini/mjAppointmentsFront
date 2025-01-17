@@ -85,10 +85,10 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
     useEffect(() => {
         const clients = searchingPerson ? personClients : companyClients;
         setFilteredClients(
-        clients.filter(client => 
-            client.name.toLowerCase().includes(searchTermClients.toLowerCase()) || 
-            (client.dni && client.dni.toString().includes(searchTermClients))
-        )
+            clients.filter(client => 
+                client.name.toLowerCase().includes(searchTermClients.toLowerCase()) || 
+                (client.dni && client.dni.toString().includes(searchTermClients))
+            )
         );
     }, [searchTermClients, searchingPerson, personClients, companyClients]);
 
@@ -104,7 +104,6 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
     };
 
     //----- HANDLE VEHICLES
-    
 
     const [searchTermVehicles, setSearchTermVehicles] = useState('');
     const [filteredVehicles, setFilteredVehicles] = useState([]);
