@@ -155,6 +155,8 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
         setNewCompanyClient(initialCompanyClientState);
         setCurrentPhone('');
         setSearchTerm('');
+        setPhoneWsp('');
+        setPhonePrefix('549');
     }
 
 
@@ -200,35 +202,39 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
             </div>
         </div>
         <div className="container">
+            <div className="formRow">Los campos con (*) son obligatorios.</div>
             <form id="companyClientForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
                 <div className="formRow">
-                    <label htmlFor="cuit">CUIT</label>
+                    <label htmlFor="cuit">CUIT*</label>
                     <input type="text" name="cuit" value={newCompanyClient.cuit} onChange={handleInputChange}/>
-                    {alreadyExist && <p>Ya existe un cliente con ese CUIT.</p>}
                 </div>
+                {alreadyExist && <div className="formRow"><p>Ya existe un cliente con ese CUIT.</p></div>}
                 <div className="formRow">
-                    <label htmlFor="name">Nombre</label>
+                    <label htmlFor="name">Nombre*</label>
                     <input type="text" name="name" value={newCompanyClient.name} onChange={handleInputChange}/>
                 </div>
                 <div className="formRow">
-                    <label htmlFor="email">Email</label>
+                    <label htmlFor="email">Email*</label>
                     <input type="text" name="email" value={newCompanyClient.email} onChange={handleInputChange}/>
                 </div>
-                <div className="formRow">
+                <div className="formRowWithButton">
                     <label>Whatsapp</label>
-                    <span>+</span>
-                    <input
-                        type="text"
-                        name="phonePrefix"
-                        value={phonePrefix}
-                        onChange={handlePhoneWspChange}
-                    />
-                    <input
-                        type="text"
-                        name="phoneWsp"
-                        value={phoneWsp}
-                        onChange={handlePhoneWspChange}
-                    />
+                    <div>
+                        <span>+</span>
+                        <input
+                            type="text"
+                            name="phonePrefix"
+                            value={phonePrefix}
+                            onChange={handlePhoneWspChange}
+                            className="phonePrefix"
+                        />
+                        <input
+                            type="text"
+                            name="phoneWsp"
+                            value={phoneWsp}
+                            onChange={handlePhoneWspChange}
+                        />
+                    </div>
                 </div> 
                 <div className="formRowWithButton">
                     <label>Teléfono(s)</label>

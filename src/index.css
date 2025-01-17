@@ -560,6 +560,11 @@ th div.withFilter button.sort{
     box-sizing: border-box;
 }
 
+.formRowWithButton div input.phonePrefix{
+    width: 15%;
+    margin: 0 0.25rem;
+}
+
 .formRowWithButton button {
     border: 1px solid var(--dark-grey);
     padding: 0;
