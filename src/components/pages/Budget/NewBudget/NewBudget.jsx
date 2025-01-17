@@ -48,7 +48,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
     const [ disabled, setDisabled ] = useState(true);
 
     useEffect(() => {
-        if((newBudget.companyClient || newBudget.personClient) && newBudget.end !== '' && newBudget.items?.length > 0){
+        if((newBudget.companyClient || newBudget.personClient) && newBudget.end !== '' && newBudget.items.length > 0){
             setDisabled(false);
         } else {
             setDisabled(true);
@@ -180,9 +180,9 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
     
         // Lógica común
         if (event.key === 'ArrowDown') {
-            setSelectedIndex((prev) => (prev + 1) % filteredItems?.length);
+            setSelectedIndex((prev) => (prev + 1) % filteredItems.length);
         } else if (event.key === 'ArrowUp') {
-            setSelectedIndex((prev) => (prev - 1 + filteredItems?.length) % filteredItems?.length);
+            setSelectedIndex((prev) => (prev - 1 + filteredItems.length) % filteredItems.length);
         } else if (event.key === 'Enter' && selectedIndex >= 0) {
             handleSelection(filteredItems[selectedIndex]);
             setDropdownVisible(false);
@@ -346,9 +346,9 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                         </button>                                 
                     </div>
                     <div className="searchRow">
-                        {filteredVehicles?.length > 0 && dropdownVisibleVehicles && (
+                        {filteredVehicles.length > 0 && dropdownVisibleVehicles && (
                             <ul className="dropdown">
-                                {filteredVehicles?.map((vehicle, index) => (
+                                {filteredVehicles.map((vehicle, index) => (
                                     <li
                                     key={vehicle._id}
                                     onClick={() => handleVehicleSelection(vehicle)}
@@ -397,6 +397,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                                 </div>
                             )
                         }
+
                         <div className="searchRow">
                             <input
                                 type="text"
@@ -413,9 +414,9 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                             </button>                                 
                         </div>
                         <div className="searchRow">
-                            {filteredClients?.length > 0 && dropdownVisibleClients && (
+                            {filteredClients.length > 0 && dropdownVisibleClients && (
                                 <ul className="dropdown">
-                                    {filteredClients?.map((client, index) => (
+                                    {filteredClients.map((client, index) => (
                                         <li
                                         key={client._id}
                                         onClick={() => handleClientSelection(client)}
@@ -493,10 +494,10 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                                 </button>
                             </div>
                         </div>
-                        {newBudget.items?.length > 0 && (
+                        {newBudget.items.length > 0 && (
                             <div className="formRow">
                                 <ul>
-                                    {newBudget.items?.map((item, index) => (
+                                    {newBudget.items.map((item, index) => (
                                         <li key={index}>
                                             {item.quantity} x {item.description} - $
                                             {item.price} - Subtotal: ${item.quantity * item.price}
