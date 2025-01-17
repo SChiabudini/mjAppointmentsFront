@@ -288,7 +288,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                         </button>                                  
                     </div>
                     <div className="searchRow">
-                        {filteredVehicles.length > 0 && dropdownVisibleVehicles && (
+                        {filteredVehicles?.length > 0 && dropdownVisibleVehicles && (
                             <ul className="dropdown">
                                 {filteredVehicles.map((vehicle, index) => (
                                     <li
@@ -350,9 +350,9 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                             </button>                                 
                         </div>
                         <div className="searchRow">
-                            {filteredClients.length > 0 && dropdownVisibleClients && (
+                            {filteredClients?.length > 0 && dropdownVisibleClients && (
                                 <ul className="dropdown">
-                                    {filteredClients.map((client, index) => (
+                                    {filteredClients?.map((client, index) => (
                                         <li
                                         key={client._id}
                                         onClick={() => handleClientSelection(client)}
