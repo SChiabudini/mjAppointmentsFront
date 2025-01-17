@@ -105,8 +105,8 @@ const ServiceSheetDetail = () => {
                                         {serviceSheetDetail.companyClient.cuit && <p><span>CUIT:&nbsp;</span>{serviceSheetDetail.companyClient.cuit}</p>}
                                         {serviceSheetDetail.companyClient.address && <p><span>Dirección:&nbsp;</span>{serviceSheetDetail.companyClient.address}</p>}
                                         {serviceSheetDetail.companyClient.email && <p><span>Correo electrónico:&nbsp;</span>{serviceSheetDetail.companyClient.email}</p>}
-                                        {serviceSheetDetail.personClient.phoneWsp ? (
-                                            <p><span>Whatsapp:&nbsp;</span>{serviceSheetDetail.personClient.phoneWsp}</p>
+                                        {serviceSheetDetail.companyClient.phoneWsp ? (
+                                            <p><span>Whatsapp:&nbsp;</span>{serviceSheetDetail.companyClient.phoneWsp}</p>
                                         ) : (
                                             <p>No hay teléfono con Whatsapp registrado.</p>
                                         )} 
