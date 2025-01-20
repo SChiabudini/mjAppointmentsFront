@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getCompanyClientById } from '../../../../../redux/companyClientActions';
+import { clearCompanyClientDetailReducer } from '../../../../../redux/companyClientSlice.js';
 import PutCompanyClient from '../PutCompanyClient/PutCompanyClient.jsx';
+import loadingGif from "../../../../../assets/img/loading.gif";
+import style from "./CompanyClientDetail.module.css";
 
 const CompanyClientDetail = () => {
 
@@ -17,40 +20,33 @@ const CompanyClientDetail = () => {
     const [popUpOpen, setPopUpOpen] = useState(false);
 
     useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            await dispatch(getCompanyClientById(id));
-            setLoading(false);
-        };
-        fetchData();
-    }, [dispatch, id]);
-
-    // if (loading) {
-    //     return <div>Cargando...</div>;
-    // };
-
-    const toggleShowDeleteModal = () => {
-        setShowDeleteModal(!showDeleteModal);
-    };    
+        dispatch(getCompanyClientById(id)).then(() => setLoading(false));
+        
+            return () => {
+                dispatch(clearCompanyClientDetailReducer());
+            };
+    }, [dispatch, id]);   
 
     return(
         <div className="page">
-            {/* {
-                loading ? (
-                    <div>Cargando</div>
-                ) : ( */}
+            {loading ? 
+                                    <div className="loadingPage">
+                                        <img src={loadingGif} alt=""/>
+                                        <p>Cargando</p>
+                                    </div>
+                 : 
                     <div className="component">
                         <div className="title">
                             <h2>Detalle de la empresa</h2>
                             <div className="titleButtons">
                                 {companyClientDetail.active ? <button onClick={() => setPopUpOpen(true)}>Editar</button> : ''}
-                                {!companyClientDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Activar</button> : <button className="delete" onClick={toggleShowDeleteModal}>Desactivar</button>}
+                                {!companyClientDetail.active ? <button className="add" onClick={() => setShowDeleteModal(!showDeleteModal)}>Activar</button> : <button className="delete" onClick={() => setShowDeleteModal(!showDeleteModal)}>Desactivar</button>}
                                 <button onClick={() => navigate(`/main_window/clientes/empresas`)}>Atrás</button>
                             </div>
                         </div>
                         {/* <div className={!companyClientDetail.active ? `container ${style.contentInactive}` : `container ${style.content}`}> */}
-                        <div>
-                            <div>
+                        <div className="columns">
+                            <div className="left">
                             {/* <div className={style.column}> */}
                                 <p><span>Estado:&nbsp;</span>{companyClientDetail.active ? 'Activo' : 'Inactivo'}</p>
                                 {companyClientDetail.cuit && <p><span>CUIT:&nbsp;</span>{companyClientDetail.cuit}</p>}
@@ -60,90 +56,108 @@ const CompanyClientDetail = () => {
                                 ) : (
                                     <p>No hay teléfono con Whatsapp registrado.</p>
                                 )}                          
-                                {companyClientDetail.phones && <p><span>Teléfono:&nbsp;</span></p>}
                                 {companyClientDetail.phones?.length > 0 ? (
-                                    <div>
-                                        {companyClientDetail.phones?.map((phone, index) => (
-                                            <ul key={index}>
-                                                <li> 
-                                                    <p><span>{phone}</span></p>
-                                                </li>
-                                            </ul>
-                                        ))}
-                                    </div>
+                                    <p><span>Teléfono(s):&nbsp;</span>{companyClientDetail.phones?.join(', ')}</p>
                                 ) : (
-                                    <p>No hay teléfono registrado.</p>
-                                )}   
+                                    <p><span>Teléfono(s):&nbsp;</span>No tiene teléfono registrado.</p>
+                                )}    
                                 {companyClientDetail.email && <p><span>Correo electrónico:&nbsp;</span>{companyClientDetail.email}</p>}
-                                {companyClientDetail.address && <p><span>Dirección:&nbsp;</span>{companyClientDetail.address}</p>}
-                                {companyClientDetail.vehicles && <p><span>Vehículos:&nbsp;</span></p>}
-                                {companyClientDetail.vehicles?.length > 0 ? (
-                                    <div>
-                                        {companyClientDetail.vehicles?.map((vehicle) => (
-                                            <ul key={vehicle.licensePlate}>
-                                                <li> 
-                                                    <p><span>{vehicle.licensePlate}</span></p>
-                                                    <p><span>{vehicle.brand}</span></p>
-                                                    <p><span>{vehicle.model}</span></p>
-                                                    <p><span>{vehicle.year}</span></p>
-                                                    <p><span>{vehicle.engine}</span></p>
-                                                </li>
-                                            </ul>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <p>No hay vehículos disponibles.</p>
-                                )}  
-                                {(companyClientDetail.serviceSheets?.length > 0 || companyClientDetail.mechanicalSheets?.length > 0) && (
-                                    <p><span>Fichas:&nbsp;</span></p>
-                                )}
-                                {companyClientDetail.serviceSheets?.length > 0 ? (
-                                    <div>
-                                        <p><span>Service:&nbsp;</span></p>
-                                        {companyClientDetail.serviceSheets?.map((serviceSheet, index) => (
-                                            <ul key={index}>
-                                                <li>
-                                                    <p><span>{new Date(serviceSheet.date).toLocaleString('es-ES', { 
-                                                        day: '2-digit', 
-                                                        month: '2-digit', 
-                                                        year: '2-digit', 
-                                                        hour: '2-digit', 
-                                                        minute: '2-digit', 
-                                                    })}</span></p>
-                                                    <p><span>{serviceSheet.vehicle?.licensePlate}</span></p>
-                                                </li>
-                                            </ul>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <p>No hay fichas de service registradas.</p>
-                                )}
-                                {companyClientDetail.mechanicalSheets?.length > 0 ? (
-                                    <div>
-                                        <p><span>Mecánica:&nbsp;</span></p>
-                                        {companyClientDetail.mechanicalSheets?.map((mechanicalSheet, index) => (
-                                            <ul key={index}>
-                                                <li>
-                                                    <p><span>{new Date(mechanicalSheet.date).toLocaleString('es-ES', { 
-                                                        day: '2-digit', 
-                                                        month: '2-digit', 
-                                                        year: '2-digit', 
-                                                        hour: '2-digit', 
-                                                        minute: '2-digit', 
-                                                    })}</span></p>
-                                                    <p><span>{mechanicalSheet.vehicle?.licensePlate}</span></p>
-                                                </li>
-                                            </ul>
-                                        ))}
-                                    </div>
-                                ) : (
-                                 <p>No hay fichas mecánicas registradas.</p>
-                                )} 
+                                {companyClientDetail.address && <p><span>Dirección:&nbsp;</span>{companyClientDetail.address}</p>}                        
+                                <div>
+                                    {companyClientDetail.vehicles && <p><span>Vehículos:&nbsp;</span></p>}
+                                    {companyClientDetail.vehicles?.length > 0 ? (
+                                        <div>
+                                            {companyClientDetail.vehicles?.map((vehicle, index) => (
+                                                <div className="clientInfo">
+                                                    <ul key={index}>
+                                                        <li><span>Patente:&nbsp;</span>{vehicle.licensePlate}</li>
+                                                        <li><span>Marca:&nbsp;</span>{vehicle.brand}</li>
+                                                        <li><span>Modelo:&nbsp;</span>{vehicle.model}</li>
+                                                        <li><span>Año:&nbsp;</span>{vehicle.year}</li>
+                                                        <li><span>Motor:&nbsp;</span>{vehicle.engine}</li>
+                                                    </ul>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="clientInfo"><p><span className={style.withoutRegistration}>No hay vehículos disponibles.</span></p></div>
+                                    )}  
+                                </div>
+                            </div>
+                            <div className="right">                                
+                                <p><span>Fichas&nbsp;</span></p>
+                                <div className={style.sheetsContainer}>
+                                    {companyClientDetail.serviceSheets?.length > 0 ? (
+                                        <div className={style.sheets}>
+                                            <p><span>Service&nbsp;</span></p>
+                                            {[...companyClientDetail.serviceSheets]?.reverse().map((serviceSheet, index) => (
+                                                <ul key={index}>                                       
+                                                    {serviceSheet.number && <span><li>Número:&nbsp;{serviceSheet.number}</li></span>}
+                                                    {serviceSheet.date && 
+                                                        <li>Fecha: {new Date(serviceSheet.date).toLocaleString('es-ES', { 
+                                                            day: '2-digit', 
+                                                            month: '2-digit', 
+                                                            year: '2-digit', 
+                                                            hour: '2-digit', 
+                                                            minute: '2-digit', 
+                                                        })}</li>
+                                                    }
+                                                    {serviceSheet.kilometers && <li>Kilometraje:&nbsp;{serviceSheet.kilometers}</li>}
+                                                    {serviceSheet.kmsToNextService && <li>Kms hasta el siguiente service:&nbsp;{serviceSheet.kmsToNextService}</li>}
+                                                    {serviceSheet.oil && <li>Aceite:&nbsp;{serviceSheet.oil}</li>}
+                                                    {serviceSheet.filters?.length > 0 ? (
+                                                        <li>
+                                                            Filtros:&nbsp;
+                                                            {serviceSheet.filters?.join(', ')}
+                                                        </li>
+                                                    ) : (
+                                                        <></>
+                                                    )}
+                                                    {serviceSheet.notes && <li>Notas:&nbsp;{serviceSheet.notes}</li>}
+                                                    {serviceSheet.amount && <li>Monto:&nbsp;${serviceSheet.amount}</li>}                                                   
+                                                </ul>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className={style.sheets}>
+                                            <p><span>Service&nbsp;</span></p>
+                                            <p className={style.withoutRegistration}>No hay fichas de service registradas.</p>
+                                        </div>
+                                        
+                                    )}
+                                    {companyClientDetail.mechanicalSheets?.length > 0 ? (
+                                        <div className={style.sheets}>
+                                            <p><span>Mecánica&nbsp;</span></p>
+                                            {[...companyClientDetail.mechanicalSheets]?.reverse().map((mechanicalSheet, index) => (
+                                                <ul key={index}>                                                    
+                                                    {mechanicalSheet.number && <span><li>Número:&nbsp;{mechanicalSheet.number}</li></span>}
+                                                    {mechanicalSheet.date && 
+                                                        <li>Fecha: {new Date(mechanicalSheet.date).toLocaleString('es-ES', { 
+                                                            day: '2-digit', 
+                                                            month: '2-digit', 
+                                                            year: '2-digit', 
+                                                            hour: '2-digit', 
+                                                            minute: '2-digit', 
+                                                        })}</li>
+                                                    }
+                                                    {mechanicalSheet.kilometers && <li>Kilometraje:&nbsp;{mechanicalSheet.kilometers}</li>}
+                                                    {mechanicalSheet.keyWords && <li>Palabras clave:&nbsp;{mechanicalSheet.keyWords}</li>}
+                                                    {mechanicalSheet.description && <li>Descripción:&nbsp;{mechanicalSheet.description}</li>}
+                                                    {mechanicalSheet.amount && <li>Monto:&nbsp;${mechanicalSheet.amount}</li>}                                                   
+                                                </ul>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className={style.sheets}>
+                                            <p><span>Mecánica&nbsp;</span></p>
+                                            <p className={style.withoutRegistration}>No hay fichas mecánicas registradas.</p>
+                                        </div>
+                                    )} 
+                                </div>
                             </div>
                         </div>
                     </div>
-                {/* ) */}
-            {/* } */}
+            }
             <div className={popUpOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpOpen(false)}>
               <div onClick={(e) => e.stopPropagation()}>
                 <PutCompanyClient onClientAdded={() => setPopUpOpen(false)}/>
