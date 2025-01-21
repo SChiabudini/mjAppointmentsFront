@@ -74,10 +74,6 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         
-        // setEditVehicle({
-        //     ...editVehicle,
-        //     [name]: name === 'year' ? (value === '' ? '' : parseInt(value, 10) || 0) : value,
-        // });
         setEditVehicle((prevState) => ({
             ...prevState,
             [name]: name === 'year' ? (value === '' ? '' : parseInt(value, 10) || 0) : value,
@@ -88,7 +84,7 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
         }));
         
         if (name === 'licensePlate') setAlreadyExist(false);
-        // if(name === 'searchTerm') setSearchTerm(value);
+        
         if (name === 'searchTerm') {
             setSearchTerm(value);
             if (value === '') {
