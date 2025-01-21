@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { getBudgets, searchBudgets } from "../../../redux/budgetActions.js";
 import { clearBudgetsReducer } from "../../../redux/budgetSlice.js";
 import detail from "../../../assets/img/detail.png";
+import loadingGif from "../../../assets/img/loading.gif";
 
 const Budgets = () => {
 
@@ -15,6 +16,7 @@ const Budgets = () => {
     const [ number, setNumber ] = useState('');
     const [ client, setClient ] = useState('');
     const [ vehicle, setVehicle ] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if(!number && client && vehicle){
@@ -35,7 +37,8 @@ const Budgets = () => {
     const handleSearch = (event) => {
         if (event.key === "Enter") {
             if (number.trim() || client.trim() || vehicle.trim()) {
-                dispatch(searchBudgets(number.trim(), client.trim(), vehicle.trim()));
+                setLoading(true);
+                dispatch(searchBudgets(number.trim(), client.trim(), vehicle.trim())).then(() => setLoading(false));
                 setCurrentPage(1);
             }
         }
@@ -195,21 +198,34 @@ const Budgets = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {paginatedBudgets?.map(budget => (
-                                <tr key={budget._id}>
-                                    <td>{budget.number}</td>
-                                    <td>{formatDate(budget.start)}</td>
-                                    <td>{formatDate(budget.end)}</td>
-                                    <td>{budget.personClient ? budget.personClient.name : budget.companyClient ? budget.companyClient.name : 'N/A'}</td>
-                                    <td>{budget.vehicle ? budget.vehicle.licensePlate : 'N/A'}</td>
-                                    <td>${budget.total}</td>
-                                    <td className='center'>
-                                        <a onClick={() => navigate(`/main_window/presupuesto/${budget._id}`)}>
-                                            <img src={detail} alt="" className="detailImg" />
-                                        </a>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan="7" className="loadingCell">
+                                        <div className="loadingPage">
+                                            <img src={loadingGif} alt="" />
+                                            <p>Cargando</p>
+                                        </div>
                                     </td>
                                 </tr>
-                            ))}
+                            ) : (
+                                <>
+                                    {paginatedBudgets?.map(budget => (
+                                        <tr key={budget._id}>
+                                            <td>{budget.number}</td>
+                                            <td>{formatDate(budget.start)}</td>
+                                            <td>{formatDate(budget.end)}</td>
+                                            <td>{budget.personClient ? budget.personClient.name : budget.companyClient ? budget.companyClient.name : 'N/A'}</td>
+                                            <td>{budget.vehicle ? budget.vehicle.licensePlate : 'N/A'}</td>
+                                            <td>${budget.total}</td>
+                                            <td className='center'>
+                                                <a onClick={() => navigate(`/main_window/presupuesto/${budget._id}`)}>
+                                                    <img src={detail} alt="" className="detailImg" />
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </>
+                            )}
                         </tbody>
                     </table>
                 </div>

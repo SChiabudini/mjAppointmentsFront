@@ -8,6 +8,7 @@ import { getMechanicalSheets, searchMechanicalSheets } from "../../../redux/mech
 import { clearServiceSheetsReducer } from "../../../redux/serviceSheetSlice.js";
 import { clearMechanicalSheetsReducer } from '../../../redux/mechanicalSheetSlice.js';
 import detail from "../../../assets/img/detail.png";
+import loadingGif from "../../../assets/img/loading.gif";
 
 const Sheets = () => {
 
@@ -22,6 +23,7 @@ const Sheets = () => {
     const [client, setClient] = useState('');
     const [vehicle, setVehicle] = useState('');
     const [keyWords, setKeyWords] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
 
@@ -49,10 +51,13 @@ const Sheets = () => {
     const handleSearch = (event) => {
         if (event.key === "Enter") {
             if (number.trim() || vehicle.trim() || client.trim() || keyWords.trim()) {
+                setLoading(true);
                 dispatch(searchServiceSheets(number.trim(), vehicle.trim(), client.trim()));
-                dispatch(searchMechanicalSheets(number.trim(), vehicle.trim(), client.trim(), keyWords.trim()));
+                dispatch(searchMechanicalSheets(number.trim(), vehicle.trim(), client.trim(), keyWords.trim())).then(() => setLoading(false));
                 setCurrentPage(1);
-                setToggle(true);
+                if(keyWords.trim()){
+                    setToggle(true);
+                }
             }
         }
     };
@@ -246,27 +251,40 @@ const Sheets = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {paginatedSheets?.map(sheet => (
-                                <tr key={sheet._id}>
-                                    <td>{sheet.oil ? "Service" : "Mecánica"}</td>
-                                    <td>{sheet.number}</td>
-                                    <td>{formatDate(sheet.date)}</td>
-                                    <td>{sheet.vehicle.licensePlate}</td>
-                                    <td>{sheet.personClient ? sheet.personClient.name : sheet.companyClient ? sheet.companyClient.name : 'N/A'}</td>
-                                    <td>{sheet.keyWords ? sheet.keyWords : 'N/A'}</td>
-                                    <td className='center'>
-                                        {sheet.oil ? (
-                                            <a onClick={() => navigate(`/main_window/fichas/service/${sheet._id}`)}>
-                                                <img src={detail} alt="" className="detailImg" />
-                                            </a>
-                                        ):(
-                                            <a onClick={() => navigate(`/main_window/fichas/mecanica/${sheet._id}`)}>
-                                                <img src={detail} alt="" className="detailImg" />
-                                            </a>
-                                        )}
+                            {loading ? (
+                                <tr>
+                                    <td colSpan="7" className="loadingCell">
+                                        <div className="loadingPage">
+                                            <img src={loadingGif} alt="" />
+                                            <p>Cargando</p>
+                                        </div>
                                     </td>
                                 </tr>
-                            ))}
+                            ) : (
+                                <>
+                                    {paginatedSheets?.map(sheet => (
+                                        <tr key={sheet._id}>
+                                            <td>{sheet.oil ? "Service" : "Mecánica"}</td>
+                                            <td>{sheet.number}</td>
+                                            <td>{formatDate(sheet.date)}</td>
+                                            <td>{sheet.vehicle.licensePlate}</td>
+                                            <td>{sheet.personClient ? sheet.personClient.name : sheet.companyClient ? sheet.companyClient.name : 'N/A'}</td>
+                                            <td>{sheet.keyWords ? sheet.keyWords : 'N/A'}</td>
+                                            <td className='center'>
+                                                {sheet.oil ? (
+                                                    <a onClick={() => navigate(`/main_window/fichas/service/${sheet._id}`)}>
+                                                        <img src={detail} alt="" className="detailImg" />
+                                                    </a>
+                                                ):(
+                                                    <a onClick={() => navigate(`/main_window/fichas/mecanica/${sheet._id}`)}>
+                                                        <img src={detail} alt="" className="detailImg" />
+                                                    </a>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </>
+                            )}
                         </tbody>
                     </table>
                 </div>
