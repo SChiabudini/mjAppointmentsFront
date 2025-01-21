@@ -19,11 +19,7 @@ const NavBar = () => {
         if (subsection === 'empresas') navigate('/main_window/clientes/empresas');
         setIsDropdownOpen(false);
     };
-
-    const toggleDropdown = () => {
-        setIsDropdownOpen(true); 
-    };
-
+    
     return (
         <div className={style.NavBar}>
             <div className={`${style.NavLink} ${location.pathname === '/' || location.pathname.startsWith('/main_window/turnos') ? style.selected : ''}`} onClick={() => handleClick('turnos')}>
@@ -33,7 +29,7 @@ const NavBar = () => {
                 className={`${style.NavLink} ${location.pathname.startsWith('/main_window/clientes') ? style.selected : ''}`}
                 onMouseEnter={() => setIsDropdownOpen(true)}
                 onMouseLeave={() => setIsDropdownOpen(false)}
-                onClick={toggleDropdown} 
+                onClick={() => setIsDropdownOpen(true)} 
             >
                 Clientes
                 {isDropdownOpen && (

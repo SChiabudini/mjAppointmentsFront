@@ -20,10 +20,18 @@ export const appointmentSlice = createSlice({
         postAppointmentReducer: (state, action) => {
             state.appointments.push(action.payload);
             state.appointmentsCopy.push(action.payload);
+        },
+
+        clearAppointmentDetailReducer: (state) => {
+            state.appointmentDetail = {};
+        },
+
+        clearAppointmentsReducer: (state) => {
+            state.appointments = state.appointmentsCopy;
         }
     }
 });
 
-export const { getAppointmentsReducer, getAppointmentByIdReducer, postAppointmentReducer } = appointmentSlice.actions;
+export const { getAppointmentsReducer, getAppointmentByIdReducer, postAppointmentReducer, clearAppointmentDetailReducer,  clearAppointmentsReducer} = appointmentSlice.actions;
 
 export default appointmentSlice.reducer;
