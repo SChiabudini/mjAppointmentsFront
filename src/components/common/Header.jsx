@@ -1,6 +1,6 @@
 import style from './Header.module.css';
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import logo from './logo.png';
 
 import NavBar from './NavBar/NavBar.jsx';
