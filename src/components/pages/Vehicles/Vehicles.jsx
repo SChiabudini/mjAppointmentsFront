@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { getVehicles, searchVehicles } from "../../../redux/vehicleActions.js";
 import { clearVehiclesReducer } from "../../../redux/vehicleSlice.js";
 import detail from "../../../assets/img/detail.png";
+import loadingGif from "../../../assets/img/loading.gif";
 
 const Vehicles = () => {
 
@@ -14,6 +15,7 @@ const Vehicles = () => {
 
     const [licensePlate, setLicensePlate] = useState('');
     const [client, setClient] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
 
@@ -36,7 +38,8 @@ const Vehicles = () => {
     const handleSearch = (event) => {
         if (event.key === "Enter") {
             if (licensePlate.trim() || client.trim()) {
-                dispatch(searchVehicles(licensePlate.trim(), client.trim()));
+                setLoading(true);
+                dispatch(searchVehicles(licensePlate.trim(), client.trim())).then(() => setLoading(false));
                 setCurrentPage(1);
             }
         }
@@ -169,21 +172,34 @@ const Vehicles = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {paginatedVehicles?.map(vehicle => (
-                                <tr key={vehicle._id}>
-                                    <td>{vehicle.licensePlate}</td>
-                                    <td>{vehicle.brand}</td>
-                                    <td>{vehicle.model}</td>
-                                    <td>{vehicle.year}</td>
-                                    <td>{vehicle.engine}</td>
-                                    <td>{vehicle.personClient ? vehicle.personClient.name : vehicle.companyClient ? vehicle.companyClient.name : 'N/A'}</td>
-                                    <td className='center'>
-                                        <a onClick={() => navigate(`/main_window/vehiculos/${vehicle._id}`)}>
-                                            <img src={detail} alt="" className="detailImg" />
-                                        </a>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan="8" className="loadingCell">
+                                        <div className="loadingPage">
+                                            <img src={loadingGif} alt="" />
+                                            <p>Cargando</p>
+                                        </div>
                                     </td>
                                 </tr>
-                            ))}
+                            ) : (
+                                <>
+                                    {paginatedVehicles?.map(vehicle => (
+                                        <tr key={vehicle._id}>
+                                            <td>{vehicle.licensePlate}</td>
+                                            <td>{vehicle.brand}</td>
+                                            <td>{vehicle.model}</td>
+                                            <td>{vehicle.year}</td>
+                                            <td>{vehicle.engine}</td>
+                                            <td>{vehicle.personClient ? vehicle.personClient.name : vehicle.companyClient ? vehicle.companyClient.name : 'N/A'}</td>
+                                            <td className='center'>
+                                                <a onClick={() => navigate(`/main_window/vehiculos/${vehicle._id}`)}>
+                                                    <img src={detail} alt="" className="detailImg" />
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </>
+                            )}
                         </tbody>
                     </table>
                 </div>

@@ -726,6 +726,11 @@ th div.withFilter button.sort{
     gap: 1rem;
 }
 
+.loadingCell {
+    text-align: center;
+    padding: 2rem;
+}
+
 /*-- PRINT CSS --*/
 
 @media print {
