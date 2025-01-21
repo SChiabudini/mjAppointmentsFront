@@ -242,7 +242,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
         setSearchingPerson(true);
         setSearchClient('');
         setSearchVehicle('');
-    }
+    };
     
     //-----------SUBMIT-----------//
 

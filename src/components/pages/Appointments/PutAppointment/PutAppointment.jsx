@@ -5,6 +5,8 @@ import NewPersonClient from "../../Clients/PersonClient/NewPersonClient/NewPerso
 import NewCompanyClient from "../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx";
 import NewVehicle from "../../Vehicles/NewVehicle/NewVehicle.jsx";
 import { getAppointmentById, getAppointments, putAppointment } from "../../../../redux/appointmentActions.js";
+import reboot from  "../../../../assets/img/reboot.png";
+import rebootHover from "../../../../assets/img/rebootHover.png";
 import loadingGif from "../../../../assets/img/loading.gif";
 
 const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => {
@@ -15,6 +17,7 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
     const appointmentDetail = useSelector(state => state.appointment?.appointmentDetail || {}); 
 
     const [editAppointment, setEditAppointment] = useState({});
+    const [initialAppointment, setInitialAppointment] = useState({});
     const [loading, setLoading] = useState(false);
       
     useEffect(() => {
@@ -34,8 +37,11 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
             }   
             if (appointmentDetail.vehicle) {
                 setSearchVehicle(`${appointmentDetail.vehicle.licensePlate}`);
+            } else {
+                setSearchVehicle('');
             }
-            setEditAppointment({
+
+            const initialData = {
                 _id: appointmentDetail._id,
                 start: formatToLocalDateTime(appointmentDetail.start),
                 end: formatToLocalDateTime(appointmentDetail.end),
@@ -44,7 +50,9 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                 vehicle: appointmentDetail.vehicle ? appointmentDetail.vehicle._id : null,
                 procedure: appointmentDetail.procedure || {},
                 active: appointmentDetail.active,
-            });
+            };
+            setEditAppointment(initialData);
+            setInitialAppointment(initialData);
         }
     }, [dispatch, id, appointmentDetail]);
 
@@ -55,15 +63,15 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
 
     //----- DISABLE BUTTON
         
-        const [ disabled, setDisabled ] = useState(true);
-    
-        useEffect(() => {
-            if(editAppointment.start !== "" && editAppointment.end !== "" && editAppointment.vehicle && (editAppointment.personClient || editAppointment.companyClient) && editAppointment.procedure.title !== "" && (editAppointment.procedure.service || editAppointment.procedure.mechanical)){
-                setDisabled(false);
-            } else {
-                setDisabled(true);
-            }
-        }, [editAppointment]);
+    const [ disabled, setDisabled ] = useState(true);
+
+    useEffect(() => {
+        if(editAppointment.start !== "" && editAppointment.end !== "" && editAppointment.vehicle && (editAppointment.personClient || editAppointment.companyClient) && editAppointment.procedure.title !== "" && (editAppointment.procedure.service || editAppointment.procedure.mechanical)){
+            setDisabled(false);
+        } else {
+            setDisabled(true);
+        }
+    }, [editAppointment]);
 
     //----- HANDLE INPUTS
 
@@ -236,8 +244,32 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                 setDropdownVehicleVisible(true);
             }
         };
-        
     }; 
+
+    //----- RESET
+    const resetForm = () => {
+        setEditAppointment(initialAppointment);
+    
+        // Actualizar los valores de búsqueda del cliente y vehículo
+        if (initialAppointment.personClient) {
+            const person = personClients.find(client => client._id === initialAppointment.personClient);
+            setSearchClient(`${person.dni} - ${person.name}`);
+        } else if (initialAppointment.companyClient) {
+            const company = companyClients.find(client => client._id === initialAppointment.companyClient);
+            setSearchClient(`${company.cuit} - ${company.name}`);
+        } else {
+            setSearchClient('');
+        }
+
+        setSearchingPerson(initialAppointment.personClient ? true : false);
+    
+        if (initialAppointment.vehicle) {
+            const vehicle = vehicles.find(v => v._id === initialAppointment.vehicle);
+            setSearchVehicle(vehicle?.licensePlate || '');
+        } else {
+            setSearchVehicle('');
+        }
+    };
 
     //----- SUBMIT
 
@@ -283,6 +315,15 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
         <div className={"formContainer"}>
             <div className="titleForm">
                 <h2>Editar turno</h2>
+                <div className="titleButtons">
+                    <button 
+                        onClick={resetForm} 
+                        onMouseEnter={(e) => e.currentTarget.firstChild.src = rebootHover} 
+                        onMouseLeave={(e) => e.currentTarget.firstChild.src = reboot}
+                    >
+                        <img src={reboot} alt="reboot"/>
+                    </button>
+                </div>
             </div>
             <div className="container">
                 <div className="formRow">Los campos con (*) son obligatorios.</div>
