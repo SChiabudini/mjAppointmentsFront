@@ -191,7 +191,7 @@ const CompanyClients = () => {
                                     <td>{companyClient.cuit}</td>
                                     <td>{companyClient.name}</td>
                                     <td>{companyClient.email}</td>
-                                    <td>{companyClient.phoneWsp}</td>
+                                    <td>+{companyClient.phoneWsp.prefix}{companyClient.phoneWsp.numberPhone}</td>
                                     <td>
                                         {companyClient.phones?.length 
                                             ? companyClient?.phones.join(', ') 

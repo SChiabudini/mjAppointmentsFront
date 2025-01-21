@@ -16,12 +16,16 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
         name: '',
         email: '',
         phones: [],
-        phoneWsp: '',
+        phoneWsp: {
+            prefix: '',
+            numberPhone: ''
+        },
         cuilCuit: '',
         vehicles: vehicleId ? [vehicleId] : []
     };
     
     const [newPersonClient, setNewPersonClient] = useState(initialPersonClientState);
+    const [errorMessage, setErrorMessage] = useState(""); 
     const [alreadyExist, setAlreadyExist] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -30,7 +34,7 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     const [ disabled, setDisabled ] = useState(true);
 
     useEffect(() => {
-        if(newPersonClient.dni !== '' && newPersonClient.name !== '' && newPersonClient.email !== '' && (newPersonClient?.phones?.length > 0 || phoneWsp !== '')){
+        if(newPersonClient.dni !== '' && newPersonClient.name !== '' && newPersonClient.email !== '' && (newPersonClient.phones?.length > 0 || phoneWsp !== '')){
             setDisabled(false);
         } else {
             setDisabled(true);
@@ -50,14 +54,16 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     //----- HANDLE PHONES
 
     const [currentPhone, setCurrentPhone] = useState("");
-    const [phoneWsp, setPhoneWsp] = useState('');
     const [phonePrefix, setPhonePrefix] = useState('549');
+    const [phoneWsp, setPhoneWsp] = useState('');
 
     useEffect(() => {
-        const phoneNumber = parseFloat('+' + phonePrefix + phoneWsp);
         setNewPersonClient(prevState => ({
             ...prevState,
-            phoneWsp: phoneNumber
+            phoneWsp: {
+                prefix: phonePrefix,  
+                numberPhone: phoneWsp 
+            }
         }));
     }, [phonePrefix, phoneWsp]);
     
@@ -168,6 +174,7 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
         event.preventDefault();
 
         setLoading(true);
+        setErrorMessage("");
 
         try {
             const response = await dispatch(postPersonClient(newPersonClient));
@@ -186,8 +193,9 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
 
         } catch (error) {
             console.error("Error saving person client:", error.message);
-            if (error.message.includes('already exist')) setAlreadyExist(true);
             setLoading(false);
+            setErrorMessage("*Error al crear cliente, revise los datos ingresados e intente nuevamente.");
+            if (error.message.includes('already exist')) setAlreadyExist(true);
         }
     };
 
@@ -312,6 +320,7 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                 <div className={isNested ? "submitNested" : "submit"}>                    
                     {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true}/>}
                     <button type="submit" form="personClientForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Crear cliente"}</button>
+                    {errorMessage && <p className="errorMessage">{errorMessage}</p>}
                 </div>
             </div>
         </div>

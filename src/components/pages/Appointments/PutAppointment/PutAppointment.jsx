@@ -247,6 +247,7 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
     }; 
 
     //----- RESET
+    
     const resetForm = () => {
         setEditAppointment(initialAppointment);
     

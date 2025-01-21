@@ -16,12 +16,16 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
         name: '',
         email: '',
         phones: [],
-        phoneWsp: '',
+        phoneWsp: {
+            prefix: '',
+            numberPhone: ''
+        },
         address: '',
         vehicles: vehicleId ? [vehicleId] : []   
     };
 
     const [newCompanyClient, setNewCompanyClient] = useState(initialCompanyClientState);
+    const [errorMessage, setErrorMessage] = useState(""); 
     const [alreadyExist, setAlreadyExist] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -30,7 +34,7 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
     const [ disabled, setDisabled ] = useState(true);
 
     useEffect(() => {
-        if(newCompanyClient.cuit !== '' && newCompanyClient.name !== '' && newCompanyClient.email !== '' && (newCompanyClient?.phones?.length > 0 || phoneWsp !== '')){
+        if(newCompanyClient.cuit !== '' && newCompanyClient.name !== '' && newCompanyClient.email !== '' && (newCompanyClient.phones?.length > 0 || phoneWsp !== '')){
             setDisabled(false);
         } else {
             setDisabled(true);
@@ -57,13 +61,16 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
     //----- HANDLE PHONES
 
     const [currentPhone, setCurrentPhone] = useState("");
-    const [phoneWsp, setPhoneWsp] = useState('');
     const [phonePrefix, setPhonePrefix] = useState('549');
+    const [phoneWsp, setPhoneWsp] = useState('');
 
     useEffect(() => {
         setNewCompanyClient(prevState => ({
             ...prevState,
-            phoneWsp: '+' + phonePrefix + phoneWsp
+            phoneWsp: {
+                prefix: phonePrefix,  
+                numberPhone: phoneWsp 
+            }
         }));
     }, [phonePrefix, phoneWsp]); 
 
@@ -159,8 +166,7 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
         setSearchTerm('');
         setPhoneWsp('');
         setPhonePrefix('549');
-    }
-
+    };
 
     //----- SUBMIT
 
@@ -174,6 +180,7 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
         event.preventDefault();
 
         setLoading(true);
+        setErrorMessage("");
 
         try {
             const response = await dispatch(postCompanyClient(newCompanyClient));
@@ -189,134 +196,136 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
             onClientAdded(response);
         } catch (error) {
             console.error("Error saving company client:", error.message);
-            if (error.message.includes('already exist')) setAlreadyExist(true);
             setLoading(false);
+            setErrorMessage("*Error al crear cliente, revise los datos ingresados e intente nuevamente.");
+            if (error.message.includes('already exist')) setAlreadyExist(true);
         }
     };
 
     return (
         <div className={isNested? "formContainerNested" : "formContainer"}>
-        <div className="titleForm">
-            <h2>Nuevo cliente empresa</h2>
-            <div className="titleButtons">
-                <button 
-                    onClick={resetForm} 
-                    onMouseEnter={(e) => e.currentTarget.firstChild.src = clearHover} 
-                    onMouseLeave={(e) => e.currentTarget.firstChild.src = clear}
-                >
-                    <img src={clear} alt="Print"/>
-                </button>
+            <div className="titleForm">
+                <h2>Nuevo cliente empresa</h2>
+                <div className="titleButtons">
+                    <button 
+                        onClick={resetForm} 
+                        onMouseEnter={(e) => e.currentTarget.firstChild.src = clearHover} 
+                        onMouseLeave={(e) => e.currentTarget.firstChild.src = clear}
+                    >
+                        <img src={clear} alt="Print"/>
+                    </button>
+                </div>
             </div>
-        </div>
-        <div className="container">
-            <div className="formRow">Los campos con (*) son obligatorios.</div>
-            <form id="companyClientForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
-                <div className="formRow">
-                    <label htmlFor="cuit">CUIT*</label>
-                    <input type="text" name="cuit" value={newCompanyClient.cuit} onChange={handleInputChange}/>
-                </div>
-                {alreadyExist && <div className="formRow"><p>Ya existe un cliente con ese CUIT.</p></div>}
-                <div className="formRow">
-                    <label htmlFor="name">Nombre*</label>
-                    <input type="text" name="name" value={newCompanyClient.name} onChange={handleInputChange}/>
-                </div>
-                <div className="formRow">
-                    <label htmlFor="email">Email*</label>
-                    <input type="text" name="email" value={newCompanyClient.email} onChange={handleInputChange}/>
-                </div>
-                <div className="formRowWithButton">
-                    <label>Whatsapp</label>
-                    <div>
-                        <span>+</span>
-                        <input
-                            type="text"
-                            name="phonePrefix"
-                            value={phonePrefix}
-                            onChange={handlePhoneWspChange}
-                            className="phonePrefix"
-                        />
-                        <input
-                            type="text"
-                            name="phoneWsp"
-                            value={phoneWsp}
-                            onChange={handlePhoneWspChange}
-                        />
-                    </div>
-                </div> 
-                <div className="formRowWithButton">
-                    <label>Teléfono(s)</label>
-                    <div>
-                        <input 
-                            type="text" 
-                            value={currentPhone} 
-                            onChange={(e) => setCurrentPhone(e.target.value)} 
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') addPhone();
-                            }} 
-                        />
-                        <button onClick={() => addPhone()} type="button">+</button>
-                    </div>
-                </div>
-                {newCompanyClient.phones?.length > 0 ? (
+            <div className="container">
+                <div className="formRow">Los campos con (*) son obligatorios.</div>
+                <form id="companyClientForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
                     <div className="formRow">
-                        <ul>
-                            {newCompanyClient.phones?.map((phone, index) => (
-                                <li key={index}>
-                                    {phone}
-                                    <button type="button" onClick={() => removePhone(index)}>x</button>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>                    
-                ) : (
-                    <></>
-                )}  
-                <div className="formRow">
-                    <label htmlFor="address">Dirección</label>
-                    <input type="text" name="address" value={newCompanyClient.address} onChange={handleInputChange}/>
-                </div>
-                {!isNested ? (
-                    <div>
-                        <div className="formRow">                            
-                            <label>Vehículo(s)</label>
-                        </div>                        
-                        <div className="searchRow">
-                            <input type="text" name="searchTerm" value={searchTerm} onChange={handleInputChange} onFocus={() => setSelectedIndex(-1)} onBlur={handleSearchBlur} onKeyDown={handleKeyDown} placeholder="Buscar vehículo" />
-                            <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button">
-                                    {showNewVehicle ? '-' : '+'}
-                            </button>
+                        <label htmlFor="cuit">CUIT*</label>
+                        <input type="text" name="cuit" value={newCompanyClient.cuit} onChange={handleInputChange}/>
+                    </div>
+                    {alreadyExist && <div className="formRow"><p>Ya existe un cliente con ese CUIT.</p></div>}
+                    <div className="formRow">
+                        <label htmlFor="name">Nombre*</label>
+                        <input type="text" name="name" value={newCompanyClient.name} onChange={handleInputChange}/>
+                    </div>
+                    <div className="formRow">
+                        <label htmlFor="email">Email*</label>
+                        <input type="text" name="email" value={newCompanyClient.email} onChange={handleInputChange}/>
+                    </div>
+                    <div className="formRowWithButton">
+                        <label>Whatsapp</label>
+                        <div>
+                            <span>+</span>
+                            <input
+                                className="phonePrefix"
+                                type="text"
+                                name="phonePrefix"
+                                value={phonePrefix}
+                                onChange={handlePhoneWspChange}
+                            />
+                            <input
+                                type="text"
+                                name="phoneWsp"
+                                value={phoneWsp}
+                                onChange={handlePhoneWspChange}
+                            />
                         </div>
-                        <div className="searchRow">
-                            {dropdownVisible && filteredVehicles?.length > 0 && (
-                                <ul className="dropdown">
-                                    {filteredVehicles?.map((vehicle, index) => (
-                                        <li key={vehicle._id} onClick={() => handleVehicleSelection(vehicle)} className={index === selectedIndex ? 'highlight' : ''}>
-                                            {vehicle.licensePlate}
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
+                    </div> 
+                    <div className="formRowWithButton">
+                        <label>Teléfono(s)</label>
+                        <div>
+                            <input 
+                                type="text" 
+                                value={currentPhone} 
+                                onChange={(e) => setCurrentPhone(e.target.value)} 
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') addPhone();
+                                }} 
+                            />
+                            <button onClick={() => addPhone()} type="button">+</button>
                         </div>
-                        <div className="formRow">                            
+                    </div>
+                    {newCompanyClient.phones?.length > 0 ? (
+                        <div className="formRow">
                             <ul>
-                                {newCompanyClient.vehicles?.map((vehicle, index) => (
+                                {newCompanyClient.phones?.map((phone, index) => (
                                     <li key={index}>
-                                        {vehicle.licensePlate}
-                                        <button type="button" onClick={() => removeVehicle(index)}>Eliminar</button>
+                                        {phone}
+                                        <button type="button" onClick={() => removePhone(index)}>x</button>
                                     </li>
                                 ))}
                             </ul>
-                        </div>
+                        </div>                    
+                    ) : (
+                        <></>
+                    )}  
+                    <div className="formRow">
+                        <label htmlFor="address">Dirección</label>
+                        <input type="text" name="address" value={newCompanyClient.address} onChange={handleInputChange}/>
                     </div>
-                ) : (
-                    <></>
-                )}                
-            </form>
-            <div className={isNested ? "submitNested" : "submit"}>
-                {showNewVehicle && <NewVehicle onClientAdded={handleVehicleSelection} isNested={true}/>}
-                <button type='submit' form="companyClientForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Crear cliente"}</button>
+                    {!isNested ? (
+                        <div>
+                            <div className="formRow">                            
+                                <label>Vehículo(s)</label>
+                            </div>                        
+                            <div className="searchRow">
+                                <input type="text" name="searchTerm" value={searchTerm} onChange={handleInputChange} onFocus={() => setSelectedIndex(-1)} onBlur={handleSearchBlur} onKeyDown={handleKeyDown} placeholder="Buscar vehículo" />
+                                <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button">
+                                        {showNewVehicle ? '-' : '+'}
+                                </button>
+                            </div>
+                            <div className="searchRow">
+                                {dropdownVisible && filteredVehicles?.length > 0 && (
+                                    <ul className="dropdown">
+                                        {filteredVehicles?.map((vehicle, index) => (
+                                            <li key={vehicle._id} onClick={() => handleVehicleSelection(vehicle)} className={index === selectedIndex ? 'highlight' : ''}>
+                                                {vehicle.licensePlate}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
+                            <div className="formRow">                            
+                                <ul>
+                                    {newCompanyClient.vehicles?.map((vehicle, index) => (
+                                        <li key={index}>
+                                            {vehicle.licensePlate}
+                                            <button type="button" onClick={() => removeVehicle(index)}>Eliminar</button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    ) : (
+                        <></>
+                    )}                
+                </form>
+                <div className={isNested ? "submitNested" : "submit"}>
+                    {showNewVehicle && <NewVehicle onClientAdded={handleVehicleSelection} isNested={true}/>}
+                    <button type='submit' form="companyClientForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Crear cliente"}</button>
+                    {errorMessage && <p className="errorMessage">{errorMessage}</p>}
+                </div>
             </div>
-        </div>
         </div>
     )
 };

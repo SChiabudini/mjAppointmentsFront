@@ -4,6 +4,8 @@ import { useParams } from 'react-router-dom';
 import { getPersonClientById, getPersonClients, putPersonClient } from "../../../../../redux/personClientActions.js";
 import NewVehicle from '../../../Vehicles/NewVehicle/NewVehicle.jsx';
 import { getVehicles } from "../../../../../redux/vehicleActions.js";
+import reboot from  "../../../../../assets/img/reboot.png";
+import rebootHover from "../../../../../assets/img/rebootHover.png";
 import loadingGif from "../../../../../assets/img/loading.gif";
 
 const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId = null }) => {
@@ -14,10 +16,10 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     const personClientDetail = useSelector(state => state.personClient.personClientDetail); 
 
     const [editPersonClient, setEditPersonClient] = useState({});
+    const [initialPersonClient, setInitialPersonClient] = useState({});
+    const [errorMessage, setErrorMessage] = useState(""); 
     const [alreadyExist, setAlreadyExist] = useState(false);
     const [loading, setLoading] = useState(false);
-    // console.log(editPersonClient);
-      
 
     useEffect(() => {
         dispatch(getPersonClientById(id));
@@ -32,11 +34,14 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                 name: personClientDetail.name,
                 email: personClientDetail.email,
                 phones: personClientDetail.phones,
-                phoneWsp: personClientDetail.phoneWsp,
+                phoneWsp: personClientDetail.phoneWsp || { prefix: "", numberPhone: "" },
                 vehicles: personClientDetail.vehicles,
                 active: personClientDetail.active
             };
             setEditPersonClient(updatedEditPersonClient);
+            setInitialPersonClient(updatedEditPersonClient);
+            setPhonePrefix(personClientDetail.phoneWsp?.prefix || "549");
+            setPhoneWsp(personClientDetail.phoneWsp?.numberPhone || "");
         }
     }, [dispatch, id, personClientDetail]);    
 
@@ -45,7 +50,7 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     const [ disabled, setDisabled ] = useState(true);
 
     useEffect(() => {
-        if(editPersonClient.dni !== '' && editPersonClient.name !== '' && editPersonClient.email !== '' && editPersonClient?.phones?.length > 0 ){
+        if(editPersonClient.dni !== '' && editPersonClient.name !== '' && editPersonClient.email !== '' && (editPersonClient.phones?.length > 0 || phoneWsp !== '')){
             setDisabled(false);
         } else {
             setDisabled(true);
@@ -66,8 +71,8 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     //----- HANDLE PHONES
 
     const [currentPhone, setCurrentPhone] = useState("");
-    const [phoneWsp, setPhoneWsp] = useState('');
     const [phonePrefix, setPhonePrefix] = useState('549');
+    const [phoneWsp, setPhoneWsp] = useState('');
     
     const addPhone = () => {
         if (currentPhone.trim() !== "") {
@@ -89,10 +94,18 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     const handlePhoneWspChange = (event) => {
         const { name, value } = event.target;
     
-        if (name === 'phoneWsp') {
-            setPhoneWsp(value);
-        } else if (name === 'phonePrefix') {
+        if (name === 'phonePrefix') {
             setPhonePrefix(value);
+            setEditPersonClient(prevState => ({
+                ...prevState,
+                phoneWsp: { ...prevState.phoneWsp, prefix: value }
+            }));
+        } else if (name === 'phoneWsp') {
+            setPhoneWsp(value);
+            setEditPersonClient(prevState => ({
+                ...prevState,
+                phoneWsp: { ...prevState.phoneWsp, numberPhone: value }
+            }));
         }
     };
 
@@ -153,6 +166,16 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
         }
     };
 
+    //----- RESET
+
+    const resetForm = () => {
+        setEditPersonClient(initialPersonClient);
+        setPhonePrefix(initialPersonClient.phoneWsp?.prefix);
+        setPhoneWsp(initialPersonClient.phoneWsp?.numberPhone);
+        // setCurrentPhone('');
+        // setSearchTerm('');
+    };
+
     //----- SUBMIT
 
     const handleNoSend = (event) => {
@@ -165,11 +188,14 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
         event.preventDefault();
 
         setLoading(true);
+        setErrorMessage("");
 
         try {
             const response = await dispatch(putPersonClient(editPersonClient));
-            console.log("Client/person successfully updated");
-            setLoading(false);
+            if (response) {
+                console.log("Client/person successfully updated");
+                setLoading(false);
+            }
 
             if(editPersonClient.vehicles?.length > 0){
                 dispatch(getVehicles());
@@ -181,9 +207,10 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
             onClientAdded(response);
 
         } catch (error) {
+            setErrorMessage("*Error al editar cliente, revise los datos ingresados e intente nuevamente.");
             console.error("Error updating client person:", error.message);
-            if (error.message.includes('already exist')) setAlreadyExist(true);
             setLoading(false);
+            if (error.message.includes('already exist')) setAlreadyExist(true);
         }
     };
 
@@ -191,6 +218,15 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
         <div className={isNested? "formContainerNested" : "formContainer"}>
             <div className="titleForm">
                 <h2>Editar cliente</h2>
+                <div className="titleButtons">
+                    <button 
+                        onClick={resetForm} 
+                        onMouseEnter={(e) => e.currentTarget.firstChild.src = rebootHover} 
+                        onMouseLeave={(e) => e.currentTarget.firstChild.src = reboot}
+                    >
+                        <img src={reboot} alt="reboot"/>
+                    </button>
+                </div>
             </div>
             <div className="container">
                 <form id="personClientForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>                    
@@ -212,22 +248,25 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                         <label>Email</label>
                         <input type="text" name="email" value={editPersonClient.email} onChange={handleInputChange} />
                     </div>
-                    <div className="formRow">
+                    <div className="formRowWithButton">
                         <label>Whatsapp</label>
-                        <span>+</span>
-                        <input
-                            type="text"
-                            name="phonePrefix"
-                            value={phonePrefix}
-                            onChange={handlePhoneWspChange}
-                        />
-                        <input
-                            type="text"
-                            name="phoneWsp"
-                            value={phoneWsp}
-                            onChange={handlePhoneWspChange}
-                        />
-                    </div> 
+                        <div>
+                            <span>+</span>
+                            <input
+                                className="phonePrefix"
+                                type="text"
+                                name="phonePrefix"
+                                value={phonePrefix}
+                                onChange={handlePhoneWspChange}
+                            />
+                            <input
+                                type="text"
+                                name="phoneWsp"
+                                value={phoneWsp}
+                                onChange={handlePhoneWspChange}
+                            />
+                        </div>
+                    </div>
                     <div className="formRow">
                         <label>Teléfono(s)</label>
                         <input 
@@ -311,6 +350,7 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                 <div className={isNested ? "submitNested" : "submit"}>                    
                     {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true}/>}
                     <button type="submit" form="personClientForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Editar cliente"}</button>
+                    {errorMessage && <p className="errorMessage">{errorMessage}</p>}
                 </div>
             </div>
         </div>
