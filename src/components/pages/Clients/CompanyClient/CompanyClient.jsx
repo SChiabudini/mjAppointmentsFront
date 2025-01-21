@@ -34,18 +34,6 @@ const CompanyClients = () => {
 
     //----- BUSCAR CLIENTE
 
-    const handleChangeCuit = (event) => {
-        setCuit(event.target.value);
-    };
-
-    const handleChangeName = (event) => {
-        setName(event.target.value);
-    };
-
-    const handleChangeVehicle = (event) => {
-        setVehicle(event.target.value);
-    };
-
     const handleSearch = (event) => {
         if (event.key === "Enter") {
             if (cuit.trim() || name.trim() || vehicle.trim()) {
@@ -138,7 +126,7 @@ const CompanyClients = () => {
                                         <input 
                                             type="search"
                                             name="searchCuit"
-                                            onChange={handleChangeCuit}
+                                            onChange={(event) => setCuit(event.target.value)}
                                             onKeyDown={handleSearch}
                                             onInput={handleInputChange}
                                             value={cuit}
@@ -154,7 +142,7 @@ const CompanyClients = () => {
                                         <input 
                                             type="search"
                                             name="searchName"
-                                            onChange={handleChangeName}
+                                            onChange={(event) => setName(event.target.value)}
                                             onKeyDown={handleSearch}
                                             onInput={handleInputChange}
                                             value={name}
@@ -182,7 +170,7 @@ const CompanyClients = () => {
                                         <input 
                                             type="search"
                                             name="searchVehicle"
-                                            onChange={handleChangeVehicle}
+                                            onChange={(event) => setVehicle(event.target.value)}
                                             onKeyDown={handleSearch}
                                             onInput={handleInputChange}
                                             value={vehicle}

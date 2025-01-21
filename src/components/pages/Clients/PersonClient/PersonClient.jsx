@@ -34,18 +34,6 @@ const PersonClients = () => {
 
     //----- BUSCAR CLIENTE
 
-    const handleChangeDni = (event) => {
-        setDni(event.target.value);
-    };
-
-    const handleChangeName = (event) => {
-        setName(event.target.value);
-    };
-
-    const handleChangeVehicle = (event) => {
-        setVehicle(event.target.value);
-    };
-
     const handleSearch = (event) => {
         if (event.key === "Enter") {
             if (dni.trim() || name.trim() || vehicle.trim()) {
@@ -139,7 +127,7 @@ const PersonClients = () => {
                                         <input 
                                             type="search"
                                             name="searchDni"
-                                            onChange={handleChangeDni}
+                                            onChange={(event) => setDni(event.target.value)}
                                             onKeyDown={handleSearch}
                                             onInput={handleInputChange}
                                             value={dni}
@@ -155,7 +143,7 @@ const PersonClients = () => {
                                         <input 
                                             type="search"
                                             name="searchName"
-                                            onChange={handleChangeName}
+                                            onChange={(event) => setName(event.target.value)}
                                             onKeyDown={handleSearch}
                                             onInput={handleInputChange}
                                             value={name}
@@ -183,7 +171,7 @@ const PersonClients = () => {
                                         <input 
                                             type="search"
                                             name="searchVehicle"
-                                            onChange={handleChangeVehicle}
+                                            onChange={(event) => setVehicle(event.target.value)}
                                             onKeyDown={handleSearch}
                                             onInput={handleInputChange}
                                             value={vehicle}

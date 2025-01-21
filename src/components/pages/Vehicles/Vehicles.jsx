@@ -32,15 +32,7 @@ const Vehicles = () => {
     const [popUpOpen, setPopUpOpen] = useState(false);
 
     //----- BUSCAR VEHÍCULO
-
-    const handleChangeLicensePlate = (event) => {
-        setLicensePlate(event.target.value);
-    };
-
-    const handleChangeClient = (event) => {
-        setClient(event.target.value);
-    };
-
+    
     const handleSearch = (event) => {
         if (event.key === "Enter") {
             if (licensePlate.trim() || client.trim()) {
@@ -133,7 +125,7 @@ const Vehicles = () => {
                                         <input 
                                             type="search"
                                             name="searchLicensePlate"
-                                            onChange={handleChangeLicensePlate}
+                                            onChange={(event) => setLicensePlate(event.target.value)}
                                             onKeyDown={handleSearch}
                                             onInput={handleInputChange}
                                             value={licensePlate}
@@ -161,7 +153,7 @@ const Vehicles = () => {
                                         <input 
                                             type="search"
                                             name="searchClient"
-                                            onChange={handleChangeClient}
+                                            onChange={(event) => setClient(event.target.value)}
                                             onKeyDown={handleSearch}
                                             onInput={handleInputChange}
                                             value={client}
