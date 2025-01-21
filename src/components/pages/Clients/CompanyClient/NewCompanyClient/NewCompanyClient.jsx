@@ -5,6 +5,7 @@ import { getVehicles } from "../../../../../redux/vehicleActions";
 import NewVehicle from '../../../Vehicles/NewVehicle/NewVehicle.jsx';
 import clear from "../../../../../assets/img/clear.png";
 import clearHover from "../../../../../assets/img/clearHover.png";
+import loadingGif from "../../../../../assets/img/loading.gif";
 
 const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleId = null }) => {
 
@@ -22,6 +23,7 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
 
     const [newCompanyClient, setNewCompanyClient] = useState(initialCompanyClientState);
     const [alreadyExist, setAlreadyExist] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     //----- DISABLE BUTTON
 
@@ -170,9 +172,13 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        setLoading(true);
+
         try {
             const response = await dispatch(postCompanyClient(newCompanyClient));
             console.log("Client successfully saved");
+            setLoading(false);
 
             if(newCompanyClient.vehicles.length > 0){
                 dispatch(getVehicles());
@@ -184,6 +190,7 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
         } catch (error) {
             console.error("Error saving company client:", error.message);
             if (error.message.includes('already exist')) setAlreadyExist(true);
+            setLoading(false);
         }
     };
 
@@ -307,7 +314,7 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
             </form>
             <div className={isNested ? "submitNested" : "submit"}>
                 {showNewVehicle && <NewVehicle onClientAdded={handleVehicleSelection} isNested={true}/>}
-                <button type='submit' form="companyClientForm" disabled={disabled}>Crear cliente</button>
+                <button type='submit' form="companyClientForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Crear cliente"}</button>
             </div>
         </div>
         </div>

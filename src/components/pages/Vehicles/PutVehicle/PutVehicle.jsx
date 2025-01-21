@@ -6,6 +6,7 @@ import NewCompanyClient from "../../Clients/CompanyClient/NewCompanyClient/NewCo
 import { getVehicleById, getVehicles, putVehicle } from "../../../../redux/vehicleActions.js";
 import { getPersonClients } from "../../../../redux/personClientActions.js";
 import { getCompanyClients } from "../../../../redux/companyClientActions.js";
+import loadingGif from "../../../../assets/img/loading.gif";
 
 const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientId = null, companyClientId = null }) => {
     
@@ -16,6 +17,7 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
 
     const [editVehicle, setEditVehicle] = useState({});
     const [alreadyExist, setAlreadyExist] = useState(false);
+    const [loading, setLoading] = useState(false);
     // console.log(editVehicle);
       
     useEffect(() => {
@@ -157,9 +159,13 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        setLoading(true);
+
         try {
             const response = await dispatch(putVehicle(editVehicle));
             console.log("Vehicle successfully updated");
+            setLoading(false);
 
             if(editVehicle.personClient){
                 dispatch(getPersonClients());
@@ -178,6 +184,7 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
         } catch (error) {
             console.error("Error updating vehicle:", error.message);
             if (error.message.includes('already exist')) setAlreadyExist(true);
+            setLoading(false);
         }
     };
 
@@ -289,7 +296,7 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                 <div className={isNested ? "submitNested" : "submit"}>
                     {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true}/>}
                     {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true}/>}
-                    <button type='submit' form="vehicleForm" disabled={disabled}>Editar vehículo</button>
+                    <button type='submit' form="vehicleForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Editar vehículo"}</button>
                 </div>
             </div>
         </div>

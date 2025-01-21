@@ -5,7 +5,7 @@ import NewPersonClient from "../../Clients/PersonClient/NewPersonClient/NewPerso
 import NewCompanyClient from "../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx";
 import NewVehicle from "../../Vehicles/NewVehicle/NewVehicle.jsx";
 import { getAppointmentById, getAppointments, putAppointment } from "../../../../redux/appointmentActions.js";
-
+import loadingGif from "../../../../assets/img/loading.gif";
 
 const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => {
     
@@ -15,6 +15,7 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
     const appointmentDetail = useSelector(state => state.appointment?.appointmentDetail || {}); 
 
     const [editAppointment, setEditAppointment] = useState({});
+    const [loading, setLoading] = useState(false);
       
     useEffect(() => {
         dispatch(getAppointmentById(id));
@@ -248,8 +249,14 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        setLoading(true);
+
         try {
             const response = await dispatch(putAppointment(editAppointment));
+            
+            setLoading(false);
+
             console.log("Appointment successfully updated");
 
             // if(editAppointment.personClient){
@@ -268,6 +275,7 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
         } catch (error) {
             console.error("Error updating appointment:", error.message);
             if (error.message.includes('already exist')) setAlreadyExist(true);
+            setLoading(false);
         }
     };
 
@@ -454,7 +462,7 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                        
                     </div>
                     <div className="submit">  
-                        <button type='submit' form="appointmentForm" disabled={disabled}>Editar turno</button>
+                        <button type='submit' form="appointmentForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Editar turno"}</button>
                     </div>
                 </form>
             </div>

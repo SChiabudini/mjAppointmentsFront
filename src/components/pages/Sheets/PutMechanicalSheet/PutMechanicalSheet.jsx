@@ -8,6 +8,7 @@ import { getMechanicalSheetById, getMechanicalSheets, putMechanicalSheet } from 
 import { getPersonClients } from "../../../../redux/personClientActions";
 import { getCompanyClients } from "../../../../redux/companyClientActions";
 import { getVehicles } from "../../../../redux/vehicleActions";
+import loadingGif from "../../../../assets/img/loading.gif";
 
 const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
 
@@ -17,6 +18,7 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
     const mechanicalSheetDetail = useSelector(state => state.mechanicalSheet?.mechanicalSheetDetail || {}); 
 
     const [editMechanicalSheet, setEditMechanicalSheet] = useState({});
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
             dispatch(getMechanicalSheetById(id));
@@ -251,6 +253,8 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        setLoading(true);
+
         const mechanicalSheetToSubmit = {
             ...editMechanicalSheet,
             kilometers: parseInt(editMechanicalSheet.kilometers, 10) || 0,
@@ -260,6 +264,7 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
         try {
             const response = await dispatch(putMechanicalSheet(mechanicalSheetToSubmit));
             console.log("Mechanical sheet successfully updated");
+            setLoading(false);
 
             if(editMechanicalSheet.personClient){
                 dispatch(getPersonClients());
@@ -279,6 +284,7 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
             onMechanicalSheetAdded(response);
         } catch (error) {
             console.error("Error updating mechanical sheet:", error.message);
+            setLoading(false);
         }
     };
 
@@ -408,7 +414,7 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                     <div className="formRow"><label htmlFor="description">Descripción*</label></div>
                     <div className="formRow"><textarea name="description" value={editMechanicalSheet.description} onChange={handleInputChange}/></div>
                     <div className="submit">
-                        <button type='submit' form="mechanicalSheetForm" disabled={disabled}>Editar ficha</button>
+                        <button type='submit' form="mechanicalSheetForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Editar ficha"}</button>
                     </div>
                 </form>
             </div>

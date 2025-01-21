@@ -9,6 +9,7 @@ import NewCompanyClient from "../../Clients/CompanyClient/NewCompanyClient/NewCo
 import NewVehicle from "../../Vehicles/NewVehicle/NewVehicle.jsx";
 import clear from  "../../../../assets/img/clear.png";
 import clearHover from "../../../../assets/img/clearHover.png";
+import loadingGif from "../../../../assets/img/loading.gif";
 
 const NewBudget = ({ onBudgetAdded = () => {} }) => {
 
@@ -24,6 +25,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
 
     const [newBudget, setNewBudget] = useState(initialBudgetState);
     const [total, setTotal] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     // ----- HANDLE INPUTS
     
@@ -271,6 +273,8 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        setLoading(true);
+
         const formattedEndDate = `${newBudget.end}T00:00:00.000Z`;
 
         const budgetToSubmit = {
@@ -281,6 +285,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
         try {
             console.log(budgetToSubmit);
             const response = await dispatch(postBudget(budgetToSubmit));
+            setLoading(false);
             console.log("Budget successfully saved");
 
             if(newBudget.personClient){
@@ -309,6 +314,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
             onBudgetAdded(response);
         } catch (error) {
             console.error("Error saving budget:", error.message);
+            setLoading(false);
         }
     };
 
@@ -509,7 +515,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                         )}
                         <div className="formRow"><label>Total: ${total}</label></div>
                     <div className="submit">
-                        <button type='submit' form="budgetForm" disabled={disabled}>Crear presupuesto</button>
+                        <button type='submit' form="budgetForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Crear presupuesto"}</button>
                     </div>
                 </form>
             </div>

@@ -9,6 +9,7 @@ import NewCompanyClient from "../../Clients/CompanyClient/NewCompanyClient/NewCo
 import NewVehicle from "../../Vehicles/NewVehicle/NewVehicle.jsx";
 import clear from "../../../../assets/img/clear.png";
 import clearHover from "../../../../assets/img/clearHover.png";
+import loadingGif from "../../../../assets/img/loading.gif";
 
 const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
 
@@ -25,6 +26,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
     }
 
     const [newMechanicalSheet, setNewMechanicalSheet] = useState(initialMechanicalSheetState);
+    const [loading, setLoading] = useState(false);
 
     //----- DISABLE BUTTON
 
@@ -223,6 +225,8 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        setLoading(true);
+
         const mechanicalSheetToSubmit = {
             ...newMechanicalSheet,
             kilometers: parseInt(newMechanicalSheet.kilometers, 10) || 0,
@@ -232,6 +236,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
         try {
             const response = await dispatch(postMechanicalSheet(mechanicalSheetToSubmit));
             console.log("Mechanical sheet successfully saved");
+            setLoading(false);
 
             if(newMechanicalSheet.personClient){
                 dispatch(getPersonClients());
@@ -251,6 +256,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
             onMechanicalSheetAdded(response);
         } catch (error) {
             console.error("Error saving mechanical sheet:", error.message);
+            setLoading(false);
         }
     };
 
@@ -384,7 +390,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                     <div className="formRow"><label htmlFor="description">Descripción*</label></div>
                     <div className="formRow"><textarea name="description" value={newMechanicalSheet.description} onChange={handleInputChange}/></div>
                     <div className="submit">
-                        <button type='submit' form="mechanicalSheetForm" disabled={disabled}>Crear ficha</button>
+                        <button type='submit' form="mechanicalSheetForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Crear ficha"}</button>
                     </div>
                 </form>
             </div>

@@ -6,6 +6,7 @@ import NewVehicle from '../../Vehicles/NewVehicle/NewVehicle.jsx';
 import { getAppointments, postAppointment } from '../../../../redux/appointmentActions.js';
 import clear from  "../../../../assets/img/clear.png";
 import clearHover from "../../../../assets/img/clearHover.png";
+import loadingGif from "../../../../assets/img/loading.gif";
 
 const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
     
@@ -30,6 +31,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
     };
 
     const [newAppointment, setNewAppointment] = useState(initialAppointmentState);
+    const [loading, setLoading] = useState(false);
 
     //----- DISABLE BUTTON
     
@@ -253,6 +255,8 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
     
+        setLoading(true);
+
         const appointmentData = {
             start: newAppointment.start,
             end: newAppointment.end, 
@@ -266,6 +270,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
             const response = await dispatch(postAppointment(appointmentData));
     
             if (response) {
+                setLoading(false);
                 console.log("Appointment successfully saved");
                 dispatch(getAppointments());
                 setNewAppointment(initialAppointmentState); // Resetear el formulario
@@ -280,6 +285,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
 
         } catch (error) {
             console.error("Error saving appointment:", error);
+            setLoading(false);
         }
     };
     
@@ -457,7 +463,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                         </div>                        
                     </div>
                     <div className="submit">
-                        <button type='submit' form="appointmentForm" disabled={disabled}>Crear turno</button>
+                        <button type='submit' form="appointmentForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Crear turno"}</button>
                     </div>
                 </form>
 

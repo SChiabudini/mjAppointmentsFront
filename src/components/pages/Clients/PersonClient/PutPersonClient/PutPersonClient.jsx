@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { getPersonClientById, getPersonClients, putPersonClient } from "../../../../../redux/personClientActions.js";
 import NewVehicle from '../../../Vehicles/NewVehicle/NewVehicle.jsx';
 import { getVehicles } from "../../../../../redux/vehicleActions.js";
+import loadingGif from "../../../../../assets/img/loading.gif";
 
 const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId = null }) => {
     
@@ -14,6 +15,7 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
 
     const [editPersonClient, setEditPersonClient] = useState({});
     const [alreadyExist, setAlreadyExist] = useState(false);
+    const [loading, setLoading] = useState(false);
     // console.log(editPersonClient);
       
 
@@ -31,7 +33,7 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                 email: personClientDetail.email,
                 phones: personClientDetail.phones,
                 phoneWsp: personClientDetail.phoneWsp,
-                vehicles: personClientDetail.veihcles,
+                vehicles: personClientDetail.vehicles,
                 active: personClientDetail.active
             };
             setEditPersonClient(updatedEditPersonClient);
@@ -161,11 +163,15 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        setLoading(true);
+
         try {
             const response = await dispatch(putPersonClient(editPersonClient));
             console.log("Client/person successfully updated");
+            setLoading(false);
 
-            if(editPersonClient.vehicles.length > 0){
+            if(editPersonClient.vehicles?.length > 0){
                 dispatch(getVehicles());
             }
 
@@ -177,6 +183,7 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
         } catch (error) {
             console.error("Error updating client person:", error.message);
             if (error.message.includes('already exist')) setAlreadyExist(true);
+            setLoading(false);
         }
     };
 
@@ -303,7 +310,7 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                 </form>
                 <div className={isNested ? "submitNested" : "submit"}>                    
                     {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true}/>}
-                    <button type="submit" form="personClientForm" disabled={disabled}>Editar cliente</button>
+                    <button type="submit" form="personClientForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Editar cliente"}</button>
                 </div>
             </div>
         </div>

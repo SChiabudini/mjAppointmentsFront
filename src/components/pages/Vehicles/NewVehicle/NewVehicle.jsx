@@ -7,6 +7,7 @@ import NewPersonClient from '../../Clients/PersonClient/NewPersonClient/NewPerso
 import NewCompanyClient from '../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx';
 import clear from  "../../../../assets/img/clear.png";
 import clearHover from "../../../../assets/img/clearHover.png";
+import loadingGif from "../../../../assets/img/loading.gif";
 
 const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientId = null, companyClientId = null }) => {
 
@@ -24,6 +25,7 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
 
     const [newVehicle, setNewVehicle] = useState(initialVehicleState);
     const [alreadyExist, setAlreadyExist] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     //----- DISABLE BUTTON
     
@@ -140,6 +142,8 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        setLoading(true);
+
         const vehicleToSubmit = {
             ...newVehicle,
             year: parseInt(newVehicle.year, 10) || 0,
@@ -148,6 +152,7 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
         try {
             const response = await dispatch(postVehicle(vehicleToSubmit));
             console.log("Vehicle successfully saved");
+            setLoading(false);
 
             if(newVehicle.personClient){
                 dispatch(getPersonClients());
@@ -165,6 +170,7 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
         } catch (error) {
             console.error("Error saving vehicle:", error.message);
             if (error.message.includes('already exist')) setAlreadyExist(true);
+            setLoading(false);
         }
     };
 
@@ -277,7 +283,7 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                 <div className={isNested ? "submitNested" : "submit"}>
                     {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true}/>}
                     {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true}/>}
-                    <button type='submit' form="vehicleForm" disabled={disabled}>Crear vehículo</button>
+                    <button type='submit' form="vehicleForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Crear vehículo"}</button>
                 </div>
             </div>
         </div>
