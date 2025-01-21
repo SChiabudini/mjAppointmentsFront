@@ -9,6 +9,7 @@ import NewCompanyClient from "../../Clients/CompanyClient/NewCompanyClient/NewCo
 import NewVehicle from "../../Vehicles/NewVehicle/NewVehicle.jsx";
 import clear from "../../../../assets/img/clear.png";
 import clearHover from "../../../../assets/img/clearHover.png";
+import loadingGif from "../../../../assets/img/loading.gif";
 
 const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
 
@@ -27,6 +28,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     }
 
     const [newServiceSheet, setNewServiceSheet] = useState(initialServiceSheetState);
+    const [loading, setLoading] = useState(false);
 
     //----- DISABLE BUTTON
 
@@ -239,6 +241,8 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        setLoading(true);
+
         const serviceSheetToSubmit = {
             ...newServiceSheet,
             kilometers: parseInt(newServiceSheet.kilometers, 10) || 0,
@@ -249,6 +253,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
         try {
             const response = await dispatch(postServiceSheet(serviceSheetToSubmit));
             console.log("Service sheet successfully saved");
+            setLoading(false);
 
             if(newServiceSheet.personClient){
                 dispatch(getPersonClients());
@@ -268,6 +273,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
             onServiceSheetAdded(response);
         } catch (error) {
             console.error("Error saving service sheet:", error.message);
+            setLoading(false);
         }
     };
 
@@ -453,7 +459,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                     <div className="formRow"><label htmlFor="notes">Notas</label></div>
                     <div className="formRow"><textarea name="notes" value={newServiceSheet.notes} onChange={handleInputChange}/></div>
                     <div className="submit">
-                        <button type='submit' form="serviceSheetForm" disabled={disabled}>Crear ficha</button>
+                        <button type='submit' form="serviceSheetForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Crear ficha"}</button>
                     </div>
                 </form>
             </div>

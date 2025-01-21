@@ -695,6 +695,14 @@ th div.withFilter button.sort{
     margin-top: 1rem;
 }
 
+.submit button img {
+    width: 1rem;
+}
+
+.submitNested button img{
+    width: 0.75rem;
+}
+
 .submitNested button, .newItem button{
     width: fit-content;
     background-color: var(--light-grey);

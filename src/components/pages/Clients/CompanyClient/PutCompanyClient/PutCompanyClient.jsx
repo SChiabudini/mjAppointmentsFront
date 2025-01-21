@@ -5,6 +5,7 @@ import { getPersonClientById, getPersonClients, putPersonClient } from "../../..
 import { getCompanyClientById, getCompanyClients, putCompanyClient } from "../../../../../redux/companyClientActions.js";
 import NewVehicle from '../../../Vehicles/NewVehicle/NewVehicle.jsx';
 import { getVehicles } from "../../../../../redux/vehicleActions.js";
+import loadingGif from "../../../../../assets/img/loading.gif";
 
 const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleId = null }) => {
     
@@ -15,6 +16,7 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
 
     const [editCompanyClient, setEditCompanyClient] = useState({});
     const [alreadyExist, setAlreadyExist] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         dispatch(getCompanyClientById(id));
@@ -160,11 +162,15 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        setLoading(true);
+
         try {
             const response = await dispatch(putCompanyClient(editCompanyClient));
             console.log("Client/company successfully updated");
+            setLoading(false);
 
-            if(editCompanyClient.vehicles.length > 0){
+            if(editCompanyClient.vehicles?.length > 0){
                 dispatch(getVehicles());
             }
 
@@ -176,6 +182,7 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
         } catch (error) {
             console.error("Error updating client company:", error.message);
             if (error.message.includes('already exist')) setAlreadyExist(true);
+            setLoading(false);
         }
     };
 
@@ -302,7 +309,7 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
                 </form>
                 <div className={isNested ? "submitNested" : "submit"}>                    
                     {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true}/>}
-                    <button type="submit" form="personClientForm" disabled={disabled}>Editar cliente</button>
+                    <button type="submit" form="personClientForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Editar cliente"}</button>
                 </div>
             </div>
         </div>

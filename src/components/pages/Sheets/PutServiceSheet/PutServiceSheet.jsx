@@ -8,7 +8,7 @@ import { getServiceSheetById, getServiceSheets, putServiceSheet } from "../../..
 import { getPersonClients } from "../../../../redux/personClientActions";
 import { getCompanyClients } from "../../../../redux/companyClientActions";
 import { getVehicles } from "../../../../redux/vehicleActions";
-
+import loadingGif from "../../../../assets/img/loading.gif";
 
 const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     
@@ -18,6 +18,7 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     const serviceSheetDetail = useSelector(state => state.serviceSheet?.serviceSheetDetail || {}); 
 
     const [editServiceSheet, setEditServiceSheet] = useState({});
+    const [loading, setLoading] = useState(false);
     // console.log(editServiceSheet);
       
     useEffect(() => {
@@ -269,6 +270,8 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        setLoading(true);
+
         const serviceSheetToSubmit = {
             ...editServiceSheet,
             kilometers: parseInt(editServiceSheet.kilometers, 10) || 0,
@@ -280,6 +283,7 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
             console.log(serviceSheetToSubmit);
             const response = await dispatch(putServiceSheet(serviceSheetToSubmit));
             console.log("Service sheet successfully updated");
+            setLoading(false);
 
             if(editServiceSheet.personClient){
                 dispatch(getPersonClients());
@@ -300,6 +304,7 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
 
         } catch (error) {
             console.error("Error updating service sheet:", error.message);
+            setLoading(false);
         }
     };
 
@@ -476,7 +481,7 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                     <div className="formRow"><label htmlFor="notes">Notas</label></div>
                     <div className="formRow"><textarea name="notes" value={editServiceSheet.notes} onChange={handleInputChange}/></div>
                     <div className="submit">
-                        <button type='submit' form="serviceSheetForm" disabled={disabled}>Editar ficha</button>
+                        <button type='submit' form="serviceSheetForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Editar ficha"}</button>
                     </div>
                 </form>
             </div>

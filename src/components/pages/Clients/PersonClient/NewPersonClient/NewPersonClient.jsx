@@ -5,6 +5,7 @@ import { getVehicles } from "../../../../../redux/vehicleActions.js";
 import NewVehicle from '../../../Vehicles/NewVehicle/NewVehicle.jsx';
 import clear from "../../../../../assets/img/clear.png";
 import clearHover from "../../../../../assets/img/clearHover.png";
+import loadingGif from "../../../../../assets/img/loading.gif";
 
 const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId = null }) => {
     
@@ -22,7 +23,7 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     
     const [newPersonClient, setNewPersonClient] = useState(initialPersonClientState);
     const [alreadyExist, setAlreadyExist] = useState(false);
-    
+    const [loading, setLoading] = useState(false);
 
     //----- DISABLE BUTTON
 
@@ -165,9 +166,13 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        setLoading(true);
+
         try {
             const response = await dispatch(postPersonClient(newPersonClient));
             console.log("Client successfully saved");
+            setLoading(false);
 
             if(newPersonClient.vehicles.length > 0){
                 dispatch(getVehicles());
@@ -182,6 +187,7 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
         } catch (error) {
             console.error("Error saving person client:", error.message);
             if (error.message.includes('already exist')) setAlreadyExist(true);
+            setLoading(false);
         }
     };
 
@@ -305,7 +311,7 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                 </form>
                 <div className={isNested ? "submitNested" : "submit"}>                    
                     {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true}/>}
-                    <button type="submit" form="personClientForm" disabled={disabled}>Crear cliente</button>
+                    <button type="submit" form="personClientForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Crear cliente"}</button>
                 </div>
             </div>
         </div>
