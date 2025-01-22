@@ -192,9 +192,9 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
             onClientAdded(response);
 
         } catch (error) {
+            setErrorMessage("*Error al crear cliente, revise los datos ingresados e intente nuevamente.");
             console.error("Error saving person client:", error.message);
             setLoading(false);
-            setErrorMessage("*Error al crear cliente, revise los datos ingresados e intente nuevamente.");
             if (error.message.includes('already exist')) setAlreadyExist(true);
         }
     };
@@ -220,7 +220,7 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                         <label>DNI*</label>
                         <input type="text" name="dni" value={newPersonClient.dni} onChange={handleInputChange} />
                     </div>
-                    {alreadyExist && <div className="formRow"><p>Ya existe un cliente con ese DNI.</p></div>}
+                    {alreadyExist && <div className="formRow"><p className="errorMessage">Ya existe un cliente con ese DNI.</p></div>}
                     <div className="formRow">
                         <label>Nombre*</label>
                         <input type="text" name="name" value={newPersonClient.name} onChange={handleInputChange} />

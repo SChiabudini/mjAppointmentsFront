@@ -25,6 +25,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
 
     const [newBudget, setNewBudget] = useState(initialBudgetState);
     const [total, setTotal] = useState(0);
+    const [errorMessage, setErrorMessage] = useState(""); 
     const [loading, setLoading] = useState(false);
 
     // ----- HANDLE INPUTS
@@ -274,6 +275,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
         event.preventDefault();
 
         setLoading(true);
+        setErrorMessage("");
 
         const formattedEndDate = `${newBudget.end}T00:00:00.000Z`;
 
@@ -312,6 +314,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
             dispatch(getBudgets());
             onBudgetAdded(response);
         } catch (error) {
+            setErrorMessage("*Error al crear presupuesto, revise los datos ingresados e intente nuevamente.");
             console.error("Error saving budget:", error.message);
             setLoading(false);
         }
@@ -515,6 +518,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                         <div className="formRow"><label>Total: ${total}</label></div>
                     <div className="submit">
                         <button type='submit' form="budgetForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Crear presupuesto"}</button>
+                        {errorMessage && <p className="errorMessage">{errorMessage}</p>}
                     </div>
                 </form>
             </div>

@@ -18,6 +18,7 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
 
     const [editAppointment, setEditAppointment] = useState({});
     const [initialAppointment, setInitialAppointment] = useState({});
+    const [errorMessage, setErrorMessage] = useState(""); 
     const [loading, setLoading] = useState(false);
       
     useEffect(() => {
@@ -284,6 +285,7 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
         event.preventDefault();
 
         setLoading(true);
+        setErrorMessage("");
 
         try {
             const response = await dispatch(putAppointment(editAppointment));
@@ -306,6 +308,7 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
             onAppointmentAdded(response);
 
         } catch (error) {
+            setErrorMessage("*Error al editar turno, revise los datos ingresados e intente nuevamente.");
             console.error("Error updating appointment:", error.message);
             if (error.message.includes('already exist')) setAlreadyExist(true);
             setLoading(false);
@@ -505,6 +508,7 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                     </div>
                     <div className="submit">  
                         <button type='submit' form="appointmentForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Editar turno"}</button>
+                        {errorMessage && <p className="errorMessage">{errorMessage}</p>}
                     </div>
                 </form>
             </div>

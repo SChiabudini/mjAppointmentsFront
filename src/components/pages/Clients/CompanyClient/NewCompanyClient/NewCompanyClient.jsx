@@ -195,9 +195,9 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
             dispatch(getCompanyClients());
             onClientAdded(response);
         } catch (error) {
+            setErrorMessage("*Error al crear cliente, revise los datos ingresados e intente nuevamente.");
             console.error("Error saving company client:", error.message);
             setLoading(false);
-            setErrorMessage("*Error al crear cliente, revise los datos ingresados e intente nuevamente.");
             if (error.message.includes('already exist')) setAlreadyExist(true);
         }
     };
@@ -223,7 +223,7 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
                         <label htmlFor="cuit">CUIT*</label>
                         <input type="text" name="cuit" value={newCompanyClient.cuit} onChange={handleInputChange}/>
                     </div>
-                    {alreadyExist && <div className="formRow"><p>Ya existe un cliente con ese CUIT.</p></div>}
+                    {alreadyExist && <div className="formRow"><p className="errorMessage">Ya existe un cliente con ese CUIT.</p></div>}
                     <div className="formRow">
                         <label htmlFor="name">Nombre*</label>
                         <input type="text" name="name" value={newCompanyClient.name} onChange={handleInputChange}/>
