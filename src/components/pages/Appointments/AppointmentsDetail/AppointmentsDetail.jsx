@@ -60,10 +60,10 @@ const AppointmentsDetail = () => {
                                         {appointmentDetail.personClient.cuilCuit && <li><span>CUIL/CUIT:&nbsp;</span>{appointmentDetail.personClient.cuilCuit}</li>}
                                         {appointmentDetail.personClient.email && <li><span>Correo electrónico:&nbsp;</span>{appointmentDetail.personClient.email}</li>}
                                         {appointmentDetail.personClient.phoneWsp ? (
-                                            <li><span>Whatsapp:&nbsp;</span>{appointmentDetail.personClient.phoneWsp}</li>
+                                            <p><span>Whatsapp:&nbsp;</span>+{appointmentDetail.personClient.phoneWsp.prefix}{appointmentDetail.personClient.phoneWsp.numberPhone}</p>
                                         ) : (
-                                            <li><span>Whatsapp:&nbsp;</span>No hay teléfono con Whatsapp registrado.</li>
-                                        )}
+                                            <p>No hay teléfono con Whatsapp registrado.</p>
+                                        )}   
                                         {appointmentDetail.personClient.phones?.length > 0 ? (
                                             <li><span>Teléfono(s):&nbsp;</span>{appointmentDetail.personClient.phones?.join(', ')}</li>
                                         ) : (
@@ -82,10 +82,10 @@ const AppointmentsDetail = () => {
                                         {appointmentDetail.companyClient.address && <li><span>Dirección:&nbsp;</span>{appointmentDetail.companyClient.address}</li>}
                                         {appointmentDetail.companyClient.email && <li><span>Correo electrónico:&nbsp;</span>{appointmentDetail.companyClient.email}</li>}
                                         {appointmentDetail.companyClient.phoneWsp ? (
-                                            <li><span>Whatsapp:&nbsp;</span>{appointmentDetail.companyClient.phoneWsp}</li>
+                                            <p><span>Whatsapp:&nbsp;</span>+{appointmentDetail.companyClient.phoneWsp.prefix}{appointmentDetail.companyClient.phoneWsp.numberPhone}</p>
                                         ) : (
-                                            <li><span>Whatsapp:&nbsp;</span>No hay teléfono con Whatsapp registrado.</li>
-                                        )}
+                                            <p>No hay teléfono con Whatsapp registrado.</p>
+                                        )} 
                                         {appointmentDetail.companyClient.phones?.length > 0 ? (
                                             <li><span>Teléfono(s):&nbsp;</span>{appointmentDetail.companyClient.phones?.join(', ')}</li>
                                         ) : (
