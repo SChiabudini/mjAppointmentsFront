@@ -201,32 +201,31 @@ const CompanyClients = () => {
                             ) : (
                                 <>
                                     {paginatedCompanyClients?.map(companyClient => (
-                                    <tr key={companyClient._id}>
-                                        <td>{companyClient.cuit}</td>
-                                        <td>{companyClient.name}</td>
-                                        <td>{companyClient.email}</td>
-                                        <td>{companyClient.phoneWsp}</td>
-                                        <td>
-                                            {companyClient.phones?.length 
-                                                ? companyClient?.phones.join(', ') 
-                                                : 'N/A'}
-                                        </td>
-                                        <td>{companyClient.address ? companyClient.address : 'N/A'}</td>
-                                        <td>
-                                            {companyClient.vehicles?.length 
-                                                ? companyClient.vehicles?.map(vehicle => vehicle.licensePlate).join(', ') 
-                                                : 'N/A'}
-                                        </td>
-                                        <td className="center">
-                                            <a onClick={() => navigate(`/main_window/clientes/empresas/${companyClient._id}`)}>
-                                                <img src={detail} alt="" className="detailImg" />
-                                            </a>
-                                        </td>
-                                    </tr>
-                                ))}
+                                        <tr key={companyClient._id}>
+                                            <td>{companyClient.cuit}</td>
+                                            <td>{companyClient.name}</td>
+                                            <td>{companyClient.email}</td>
+                                            <td>+{companyClient.phoneWsp.prefix}{companyClient.phoneWsp.numberPhone}</td>
+                                            <td>
+                                                {companyClient.phones?.length 
+                                                    ? companyClient?.phones.join(', ') 
+                                                    : 'N/A'}
+                                            </td>
+                                            <td>{companyClient.address ? companyClient.address : 'N/A'}</td>
+                                            <td>
+                                                {companyClient.vehicles?.length 
+                                                    ? companyClient.vehicles?.map(vehicle => vehicle.licensePlate).join(', ') 
+                                                    : 'N/A'}
+                                            </td>
+                                            <td className="center">
+                                                <a onClick={() => navigate(`/main_window/clientes/empresas/${companyClient._id}`)}>
+                                                    <img src={detail} alt="" className="detailImg" />
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    ))}
                                 </>
                             )}
-                            
                         </tbody>
                     </table>
                 </div>

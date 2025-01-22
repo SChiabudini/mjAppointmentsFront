@@ -206,7 +206,7 @@ const PersonClients = () => {
                                             <td>{personClient.dni}</td>
                                             <td>{personClient.name}</td>
                                             <td>{personClient.email}</td>
-                                            <td>+{personClient.phoneWsp}</td>
+                                            <td>+{personClient.phoneWsp.prefix}{personClient.phoneWsp.numberPhone}</td>
                                             <td>
                                                 {personClient.phones?.length 
                                                     ? personClient.phones.join(', ') 
@@ -227,7 +227,6 @@ const PersonClients = () => {
                                     ))}
                                 </>
                             )}
-
                         </tbody>
                     </table>
                 </div>

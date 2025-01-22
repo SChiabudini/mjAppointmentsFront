@@ -29,12 +29,12 @@ const PersonClientDetail = () => {
 
     return(
         <div className="page">
-            {loading ? 
+            {loading ? (
                 <div className="loadingPage">
                     <img src={loadingGif} alt=""/>
                     <p>Cargando</p>
                 </div>
-            : 
+            ):( 
                 <div className="component">
                     <div className="title">
                         <h2>Detalle del Cliente</h2>
@@ -53,7 +53,7 @@ const PersonClientDetail = () => {
                             {personClientDetail.cuilCuit && <p><span>CUIL/CUIT:&nbsp;</span>{personClientDetail.cuilCuit}</p>}
                             {personClientDetail.name && <p><span>Nombre:&nbsp;</span>{personClientDetail.name}</p>}
                             {personClientDetail.phoneWsp ? (
-                                <p><span>Whatsapp:&nbsp;</span>+{personClientDetail.phoneWsp}</p>
+                                <p><span>Whatsapp:&nbsp;</span>+{personClientDetail.phoneWsp?.prefix}{personClientDetail.phoneWsp?.numberPhone}</p>
                             ) : (
                                 <p>No hay teléfono con Whatsapp registrado.</p>
                             )}  
@@ -157,7 +157,7 @@ const PersonClientDetail = () => {
                         </div>
                     </div>
                 </div>
-            }
+            )}
             <div className={popUpOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpOpen(false)}>
               <div onClick={(e) => e.stopPropagation()}>
                 <PutPersonClient onClientAdded={() => setPopUpOpen(false)}/>
