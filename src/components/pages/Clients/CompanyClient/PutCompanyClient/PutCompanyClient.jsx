@@ -206,7 +206,7 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
             onClientAdded(response);
 
         } catch (error) {
-            setErrorMessage("*Error al editar cliente, revise los datos ingresados e intente nuevamente.");
+            setErrorMessage("*Error al editar empresa, revise los datos ingresados e intente nuevamente.");
             console.error("Error updating client company:", error.message);
             setLoading(false);
             if (error.message.includes('already exist')) setAlreadyExist(true);

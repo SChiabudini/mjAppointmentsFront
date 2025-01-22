@@ -283,7 +283,6 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
         };
 
         try {
-            console.log(budgetToSubmit);
             const response = await dispatch(postBudget(budgetToSubmit));
             setLoading(false);
             console.log("Budget successfully saved");

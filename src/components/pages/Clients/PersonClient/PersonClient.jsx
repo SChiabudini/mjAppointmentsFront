@@ -5,6 +5,7 @@ import { getPersonClients, searchPersonClients } from "../../../../redux/personC
 import { clearPersonClientsReducer } from "../../../../redux/personClientSlice.js";
 import NewPersonClient from './NewPersonClient/NewPersonClient.jsx';
 import detail from "../../../../assets/img/detail.png";
+import loadingGif from "../../../../assets/img/loading.gif";
 
 const PersonClients = () => {
 
@@ -15,6 +16,7 @@ const PersonClients = () => {
     const [dni, setDni] = useState('');
     const [name, setName] = useState('');
     const [vehicle, setVehicle] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
 
@@ -37,7 +39,8 @@ const PersonClients = () => {
     const handleSearch = (event) => {
         if (event.key === "Enter") {
             if (dni.trim() || name.trim() || vehicle.trim()) {
-                dispatch(searchPersonClients(dni.trim(), name.trim(), vehicle.trim()));
+                setLoading(true);
+                dispatch(searchPersonClients(dni.trim(), name.trim(), vehicle.trim())).then(() => setLoading(false));
                 setCurrentPage(1);
             }
         }
@@ -187,30 +190,43 @@ const PersonClients = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {paginatedPersonClients?.map(personClient => (
-                                <tr key={personClient._id}>
-                                    <td>{personClient.dni}</td>
-                                    <td>{personClient.name}</td>
-                                    <td>{personClient.email}</td>
-                                    <td>+{personClient.phoneWsp.prefix}{personClient.phoneWsp.numberPhone}</td>
-                                    <td>
-                                        {personClient.phones?.length 
-                                            ? personClient.phones.join(', ') 
-                                            : 'N/A'}
-                                    </td>
-                                    <td>{personClient.cuilCuit ? personClient.cuilCuit : 'N/A'}</td>
-                                    <td>
-                                        {personClient.vehicles?.length 
-                                            ? personClient.vehicles?.map(vehicle => vehicle.licensePlate).join(', ') 
-                                            : 'N/A'}
-                                    </td>
-                                    <td className="center">
-                                        <a onClick={() => navigate(`/main_window/clientes/personas/${personClient._id}`)}>
-                                            <img src={detail} alt="" className="detailImg" />
-                                        </a>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan="8" className="loadingCell">
+                                        <div className="loadingPage">
+                                            <img src={loadingGif} alt="" />
+                                            <p>Cargando</p>
+                                        </div>
                                     </td>
                                 </tr>
-                            ))}
+                            ) : (
+                                <>
+                                    {paginatedPersonClients?.map(personClient => (
+                                        <tr key={personClient._id}>
+                                            <td>{personClient.dni}</td>
+                                            <td>{personClient.name}</td>
+                                            <td>{personClient.email}</td>
+                                            <td>+{personClient.phoneWsp.prefix}{personClient.phoneWsp.numberPhone}</td>
+                                            <td>
+                                                {personClient.phones?.length 
+                                                    ? personClient.phones.join(', ') 
+                                                    : 'N/A'}
+                                            </td>
+                                            <td>{personClient.cuilCuit ? personClient.cuilCuit : 'N/A'}</td>
+                                            <td>
+                                                {personClient.vehicles?.length 
+                                                    ? personClient.vehicles?.map(vehicle => vehicle.licensePlate).join(', ') 
+                                                    : 'N/A'}
+                                            </td>
+                                            <td className="center">
+                                                <a onClick={() => navigate(`/main_window/clientes/personas/${personClient._id}`)}>
+                                                    <img src={detail} alt="" className="detailImg" />
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </>
+                            )}
                         </tbody>
                     </table>
                 </div>

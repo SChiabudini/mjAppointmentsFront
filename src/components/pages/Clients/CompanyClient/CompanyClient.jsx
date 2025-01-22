@@ -5,6 +5,7 @@ import { getCompanyClients, searchCompanyClients } from "../../../../redux/compa
 import { clearCompanyClientsReducer } from "../../../../redux/companyClientSlice.js";
 import detail from "../../../../assets/img/detail.png";
 import NewCompanyClient from './NewCompanyClient/NewCompanyClient.jsx';
+import loadingGif from "../../../../assets/img/loading.gif";
 
 const CompanyClients = () => {
 
@@ -15,6 +16,7 @@ const CompanyClients = () => {
     const [cuit, setCuit] = useState('');
     const [name, setName] = useState('');
     const [vehicle, setVehicle] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
 
@@ -37,7 +39,8 @@ const CompanyClients = () => {
     const handleSearch = (event) => {
         if (event.key === "Enter") {
             if (cuit.trim() || name.trim() || vehicle.trim()) {
-                dispatch(searchCompanyClients(cuit.trim(), name.trim(), vehicle.trim()));
+                setLoading(true);
+                dispatch(searchCompanyClients(cuit.trim(), name.trim(), vehicle.trim())).then(() => setLoading(false));
                 setCurrentPage(1);
             }
         }
@@ -186,30 +189,43 @@ const CompanyClients = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {paginatedCompanyClients?.map(companyClient => (
-                                <tr key={companyClient._id}>
-                                    <td>{companyClient.cuit}</td>
-                                    <td>{companyClient.name}</td>
-                                    <td>{companyClient.email}</td>
-                                    <td>+{companyClient.phoneWsp.prefix}{companyClient.phoneWsp.numberPhone}</td>
-                                    <td>
-                                        {companyClient.phones?.length 
-                                            ? companyClient?.phones.join(', ') 
-                                            : 'N/A'}
-                                    </td>
-                                    <td>{companyClient.address ? companyClient.address : 'N/A'}</td>
-                                    <td>
-                                        {companyClient.vehicles?.length 
-                                            ? companyClient.vehicles?.map(vehicle => vehicle.licensePlate).join(', ') 
-                                            : 'N/A'}
-                                    </td>
-                                    <td className="center">
-                                        <a onClick={() => navigate(`/main_window/clientes/empresas/${companyClient._id}`)}>
-                                            <img src={detail} alt="" className="detailImg" />
-                                        </a>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan="8" className="loadingCell">
+                                        <div className="loadingPage">
+                                            <img src={loadingGif} alt="" />
+                                            <p>Cargando</p>
+                                        </div>
                                     </td>
                                 </tr>
-                            ))}
+                            ) : (
+                                <>
+                                    {paginatedCompanyClients?.map(companyClient => (
+                                        <tr key={companyClient._id}>
+                                            <td>{companyClient.cuit}</td>
+                                            <td>{companyClient.name}</td>
+                                            <td>{companyClient.email}</td>
+                                            <td>+{companyClient.phoneWsp.prefix}{companyClient.phoneWsp.numberPhone}</td>
+                                            <td>
+                                                {companyClient.phones?.length 
+                                                    ? companyClient?.phones.join(', ') 
+                                                    : 'N/A'}
+                                            </td>
+                                            <td>{companyClient.address ? companyClient.address : 'N/A'}</td>
+                                            <td>
+                                                {companyClient.vehicles?.length 
+                                                    ? companyClient.vehicles?.map(vehicle => vehicle.licensePlate).join(', ') 
+                                                    : 'N/A'}
+                                            </td>
+                                            <td className="center">
+                                                <a onClick={() => navigate(`/main_window/clientes/empresas/${companyClient._id}`)}>
+                                                    <img src={detail} alt="" className="detailImg" />
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </>
+                            )}
                         </tbody>
                     </table>
                 </div>
