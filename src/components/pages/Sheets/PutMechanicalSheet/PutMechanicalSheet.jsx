@@ -18,6 +18,7 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
     const mechanicalSheetDetail = useSelector(state => state.mechanicalSheet?.mechanicalSheetDetail || {}); 
 
     const [editMechanicalSheet, setEditMechanicalSheet] = useState({});
+    const [errorMessage, setErrorMessage] = useState(""); 
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -254,6 +255,7 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
         event.preventDefault();
 
         setLoading(true);
+        setErrorMessage("");
 
         const mechanicalSheetToSubmit = {
             ...editMechanicalSheet,
@@ -283,6 +285,7 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
             dispatch(getMechanicalSheetById(id));
             onMechanicalSheetAdded(response);
         } catch (error) {
+            setErrorMessage("*Error al editar ficha mecánica, revise los datos ingresados e intente nuevamente.");
             console.error("Error updating mechanical sheet:", error.message);
             setLoading(false);
         }
@@ -415,6 +418,7 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                     <div className="formRow"><textarea name="description" value={editMechanicalSheet.description} onChange={handleInputChange}/></div>
                     <div className="submit">
                         <button type='submit' form="mechanicalSheetForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Editar ficha"}</button>
+                        {errorMessage && <p className="errorMessage">{errorMessage}</p>}
                     </div>
                 </form>
             </div>

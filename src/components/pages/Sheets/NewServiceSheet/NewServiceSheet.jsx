@@ -28,6 +28,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     }
 
     const [newServiceSheet, setNewServiceSheet] = useState(initialServiceSheetState);
+    const [errorMessage, setErrorMessage] = useState(""); 
     const [loading, setLoading] = useState(false);
 
     //----- DISABLE BUTTON
@@ -242,6 +243,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
         event.preventDefault();
 
         setLoading(true);
+        setErrorMessage("");
 
         const serviceSheetToSubmit = {
             ...newServiceSheet,
@@ -272,6 +274,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
             dispatch(getServiceSheets());
             onServiceSheetAdded(response);
         } catch (error) {
+            setErrorMessage("*Error al crear ficha service, revise los datos ingresados e intente nuevamente.");
             console.error("Error saving service sheet:", error.message);
             setLoading(false);
         }
@@ -460,6 +463,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                     <div className="formRow"><textarea name="notes" value={newServiceSheet.notes} onChange={handleInputChange}/></div>
                     <div className="submit">
                         <button type='submit' form="serviceSheetForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Crear ficha"}</button>
+                        {errorMessage && <p className="errorMessage">{errorMessage}</p>}
                     </div>
                 </form>
             </div>

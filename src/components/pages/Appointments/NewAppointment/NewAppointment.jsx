@@ -31,6 +31,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
     };
 
     const [newAppointment, setNewAppointment] = useState(initialAppointmentState);
+    const [errorMessage, setErrorMessage] = useState(""); 
     const [loading, setLoading] = useState(false);
 
     //----- DISABLE BUTTON
@@ -256,6 +257,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
         event.preventDefault();
     
         setLoading(true);
+        setErrorMessage("");
 
         const appointmentData = {
             start: newAppointment.start,
@@ -284,6 +286,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
             };
 
         } catch (error) {
+            setErrorMessage("*Error al crear turno, revise los datos ingresados e intente nuevamente.");
             console.error("Error saving appointment:", error);
             setLoading(false);
         }
@@ -464,6 +467,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                     </div>
                     <div className="submit">
                         <button type='submit' form="appointmentForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Crear turno"}</button>
+                        {errorMessage && <p className="errorMessage">{errorMessage}</p>}
                     </div>
                 </form>
 

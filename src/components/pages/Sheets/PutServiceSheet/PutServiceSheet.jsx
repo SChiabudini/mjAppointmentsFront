@@ -18,6 +18,7 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     const serviceSheetDetail = useSelector(state => state.serviceSheet?.serviceSheetDetail || {}); 
 
     const [editServiceSheet, setEditServiceSheet] = useState({});
+    const [errorMessage, setErrorMessage] = useState(""); 
     const [loading, setLoading] = useState(false);
     // console.log(editServiceSheet);
       
@@ -271,6 +272,7 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
         event.preventDefault();
 
         setLoading(true);
+        setErrorMessage("");
 
         const serviceSheetToSubmit = {
             ...editServiceSheet,
@@ -303,6 +305,7 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
             onServiceSheetAdded(response);
 
         } catch (error) {
+            setErrorMessage("*Error al editar ficha service, revise los datos ingresados e intente nuevamente.");
             console.error("Error updating service sheet:", error.message);
             setLoading(false);
         }
@@ -482,6 +485,7 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                     <div className="formRow"><textarea name="notes" value={editServiceSheet.notes} onChange={handleInputChange}/></div>
                     <div className="submit">
                         <button type='submit' form="serviceSheetForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Editar ficha"}</button>
+                        {errorMessage && <p className="errorMessage">{errorMessage}</p>}
                     </div>
                 </form>
             </div>

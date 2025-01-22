@@ -17,6 +17,7 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
 
     const [editVehicle, setEditVehicle] = useState({});
     const [alreadyExist, setAlreadyExist] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(""); 
     const [loading, setLoading] = useState(false);
     // console.log(editVehicle);
       
@@ -161,6 +162,7 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
         event.preventDefault();
 
         setLoading(true);
+        setErrorMessage("");
 
         try {
             const response = await dispatch(putVehicle(editVehicle));
@@ -182,9 +184,10 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
             onVehicleAdded(response);
 
         } catch (error) {
+            setErrorMessage("*Error al editar vehículo, revise los datos ingresados e intente nuevamente.");
             console.error("Error updating vehicle:", error.message);
-            if (error.message.includes('already exist')) setAlreadyExist(true);
             setLoading(false);
+            if (error.message.includes('already exist')) setAlreadyExist(true);
         }
     };
 
@@ -203,7 +206,7 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                         value={editVehicle.licensePlate} 
                         onChange={handleInputChange}/>
                     </div>
-                    {alreadyExist && <div className="formRow"><p>Ya existe un vehículo con esa patente.</p></div>}         
+                    {alreadyExist && <div className="formRow"><p className="errorMessage">Ya existe un vehículo con esa patente.</p></div>}         
                     <div className="formRow">
                         <label htmlFor="brand">Marca*</label>
                         <input type="text" name="brand" value={editVehicle.brand} onChange={handleInputChange}/>
@@ -297,6 +300,7 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                     {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true}/>}
                     {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true}/>}
                     <button type='submit' form="vehicleForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Editar vehículo"}</button>
+                    {errorMessage && <p className="errorMessage">{errorMessage}</p>}
                 </div>
             </div>
         </div>

@@ -26,6 +26,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
     }
 
     const [newMechanicalSheet, setNewMechanicalSheet] = useState(initialMechanicalSheetState);
+    const [errorMessage, setErrorMessage] = useState(""); 
     const [loading, setLoading] = useState(false);
 
     //----- DISABLE BUTTON
@@ -226,6 +227,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
         event.preventDefault();
 
         setLoading(true);
+        setErrorMessage("");
 
         const mechanicalSheetToSubmit = {
             ...newMechanicalSheet,
@@ -255,6 +257,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
             dispatch(getMechanicalSheets());
             onMechanicalSheetAdded(response);
         } catch (error) {
+            setErrorMessage("*Error al crear ficha mecánica, revise los datos ingresados e intente nuevamente.");
             console.error("Error saving mechanical sheet:", error.message);
             setLoading(false);
         }
@@ -391,6 +394,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                     <div className="formRow"><textarea name="description" value={newMechanicalSheet.description} onChange={handleInputChange}/></div>
                     <div className="submit">
                         <button type='submit' form="mechanicalSheetForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Crear ficha"}</button>
+                        {errorMessage && <p className="errorMessage">{errorMessage}</p>}
                     </div>
                 </form>
             </div>
