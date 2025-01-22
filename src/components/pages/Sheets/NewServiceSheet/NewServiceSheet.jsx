@@ -197,9 +197,9 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     
         // Lógica común
         if (event.key === 'ArrowDown') {
-            setSelectedIndex((prev) => (prev + 1) % filteredItems.length);
+            setSelectedIndex((prev) => (prev + 1) % filteredItems?.length);
         } else if (event.key === 'ArrowUp') {
-            setSelectedIndex((prev) => (prev - 1 + filteredItems.length) % filteredItems.length);
+            setSelectedIndex((prev) => (prev - 1 + filteredItems?.length) % filteredItems?.length);
         } else if (event.key === 'Enter' && selectedIndex >= 0) {
             handleSelection(filteredItems[selectedIndex]);
             setDropdownVisible(false);

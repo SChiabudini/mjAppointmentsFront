@@ -29,17 +29,17 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
         if (appointmentDetail && appointmentDetail._id === id) {     
             if (appointmentDetail.personClient) {
                 setSearchingPerson(true);
-                setSearchClient(`${appointmentDetail.personClient.dni} - ${appointmentDetail.personClient.name}`);
+                setSearchTermClients(`${appointmentDetail.personClient.dni} - ${appointmentDetail.personClient.name}`);
             } else if (appointmentDetail.companyClient) {
                 setSearchingPerson(false);
-                setSearchClient(`${appointmentDetail.companyClient.cuit} - ${appointmentDetail.companyClient.name}`);
+                setSearchTermClients(`${appointmentDetail.companyClient.cuit} - ${appointmentDetail.companyClient.name}`);
             } else {
-                setSearchClient('');
+                setSearchTermClients('');
             }   
             if (appointmentDetail.vehicle) {
-                setSearchVehicle(`${appointmentDetail.vehicle.licensePlate}`);
+                setSearchTermVehicles(`${appointmentDetail.vehicle.licensePlate}`);
             } else {
-                setSearchVehicle('');
+                setSearchTermVehicles('');
             }
 
             const initialData = {
@@ -88,32 +88,32 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
         
         setEditAppointment((prevState) => ({
             ...prevState,
-            ...(name === 'searchClient' && value === '' && {
+            ...(name === 'searchTermClients' && value === '' && {
                 personClient: null,
                 companyClient: null,
             }),
-            ...(name === 'searchVehicle' && value === '' && {
+            ...(name === 'searchTermVehicles' && value === '' && {
                 vehicle: null,
             }),
         }));
         
-        if (name === 'searchClient') {
-            setSearchClient(value);
+        if (name === 'searchTermClients') {
+            setSearchTermClients(value);
             if (value === '') {
-                setDropdownClientsVisible(false);
+                setDropdownVisibleClients(false);
             }
         };
 
-        if(name === 'searchClient' && value === '') setDropdownClientsVisible(false); 
+        if(name === 'searchTermClients' && value === '') setDropdownVisibleClients(false); 
 
-        if (name === 'searchVehicle') {
-            setSearchVehicle(value);
+        if (name === 'searchTermVehicles') {
+            setSearchTermVehicles(value);
             if (value === '') {
-                setDropdownVehicleVisible(false);
+                setDropdownVisibleVehicles(false);
             }
         };
-        if(name === 'searchVehicle') setSearchVehicle(value);
-        if(name === 'searchVehicle' && value === '') setDropdownVehicleVisible(false); 
+        if(name === 'searchTermVehicles') setSearchTermVehicles(value);
+        if(name === 'searchTermVehicles' && value === '') setDropdownVisibleVehicles(false); 
     };
 
     //----- DATE
@@ -139,32 +139,35 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
         }));
     }; 
 
-    //----- HANDLE CLIENT
-
+    //----- LOAD CLIENTS AND VEHICLES OPTIONS
+    
     const personClients = useSelector(state => state.personClient.personClients);
     const companyClients = useSelector(state => state.companyClient.companyClients);
+    const vehicles = useSelector(state => state.vehicle.vehicles);
 
-    const [searchingPerson, setSearchingPerson] = useState(true);
-    const [searchClient, setSearchClient] = useState('');
-    const [selectedClientIndex, setSelectedClientIndex] = useState(-1);
+    //----- HANDLE CLIENT
+
+    const [searchTermClients, setSearchTermClients] = useState('');
     const [filteredClients, setFilteredClients] = useState([]);
+    const [searchingPerson, setSearchingPerson] = useState(true);
+    const [dropdownVisibleClients, setDropdownVisibleClients] = useState(false);
+    const [selectedIndexClients, setSelectedIndexClients] = useState(-1);
     const [showNewClient, setShowNewClient] = useState(false);
-    const [dropdownClientsVisible, setDropdownClientsVisible] = useState(false);
 
     useEffect(() => {
         const clients = searchingPerson ? personClients : companyClients;
         setFilteredClients(
             clients.filter(client => 
-                client.name.toLowerCase().includes(searchClient.toLowerCase()) || 
-                (client.dni && client.dni.toString().includes(searchClient))
+                client.name.toLowerCase().includes(searchTermClients.toLowerCase()) || 
+                (client.dni && client.dni.toString().includes(searchTermClients))
             )
         );  
-    }, [searchClient, searchingPerson, personClients, companyClients]);
+    }, [searchTermClients, searchingPerson, personClients, companyClients]);
 
     const handleClientSelection = (client) => {
         const clientName = client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`;
-        setSearchClient(clientName);
-        setDropdownClientsVisible(false);
+        setSearchTermClients(clientName);
+        setDropdownVisibleClients(false);
         if (searchingPerson) {
             setEditAppointment({ ...editAppointment, personClient: client._id, companyClient: null });
         } else {
@@ -174,75 +177,103 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
 
     //----- VEHICLES
 
-    const vehicles = useSelector(state => state.vehicle.vehicles);
-    
-    const [searchVehicle, setSearchVehicle] = useState('');
+    const [searchTermVehicles, setSearchTermVehicles] = useState('');
     const [filteredVehicles, setFilteredVehicles] = useState([]);
-    const [selectedVehicleIndex, setSelectedVehicleIndex] = useState(-1);
+    const [dropdownVisibleVehicles, setDropdownVisibleVehicles] = useState(false);
+    const [selectedIndexVehicles, setSelectedIndexVehicles] = useState(-1);
     const [showNewVehicle, setShowNewVehicle] = useState(false);
-    const [dropdownVehiclesVisible, setDropdownVehicleVisible] = useState(false);
 
     useEffect(() => {
         setFilteredVehicles(
             vehicles.filter(vehicle => 
-                vehicle.licensePlate.toLowerCase().includes(searchVehicle.toLowerCase())
+                vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase())
             )
         );
-    }, [searchVehicle, vehicles]);
+    }, [searchTermVehicles, vehicles]);
 
     const handleVehicleSelection = (vehicle) => {
-        const vehicleLicencePlate = vehicle.licensePlate
-        setSearchVehicle(vehicleLicencePlate);
-        setDropdownVehicleVisible(false);
-        setEditAppointment({ ...editAppointment, vehicle: vehicle._id });
+        setSearchTermVehicles(vehicle.licensePlate);
+        setDropdownVisibleVehicles(false);
+
+        setEditAppointment((prevState) => ({
+            ...prevState,
+            vehicle: vehicle._id
+        }));
+
+        // Lógica de asignación para personClient y companyClient
+        if (vehicle.personClient) {
+            setSearchTermClients(`${vehicle.personClient.dni} - ${vehicle.personClient.name}`);
+            setEditAppointment((prevState) => ({
+                ...prevState,
+                personClient: vehicle.personClient._id,
+                companyClient: null
+            }));
+            setSearchingPerson(true);
+        } else if (vehicle.companyClient) {
+            setSearchTermClients(`${vehicle.companyClient.cuit} - ${vehicle.companyClient.name}`);
+            setEditAppointment((prevState) => ({
+                ...prevState,
+                companyClient: vehicle.companyClient._id,
+                personClient: null
+            }));
+            setSearchingPerson(false);
+        } else {
+            setSearchTermClients('');
+            setEditAppointment((prevState) => ({
+                ...prevState,
+                personClient: null,
+                companyClient: null
+            }));
+            setSearchingPerson(true);
+        }
     };
     
     //----- ATRIBUTES INPUTS
     const handleSearchFocus = (event) => {
         const { name } = event.target;
 
-        if(name === 'searchClient') {
-            setSelectedClientIndex(-1);
+        if(name === 'searchTermClients') {
+            setSelectedIndexClients(-1);
         };
-        if(name === 'searchVehicle') {
-            setSelectedVehicleIndex(-1);
+        if(name === 'searchTermVehicles') {
+            setSelectedIndexVehicles(-1);
         };
     };
 
     const handleSearchBlur = () => {
         setTimeout(() => {
-            setDropdownClientsVisible(false);
-            setDropdownVehicleVisible(false);
-            setSelectedClientIndex(-1);
-            setSelectedVehicleIndex(-1);
+            setDropdownVisibleClients(false);
+            setDropdownVisibleVehicles(false);
+            setSelectedIndexClients(-1);
+            setSelectedIndexVehicles(-1);
         }, 150);
     };
 
     const handleKeyDown = (event) => {
         const { name } = event.target;
 
-        if(name === 'searchClient') {
+        if(name === 'searchTermClients') {
             if (event.key === 'ArrowDown') {
-                setSelectedClientIndex((prev) => (prev + 1) % filteredClients.length);
+                setSelectedIndexClients((prev) => (prev + 1) % filteredClients.length);
             } else if (event.key === 'ArrowUp') {
-                setSelectedClientIndex((prev) => (prev - 1 + filteredClients.length) % filteredClients.length);
-            } else if (event.key === 'Enter' && selectedClientIndex >= 0) {
-                handleClientSelection(filteredClients[selectedClientIndex]);
-                setDropdownClientsVisible(false);
+                setSelectedIndexClients((prev) => (prev - 1 + filteredClients.length) % filteredClients.length);
+            } else if (event.key === 'Enter' && selectedIndexClients >= 0) {
+                handleClientSelection(filteredClients[selectedIndexClients]);
+                setDropdownVisibleClients(false);
             } else {
-                setDropdownClientsVisible(true);
+                setDropdownVisibleClients(true);
             }
         };
-        if(name === 'searchVehicle') {
+        if(name === 'searchTermVehicles') {
             if (event.key === 'ArrowDown') {
-                setSelectedVehicleIndex((prev) => (prev + 1) % filteredVehicles.length);
+                setSelectedIndexVehicles((prev) => (prev + 1) % filteredVehicles.length);
             } else if (event.key === 'ArrowUp') {
-                setSelectedVehicleIndex((prev) => (prev - 1 + filteredVehicles.length) % filteredVehicles.length);
-            } else if (event.key === 'Enter' && selectedVehicleIndex >= 0) {
-                handleVehicleSelection(filteredVehicles[selectedVehicleIndex]);
-                setDropdownVehicleVisible(false);
+                setSelectedIndexVehicles((prev) => (prev - 1 + filteredVehicles.length) % filteredVehicles.length);
+            } else if (event.key === 'Enter' && selectedIndexVehicles >= 0) {
+                handleVehicleSelection(filteredVehicles[selectedIndexVehicles]);
+                setDropdownVisibleVehicles(false);
             } else {
-                setDropdownVehicleVisible(true);
+                setDropdownVisibleVehicles(true);
             }
         };
     }; 
@@ -255,21 +286,21 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
         // Actualizar los valores de búsqueda del cliente y vehículo
         if (initialAppointment.personClient) {
             const person = personClients.find(client => client._id === initialAppointment.personClient);
-            setSearchClient(`${person.dni} - ${person.name}`);
+            setSearchTermClients(`${person.dni} - ${person.name}`);
         } else if (initialAppointment.companyClient) {
             const company = companyClients.find(client => client._id === initialAppointment.companyClient);
-            setSearchClient(`${company.cuit} - ${company.name}`);
+            setSearchTermClients(`${company.cuit} - ${company.name}`);
         } else {
-            setSearchClient('');
+            setSearchTermClients('');
         }
 
         setSearchingPerson(initialAppointment.personClient ? true : false);
     
         if (initialAppointment.vehicle) {
             const vehicle = vehicles.find(v => v._id === initialAppointment.vehicle);
-            setSearchVehicle(vehicle?.licensePlate || '');
+            setSearchTermVehicles(vehicle?.licensePlate || '');
         } else {
-            setSearchVehicle('');
+            setSearchTermVehicles('');
         }
     };
 
@@ -293,14 +324,6 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
             setLoading(false);
 
             console.log("Appointment successfully updated");
-
-            // if(editAppointment.personClient){
-            //     dispatch(getPersonClients());
-            // }
-
-            // if(editAppointment.companyClient){
-            //     dispatch(getCompanyClients());
-            // }
 
             setEditAppointment(editAppointment);
             dispatch(getAppointments());
@@ -339,10 +362,10 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                     <div className="searchRow">
                         <input 
                             type="text" 
-                            name="searchVehicle" 
-                            value={searchVehicle} 
+                            name="searchTermVehicles" 
+                            value={searchTermVehicles} 
                             onChange={handleInputChange}
-                            // onChange={(e) => setSearchVehicle(e.target.value)}
+                            // onChange={(e) => setSearchTermVehicles(e.target.value)}
                             onFocus={handleSearchFocus} 
                             onBlur={handleSearchBlur} 
                             onKeyDown={handleKeyDown} 
@@ -353,10 +376,10 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                         </button>                                
                     </div>
                     <div className="searchRow">
-                        {filteredVehicles?.length > 0 && dropdownVehiclesVisible && (
+                        {filteredVehicles?.length > 0 && dropdownVisibleVehicles && (
                             <ul className="dropdown">
                                 {filteredVehicles?.map((vehicle, index) => (
-                                    <li className={index === selectedClientIndex ? 'highlight' : ''} 
+                                    <li className={index === selectedIndexClients ? 'highlight' : ''} 
                                     key={vehicle._id} 
                                     onClick={() => handleVehicleSelection(vehicle)} 
                                     >
@@ -379,7 +402,7 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                             checked={searchingPerson}
                             onChange={() => {
                                 setSearchingPerson(true);
-                                setSearchClient('');
+                                setSearchTermClients('');
                                 setEditAppointment({ ...editAppointment, personClient: null, companyClient: null });
                             }}
                             />
@@ -393,7 +416,7 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                                 checked={!searchingPerson}
                                 onChange={() => {
                                     setSearchingPerson(false);
-                                    setSearchClient('');
+                                    setSearchTermClients('');
                                     setEditAppointment({ ...editAppointment, personClient: null, companyClient: null });
                                 }}
                             />
@@ -403,11 +426,11 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                     <div className="searchRow">
                         <input
                             type="text"
-                            name="searchClient"
+                            name="searchTermClients"
                             placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
-                            value={searchClient}
+                            value={searchTermClients}
                             onChange={handleInputChange}
-                            // onChange={(e) => setSearchClient(e.target.value)}
+                            // onChange={(e) => setSearchTermClients(e.target.value)}
                             onFocus={handleSearchFocus}
                             onBlur={handleSearchBlur}
                             onKeyDown={handleKeyDown}
@@ -417,11 +440,11 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
                         </button>                                 
                     </div>
                     <div className="searchRow">
-                        {filteredClients.length > 0 && dropdownClientsVisible && (
+                        {filteredClients.length > 0 && dropdownVisibleClients && (
                             <ul className="dropdown">
                                 {filteredClients?.map((client, index) => (
                                     <li
-                                    className={index === selectedClientIndex ? 'highlight' : ''}
+                                    className={index === selectedIndexClients ? 'highlight' : ''}
                                     key={client._id}
                                     onClick={() => handleClientSelection(client)}
                                     >
