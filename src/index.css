@@ -95,6 +95,7 @@ table {
     --dark-grey: #3c3c3b;
     --black: #000000;
     --orange: #ff6600;
+    --light-orange: #fecba9;
     --red: #ad0000;
     --green: #08702b;
     --border-light: solid 1px #f1f1f1;
@@ -725,6 +726,52 @@ th div.withFilter button.sort{
     border-color: var(--orange);
 }
 
+/*-- CALENDAR --*/
+
+.rbc-event {
+    background-color: var(--light-orange) !important;
+    color: black !important;
+    border-radius: 0 !important;
+    margin-bottom: 0.25rem !important;
+}
+
+.rbc-event:hover{
+    color: var(--orange) !important;
+}
+
+.rbc-date-cell.rbc-now{
+    
+    background-color: var(--light-grey) !important;
+    color: var(--orange) !important;
+}
+
+.rbc-day-bg.rbc-today {
+    background-color: var(--light-grey) !important;
+}
+
+.rbc-button-link:hover{
+    border: none !important;
+}
+
+.rbc-date-cell{
+    margin-bottom: 0.25rem !important;
+}
+
+.rbc-button-link.rbc-show-more{
+    color: var(--light-orange) !important;
+    margin-right: 0.3rem !important;
+}
+
+.rbc-show-more:hover{
+    color: var(--orange) !important;
+}
+
+.rbc-row-segment{
+    display: flex !important;
+    justify-content: end !important;
+}
+
+
 /*-- LOADING --*/
 
 .loadingPage{
@@ -761,3 +808,5 @@ th div.withFilter button.sort{
         left: 0;
     }
 }
+
+
