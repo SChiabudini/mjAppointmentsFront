@@ -771,6 +771,24 @@ th div.withFilter button.sort{
     justify-content: end !important;
 }
 
+.rbc-toolbar-label{
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    font-weight: 600;
+}
+
+button.rbc-active{
+    box-shadow: none !important;
+}
+
+.rbc-day-slot .rbc-events-container{
+    margin: 0 !important;
+}
+
+.rbc-event-label{
+    display: none !important;
+}
+
 
 /*-- LOADING --*/
 
