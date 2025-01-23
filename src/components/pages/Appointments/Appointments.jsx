@@ -1,9 +1,9 @@
 import style from './Appointments.module.css';
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import iconMechanic from './Icons/mechanic.png';
-import iconService from './Icons/service.png';
-import { useSelector, useDispatch } from "react-redux";
+import iconMechanic from './icons/mechanic.png';
+import iconService from './icons/service.png';
+import { useSelector } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { Calendar, dayjsLocalizer } from 'react-big-calendar';
 import dayjs from 'dayjs';
@@ -14,7 +14,6 @@ dayjs.locale('es');
 
 const Appointments = () => {
 
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     //----- ABRIR POPUP
@@ -36,12 +35,10 @@ const Appointments = () => {
         vehicle: `${appointment.vehicle?.licensePlate || ''}`, 
     }));  
 
-    const components = {
-        event: props => {   
-            // Destructuración de los valores de props.event: 
-            const { _id, procedureIconMechanic, procedureIconService, vehicle } = props.event;  
+    const MonthEvent = (props) => {
+        const { _id, procedureIconMechanic, procedureIconService, vehicle } = props.event;
 
-            return (
+        return (
             <div onClick={() => navigate(`/main_window/turnos/${_id}`)}>
                 <div className={style.containerEvents}>
                     <div className={style.icons}>
@@ -52,7 +49,37 @@ const Appointments = () => {
                 </div>
             </div>
             )
-        }
+    };
+
+    const WeekEvent = (props) => {
+        const { _id, start, end, procedureTitle, personClient, companyClient, procedureIconMechanic, procedureIconService, vehicle } = props.event;
+
+        return (
+            <div onClick={() => navigate(`/main_window/turnos/${_id}`)}>
+                <div className={style.containerEvents}>
+                    <div className={style.icons}>
+                        {procedureIconMechanic && <img src={iconMechanic} alt="mechanic-icon" className={style.icon} />}
+                        {procedureIconService && <img src={iconService} alt="service-icon" className={style.icon} />}
+                    </div>
+                    <div className={style.licensePlate}>{vehicle}</div>
+                </div>
+            </div>
+        )
+    }
+
+    const components = {
+        month: {
+            event: MonthEvent, // Componente para la vista mensual
+        },
+        week: {
+            event: MonthEvent, // Componente para la vista semanal
+        },
+        day: {
+            event: MonthEvent, // Componente para la vista diaria
+        },
+        agenda: {
+            event: MonthEvent, // Componente para la vista de agenda
+        },
     };  
 
     const messages = {
