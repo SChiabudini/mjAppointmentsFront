@@ -1,45 +1,31 @@
-.container {
+.containerEvents {
     display: flex;
-    justify-content: space-between;
+    padding: 0.1rem;
     align-items: center;
-    margin: 2em;
+    justify-content: space-between;
+    gap: 0.2rem;
 }
 
 .calendarContainer {
-    padding-top: 2rem;
-    height: 90vh;
+    height: 75vh;
     width: 100%;
 }
 
-.icon {
-    width: 20px;  
-    height: 20px;
-    margin-right: 5px; 
-}
-
-.content {
+.icons{
     display: flex;
-    flex-direction: column;
+    gap: 0.1rem;
+    align-items: center;
 }
 
-/* .rbc-header{
-    background: blue;
-    color: white;
-} */
-
-/* .containerEvents {
-    background-color: red;
-} */
-
-/* .rbc-event,
-.rbc-day-slot .rbc-background-event {
-    background-color: red !important;
+.icon {
+    width: 1rem;
 }
 
-.rbc-event{
-    background: red;
+.licensePlate{
+    font-size: 0.9rem;
+    color: var(--dark-grey);
 }
 
-.rbc-event.rbc-event--bg {
-    background-color: red !important;
-} */
+.licensePlate:hover{
+    color: var(--orange);
+}
