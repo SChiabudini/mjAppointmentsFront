@@ -93,8 +93,6 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
     }, [searchTermClients, searchingPerson, personClients, companyClients]);    
 
     const handleClientSelection = (client) => {
-        console.log(client);
-        
         const clientName = client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`;
     
         setSearchTermClients(clientName);
