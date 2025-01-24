@@ -729,10 +729,10 @@ th div.withFilter button.sort{
 /*-- CALENDAR --*/
 
 .rbc-event {
-    background-color: var(--light-orange) !important;
-    color: black !important;
+    background-color: #00000000 !important;
     border-radius: 0 !important;
-    margin-bottom: 0.25rem !important;
+    margin-bottom: 0.15rem !important;
+    padding: 0 !important;
 }
 
 .rbc-event:hover{
@@ -781,12 +781,19 @@ button.rbc-active{
     box-shadow: none !important;
 }
 
-.rbc-day-slot .rbc-events-container{
+.rbc-day-slot, .rbc-events-container, .rbc-day-slot .rbc-event{
     margin: 0 !important;
+    
+    border: none !important;
 }
 
 .rbc-event-label{
     display: none !important;
+}
+
+.rbc-day-slot .rbc-event{
+    border: 1px var(--orange) solid !important;
+    background-color: var(--light-orange) !important;
 }
 
 
