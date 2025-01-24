@@ -15,10 +15,9 @@ export const getVehicles = () => {
 
             dispatch(getVehiclesReducer(reversedData));
 
-        } catch (error) {
-            
+        } catch (error) {           
             console.error("Error retrieving vehicles from server: " + error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 
@@ -35,7 +34,7 @@ export const getVehicleById = (vehicleId) => {
             
         } catch (error) {
             console.error("Error retrieving vehicle by server id: ", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     };
 };
@@ -66,7 +65,7 @@ export const searchVehicles = (licensePlate, client) => {
 
         } catch (error) {
             console.error("Vehicles search error:", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 };
@@ -94,7 +93,7 @@ export const putVehicle = (vehicleData) => {
 
         } catch (error) {
             console.error("Error editing a vehicle: ", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }  
     };
 };

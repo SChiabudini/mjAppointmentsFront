@@ -17,7 +17,7 @@ export const getPersonClients = () => {
         } catch (error) {
             
             console.error("Error retrieving clients from server: " + error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 
@@ -34,7 +34,7 @@ export const getPersonClientById = (personClientId) => {
             dispatch(getPersonClientByIdReducer(data));
         } catch (error) {
             console.error("Error retrieving client by server id: ", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 
@@ -69,7 +69,7 @@ export const searchPersonClients = (dni, name, vehicle) => {
 
         } catch (error) {
             console.error("Clients search error:", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 }
@@ -96,7 +96,7 @@ export const putPersonClient = (personClientData) => {
 
         } catch (error) {
             console.error("Error editing a person client: ", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }  
     };
 };

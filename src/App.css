@@ -16,3 +16,108 @@
     overflow-y: scroll;
     height: calc(100vh - 4rem);
 }
+
+.loadingStyle {
+    color: white;
+}
+
+.loadingGif {
+    width: 2%;
+}
+
+.containerPoints {
+    margin: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px; /* Espaciado entre los círculos */
+}
+
+@keyframes crecerDecrecer1 {
+    0%, 100% {
+        transform: scale(0.3); /* Tamaño inicial y final */
+    }
+    33% {
+        transform: scale(0.6); /* Segundo tamaño */
+    }
+    66% {
+        transform: scale(1); /* Tamaño máximo */
+    }
+}
+
+@keyframes crecerDecrecer2 {
+    0%, 100% {
+        transform: scale(0.6); /* Tamaño inicial y final */
+    }
+    33% {
+        transform: scale(1); /* Tamaño máximo */
+    }
+    66% {
+        transform: scale(0.3); /* Tercer tamaño */
+    }
+}
+
+@keyframes crecerDecrecer3 {
+    0%, 100% {
+        transform: scale(1); /* Tamaño inicial y final */
+    }
+    33% {
+        transform: scale(0.3); /* Tercer tamaño */
+    }
+    66% {
+        transform: scale(0.6); /* Segundo tamaño */
+    }
+}
+
+.circulo1, .circulo2, .circulo3 {
+    width: 10px; /* Tamaño base */
+    height: 10px;
+    background-color: white;
+    border-radius: 50%; /* Hace que el div sea un círculo */
+    display: inline-block;
+    animation-timing-function: ease-in-out; /* Animación más fluida */
+    animation-iteration-count: infinite; /* Repetir infinitamente */
+    animation-duration: 2s; /* Duración constante */
+}
+
+.circulo1 {
+    animation: crecerDecrecer1 2s infinite;
+}
+
+.circulo2 {
+    animation: crecerDecrecer2 2s infinite;
+}
+
+.circulo3 {
+    animation: crecerDecrecer3 2s infinite;
+}
+
+
+/* .loadingPoint {
+    font-size: 2rem; 
+    color: white; 
+    display: inline-block;
+    text-align: center;
+    width: 4rem;
+}
+  
+.loadingPoint::after {
+    content: "...";
+    animation: dots 1.5s steps(3, end) infinite;
+}
+  
+@keyframes dots {
+    0% {
+      content: "";
+    }
+    33% {
+      content: ".";
+    }
+    66% {
+      content: "..";
+    }
+    100% {
+      content: "...";
+    }
+} */
+  

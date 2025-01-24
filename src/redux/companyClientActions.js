@@ -13,10 +13,9 @@ export const getCompanyClients = () => {
 
             dispatch(getCompanyClientsReducer(reversedData));
 
-        } catch (error) {
-            
+        } catch (error) {           
             console.error("Error retrieving clients from server: " + error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 
@@ -33,7 +32,7 @@ export const getCompanyClientById = (companyClientId) => {
 
         } catch (error) {
             console.error("Error retrieving client by server id: ", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 
@@ -68,7 +67,7 @@ export const searchCompanyClients = (cuit, name, vehicle) => {
 
         } catch (error) {
             console.error("Clients search error:", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 }
@@ -95,7 +94,7 @@ export const putCompanyClient = (companyClientData) => {
 
         } catch (error) {
             console.error("Error editing a company client: ", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }  
     };
 };

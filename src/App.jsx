@@ -2,6 +2,7 @@ import './App.css';
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Routes, Route } from 'react-router-dom';
+import logo from './components/common/logo.png';
 import Header from './components/common/Header.jsx';
 import Appointments from './components/pages/Appointments/Appointments.jsx';
 import AppointmentsDetail from './components/pages/Appointments/AppointmentsDetail/AppointmentsDetail.jsx';
@@ -30,42 +31,72 @@ const App = () => {
 
   const dispatch = useDispatch();
   const [ hasFetched, setHasFetched ] = useState(false);
+  const [ error, setError ] = useState(false);
 
-  useEffect(() => {
-    if( !hasFetched ){
-      dispatch(getAppointments());
-      dispatch(getPersonClients());
-      dispatch(getCompanyClients());
-      dispatch(getVehicles());
-      dispatch(getServiceSheets());
-      dispatch(getMechanicalSheets());
-      dispatch(getBudgets());
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      await dispatch(getAppointments());
+      await dispatch(getPersonClients());
+      await dispatch(getCompanyClients());
+      await dispatch(getVehicles());
+      await dispatch(getServiceSheets());
+      await dispatch(getMechanicalSheets());
+      await dispatch(getBudgets());
       setHasFetched(true);
+    } catch (error) {
+      setError(true);
     }
-  }, [dispatch]);
+  }
+
+  if( !hasFetched ){
+    fetchData();
+  }
+
+}, [dispatch, hasFetched]);
 
   return (
     <div className="App">
-      <div className="header"><Header /></div>
-      <div className="content">
-        <Routes>
-          <Route path='/' element={<Appointments />}/>
-          <Route path='/main_window/turnos/:id' element={<AppointmentsDetail />} />
-          <Route path='/main_window/clientes/personas' element={<PersonClient />}/>
-          <Route path='/main_window/clientes/personas/:id' element={<PersonClientDetail />}/>
-          <Route path='/main_window/clientes/personas/edit/:id' element={<PutPersonClient />}/>
-          <Route path='/main_window/clientes/empresas' element={<CompanyClient />}/>
-          <Route path='/main_window/clientes/empresas/:id' element={<CompanyClientDetail />}/>
-          <Route path='/main_window/clientes/empresas/edit/:id' element={<PutCompanyClient />}/>
-          <Route path='/main_window/vehiculos' element={<Vehicles />}/>
-          <Route path='/main_window/vehiculos/:id' element={<VehicleDetail />} />
-          <Route path='/main_window/fichas' element={<Sheets />}/>
-          <Route path='/main_window/fichas/service/:id' element={<ServiceSheetDetail />}/>
-          <Route path='/main_window/fichas/mecanica/:id' element={<MechanicalSheetDetail />}/>
-          <Route path='/main_window/presupuesto' element={<Budgets />}/>
-          <Route path='/main_window/presupuesto/:id' element={<BudgetDetail />}/>
-        </Routes>
-      </div>
+      {error ? (
+        <div className="error-message">
+          <p>Error al cargar los datos del servidor. Por favor, reiniciar el servidor.</p>
+        </div>
+      ) : (
+        !hasFetched ? 
+          <div className="loadingApp">
+              <img src={logo} alt="logo"/>
+              <div className="containerPoints">
+                <div class="circulo2"></div>
+                <div class="circulo1"></div>
+                <div class="circulo3"></div>
+              </div>
+              {/* <p className="loadingPoint"></p> */}
+              {/* <p className="loadingStyle">Cargando...</p> */}
+          </div>
+        :
+          <>
+            <div className="header"><Header /></div>
+            <div className="content">
+                <Routes>
+                  <Route path='/' element={<Appointments />}/>
+                  <Route path='/main_window/turnos/:id' element={<AppointmentsDetail />} />
+                  <Route path='/main_window/clientes/personas' element={<PersonClient />}/>
+                  <Route path='/main_window/clientes/personas/:id' element={<PersonClientDetail />}/>
+                  <Route path='/main_window/clientes/personas/edit/:id' element={<PutPersonClient />}/>
+                  <Route path='/main_window/clientes/empresas' element={<CompanyClient />}/>
+                  <Route path='/main_window/clientes/empresas/:id' element={<CompanyClientDetail />}/>
+                  <Route path='/main_window/clientes/empresas/edit/:id' element={<PutCompanyClient />}/>
+                  <Route path='/main_window/vehiculos' element={<Vehicles />}/>
+                  <Route path='/main_window/vehiculos/:id' element={<VehicleDetail />} />
+                  <Route path='/main_window/fichas' element={<Sheets />}/>
+                  <Route path='/main_window/fichas/service/:id' element={<ServiceSheetDetail />}/>
+                  <Route path='/main_window/fichas/mecanica/:id' element={<MechanicalSheetDetail />}/>
+                  <Route path='/main_window/presupuesto' element={<Budgets />}/>
+                  <Route path='/main_window/presupuesto/:id' element={<BudgetDetail />}/>
+                </Routes>
+            </div>
+          </>
+      )}
     </div>
   );
 };
