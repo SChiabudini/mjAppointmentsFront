@@ -1,9 +1,53 @@
-.containerEvents {
+.containerEventsMonth {
     display: flex;
-    padding: 0.1rem;
+    padding: 0.35rem;
     align-items: center;
     justify-content: space-between;
     gap: 0.2rem;
+    background-color: var(--light-orange) !important;
+    box-sizing: border-box;
+}
+
+.containerEventsWeek {
+    display: flex;
+    flex-direction: column;
+    padding: 0.35rem;
+    align-items: start;
+    gap: 0.5rem;
+    box-sizing: border-box;
+    font-size: 0.9rem;
+    color: var(--dark-grey);
+}
+
+.containerEventsDay {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    align-items: start;
+    gap: 0.5rem;
+    box-sizing: border-box;
+    font-size: 0.9rem;
+    color: var(--dark-grey);
+}
+
+.containerEventsDay .icons{
+    flex-direction: column;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.containerEventsAgenda {
+    display: flex;
+    padding: 0.35rem;
+    align-items: center;
+    justify-content: start;
+    gap: 1rem;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.containerEventsAgenda .icons{
+    width: 2rem;
 }
 
 .calendarContainer {

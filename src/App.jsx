@@ -66,9 +66,9 @@ useEffect(() => {
           <div className="loadingApp">
               <img src={logo} alt="logo"/>
               <div className="containerPoints">
-                <div class="circulo2"></div>
-                <div class="circulo1"></div>
-                <div class="circulo3"></div>
+                <div className="circulo2"></div>
+                <div className="circulo1"></div>
+                <div className="circulo3"></div>
               </div>
               {/* <p className="loadingPoint"></p> */}
               {/* <p className="loadingStyle">Cargando...</p> */}
