@@ -15,9 +15,8 @@ export const getBudgets = () => {
             dispatch(getBudgetsReducer(reversedData));
 
         } catch (error) {
-            
             console.error("Error retrieving budgets from server: " + error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 
@@ -35,7 +34,7 @@ export const getBudgetById = (budgetId) => {
             
         } catch (error) {
             console.error("Error retrieving budget by server id: ", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 
@@ -71,7 +70,7 @@ export const searchBudgets = (number, client, vehicle) => {
 
         } catch (error) {
             console.error("Budgets search error:", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 }

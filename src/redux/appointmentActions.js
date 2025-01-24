@@ -11,7 +11,7 @@ export const getAppointments = () => {
 
         } catch (error) {
             console.error("Error retrieving appointments from server: " + error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         };
     };
 };
@@ -26,7 +26,7 @@ export const getAppointmentById = (appointmentId) => {
             
         } catch (error) {
             console.error("Error retrieving appointment by server id: ", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     };
 };
@@ -42,7 +42,7 @@ export const postAppointment = (appointmentData) => {
 
         } catch (error) {
             console.error("Error creating appointment: ", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         };
     };
 };
@@ -54,7 +54,7 @@ export const putAppointment = (appointmentData) => {
             return response;
         } catch (error) {
             console.error("Error editing a appointment: ", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 };
@@ -67,7 +67,7 @@ export const deleteExpiredAppointments = () => {
             
         } catch (error) {
             console.error("Error when deleting expired shifts: ", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 };

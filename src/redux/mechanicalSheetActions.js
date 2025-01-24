@@ -14,10 +14,9 @@ export const getMechanicalSheets = () => {
 
             dispatch(getMechanicalSheetsReducer(reversedData));
 
-        } catch (error) {
-            
+        } catch (error) {           
             console.error("Error retrieving mechanical sheets from server: " + error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 
@@ -34,7 +33,7 @@ export const getMechanicalSheetById = (mechanicalSheetId) => {
             dispatch(getMechanicalSheetByIdReducer(data));
         } catch (error) {
             console.error("Error retrieving mechanical sheet by server id: ", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 
@@ -74,7 +73,7 @@ export const searchMechanicalSheets = (number, vehicle, client, keyWords) => {
 
         } catch (error) {
             console.error("Mechanical sheets search error:", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 }
@@ -100,7 +99,7 @@ export const putMechanicalSheet = (mechanicalSheetData) => {
             return response;
         } catch (error) {
             console.error("Error editing a mechanical sheet: ", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 };

@@ -14,10 +14,9 @@ export const getServiceSheets = () => {
 
             dispatch(getServiceSheetsReducer(reversedData));
 
-        } catch (error) {
-            
+        } catch (error) {           
             console.error("Error retrieving service sheets from server: " + error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 
@@ -35,7 +34,7 @@ export const getServiceSheetById = (serviceSheetId) => {
             
         } catch (error) {
             console.error("Error retrieving service sheet by server id: ", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 
@@ -71,7 +70,7 @@ export const searchServiceSheets = (number, vehicle, client) => {
 
         } catch (error) {
             console.error("Service sheets search error:", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 }
@@ -97,7 +96,7 @@ export const putServiceSheet = (serviceSheetData) => {
             return response;
         } catch (error) {
             console.error("Error editing a service sheet: ", error.message);
-            return null;
+            throw new Error('Network error or server not reachable');
         }
     }
 };
