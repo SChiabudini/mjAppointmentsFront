@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getPersonClients, searchPersonClients } from "../../../../redux/personClientActions.js";
-import { clearPersonClientsReducer } from "../../../../redux/personClientSlice.js";
 import NewPersonClient from './NewPersonClient/NewPersonClient.jsx';
+import Error from "../../Error/Error.jsx";
+import { clearPersonClientsReducer } from "../../../../redux/personClientSlice.js";
+import { getPersonClients, searchPersonClients } from "../../../../redux/personClientActions.js";
 import detail from "../../../../assets/img/detail.png";
 import loadingGif from "../../../../assets/img/loading.gif";
 
@@ -16,12 +17,14 @@ const PersonClients = () => {
     const [dni, setDni] = useState('');
     const [name, setName] = useState('');
     const [vehicle, setVehicle] = useState('');
+    const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
 
         if(!dni && !name && !vehicle){
-            dispatch(getPersonClients());
+            dispatch(getPersonClients())
+            .catch(() => setError(true));   
         };
 
         return () => {
@@ -105,137 +108,143 @@ const PersonClients = () => {
 
     return(
         <div className="page">
-            <div className="title">
-                <h2>Personas</h2>
-                <div className="pagination">
-                    <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-                        ◂
-                    </button>
-                    {getPageButtons()}
-                    <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-                        ▸
-                    </button>
-                    
-                </div>
-                <button onClick={() => setPopUpOpen(true)}>Nuevo</button>
-            </div>
-            <div className="container">
-                <div className="tableContainer">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>
-                                    <div className="withFilter">
-                                        <span>DNI</span>
-                                        <input 
-                                            type="search"
-                                            name="searchDni"
-                                            onChange={(event) => setDni(event.target.value)}
-                                            onKeyDown={handleSearch}
-                                            onInput={handleInputChange}
-                                            value={dni}
-                                            placeholder="Buscar"
-                                            autoComplete="off"
-                                            className="filterSearch"
-                                        />
-                                    </div>
-                                </th>
-                                <th>
-                                    <div className="withFilter">
-                                        <span>Nombre</span>
-                                        <input 
-                                            type="search"
-                                            name="searchName"
-                                            onChange={(event) => setName(event.target.value)}
-                                            onKeyDown={handleSearch}
-                                            onInput={handleInputChange}
-                                            value={name}
-                                            placeholder="Buscar"
-                                            autoComplete="off"
-                                            className="filterSearch"
-                                        />
-                                    </div>
-                                </th>
-                                <th>
-                                    Email    
-                                </th>
-                                <th>
-                                    Whatsapp    
-                                </th>
-                                <th>
-                                    Teléfonos    
-                                </th>
-                                <th>
-                                    Cuit/Cuil    
-                                </th>
-                                <th>
-                                    <div className="withFilter">
-                                        <span>Vehículos</span>
-                                        <input 
-                                            type="search"
-                                            name="searchVehicle"
-                                            onChange={(event) => setVehicle(event.target.value)}
-                                            onKeyDown={handleSearch}
-                                            onInput={handleInputChange}
-                                            value={vehicle}
-                                            placeholder="Buscar"
-                                            autoComplete="off"
-                                            className="filterSearch"
-                                        />
-                                    </div>
-                                </th>
-                                <th className="center">
-                                    Detalle    
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
-                                <tr>
-                                    <td colSpan="8" className="loadingCell">
-                                        <div className="loadingPage">
-                                            <img src={loadingGif} alt="" />
-                                            <p>Cargando</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ) : (
-                                <>
-                                    {paginatedPersonClients?.map(personClient => (
-                                        <tr key={personClient._id}>
-                                            <td>{personClient.dni}</td>
-                                            <td>{personClient.name}</td>
-                                            <td>{personClient.email}</td>
-                                            <td>+{personClient.phoneWsp.prefix}{personClient.phoneWsp.numberPhone}</td>
-                                            <td>
-                                                {personClient.phones?.length 
-                                                    ? personClient.phones.join(', ') 
-                                                    : 'N/A'}
-                                            </td>
-                                            <td>{personClient.cuilCuit ? personClient.cuilCuit : 'N/A'}</td>
-                                            <td>
-                                                {personClient.vehicles?.length 
-                                                    ? personClient.vehicles?.map(vehicle => vehicle.licensePlate).join(', ') 
-                                                    : 'N/A'}
-                                            </td>
-                                            <td className="center">
-                                                <a onClick={() => navigate(`/main_window/clientes/personas/${personClient._id}`)}>
-                                                    <img src={detail} alt="" className="detailImg" />
-                                                </a>
+            {error ? (
+                <Error />
+            ) : (
+                <>
+                    <div className="title">
+                        <h2>Personas</h2>
+                        <div className="pagination">
+                            <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+                                ◂
+                            </button>
+                            {getPageButtons()}
+                            <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+                                ▸
+                            </button>
+                            
+                        </div>
+                        <button onClick={() => setPopUpOpen(true)}>Nuevo</button>
+                    </div>
+                    <div className="container">
+                        <div className="tableContainer">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <div className="withFilter">
+                                                <span>DNI</span>
+                                                <input 
+                                                    type="search"
+                                                    name="searchDni"
+                                                    onChange={(event) => setDni(event.target.value)}
+                                                    onKeyDown={handleSearch}
+                                                    onInput={handleInputChange}
+                                                    value={dni}
+                                                    placeholder="Buscar"
+                                                    autoComplete="off"
+                                                    className="filterSearch"
+                                                />
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div className="withFilter">
+                                                <span>Nombre</span>
+                                                <input 
+                                                    type="search"
+                                                    name="searchName"
+                                                    onChange={(event) => setName(event.target.value)}
+                                                    onKeyDown={handleSearch}
+                                                    onInput={handleInputChange}
+                                                    value={name}
+                                                    placeholder="Buscar"
+                                                    autoComplete="off"
+                                                    className="filterSearch"
+                                                />
+                                            </div>
+                                        </th>
+                                        <th>
+                                            Email    
+                                        </th>
+                                        <th>
+                                            Whatsapp    
+                                        </th>
+                                        <th>
+                                            Teléfonos    
+                                        </th>
+                                        <th>
+                                            Cuit/Cuil    
+                                        </th>
+                                        <th>
+                                            <div className="withFilter">
+                                                <span>Vehículos</span>
+                                                <input 
+                                                    type="search"
+                                                    name="searchVehicle"
+                                                    onChange={(event) => setVehicle(event.target.value)}
+                                                    onKeyDown={handleSearch}
+                                                    onInput={handleInputChange}
+                                                    value={vehicle}
+                                                    placeholder="Buscar"
+                                                    autoComplete="off"
+                                                    className="filterSearch"
+                                                />
+                                            </div>
+                                        </th>
+                                        <th className="center">
+                                            Detalle    
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {loading ? (
+                                        <tr>
+                                            <td colSpan="8" className="loadingCell">
+                                                <div className="loadingPage">
+                                                    <img src={loadingGif} alt="" />
+                                                    <p>Cargando</p>
+                                                </div>
                                             </td>
                                         </tr>
-                                    ))}
-                                </>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div className={popUpOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpOpen(false)}>
-              <div onClick={(e) => e.stopPropagation()}>
-                <NewPersonClient onClientAdded={() => setPopUpOpen(false)}/>
-              </div>
-            </div>
+                                    ) : (
+                                        <>
+                                            {paginatedPersonClients?.map(personClient => (
+                                                <tr key={personClient._id}>
+                                                    <td>{personClient.dni}</td>
+                                                    <td>{personClient.name}</td>
+                                                    <td>{personClient.email}</td>
+                                                    <td>+{personClient.phoneWsp.prefix}{personClient.phoneWsp.numberPhone}</td>
+                                                    <td>
+                                                        {personClient.phones?.length 
+                                                            ? personClient.phones.join(', ') 
+                                                            : 'N/A'}
+                                                    </td>
+                                                    <td>{personClient.cuilCuit ? personClient.cuilCuit : 'N/A'}</td>
+                                                    <td>
+                                                        {personClient.vehicles?.length 
+                                                            ? personClient.vehicles?.map(vehicle => vehicle.licensePlate).join(', ') 
+                                                            : 'N/A'}
+                                                    </td>
+                                                    <td className="center">
+                                                        <a onClick={() => navigate(`/main_window/clientes/personas/${personClient._id}`)}>
+                                                            <img src={detail} alt="" className="detailImg" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div className={popUpOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpOpen(false)}>
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <NewPersonClient onClientAdded={() => setPopUpOpen(false)}/>
+                    </div>
+                    </div>
+                </>
+            )}
         </div>
     )
 };
