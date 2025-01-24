@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getCompanyClients, searchCompanyClients } from "../../../../redux/companyClientActions.js";
-import { clearCompanyClientsReducer } from "../../../../redux/companyClientSlice.js";
-import detail from "../../../../assets/img/detail.png";
 import NewCompanyClient from './NewCompanyClient/NewCompanyClient.jsx';
+import Error from "../../Error/Error.jsx";
+import { clearCompanyClientsReducer } from "../../../../redux/companyClientSlice.js";
+import { getCompanyClients, searchCompanyClients } from "../../../../redux/companyClientActions.js";
+import detail from "../../../../assets/img/detail.png";
 import loadingGif from "../../../../assets/img/loading.gif";
 
 const CompanyClients = () => {
@@ -17,11 +18,13 @@ const CompanyClients = () => {
     const [name, setName] = useState('');
     const [vehicle, setVehicle] = useState('');
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
 
         if(!cuit && !name && !vehicle){
-            dispatch(getCompanyClients());
+            dispatch(getCompanyClients())
+            .catch(() => setError(true));
         };
 
         return () => {
@@ -105,136 +108,142 @@ const CompanyClients = () => {
 
     return(
         <div className="page">
-            <div className="title">
-                <h2>Empresas</h2>
-                <div className="pagination">
-                    <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-                        ◂
-                    </button>
-                    {getPageButtons()}
-                    <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-                        ▸
-                    </button>
-                </div>
-                <button onClick={() => setPopUpOpen(true)}>Nuevo</button>
-            </div>
-            <div className="container">
-                <div className="tableContainer">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>
-                                    <div className="withFilter">
-                                        <span>CUIT</span>
-                                        <input 
-                                            type="search"
-                                            name="searchCuit"
-                                            onChange={(event) => setCuit(event.target.value)}
-                                            onKeyDown={handleSearch}
-                                            onInput={handleInputChange}
-                                            value={cuit}
-                                            placeholder="Buscar"
-                                            autoComplete="off"
-                                            className="filterSearch"
-                                        />
-                                    </div>
-                                </th>
-                                <th>
-                                    <div className="withFilter">
-                                        <span>Nombre</span>
-                                        <input 
-                                            type="search"
-                                            name="searchName"
-                                            onChange={(event) => setName(event.target.value)}
-                                            onKeyDown={handleSearch}
-                                            onInput={handleInputChange}
-                                            value={name}
-                                            placeholder="Buscar"
-                                            autoComplete="off"
-                                            className="filterSearch"
-                                        />
-                                    </div>
-                                </th>
-                                <th>
-                                    Email    
-                                </th>
-                                <th>
-                                    Whatsapp    
-                                </th>
-                                <th>
-                                    Teléfonos    
-                                </th>
-                                <th>
-                                    Dirección    
-                                </th>
-                                <th>
-                                    <div className="withFilter">
-                                        <span>Vehículos</span>
-                                        <input 
-                                            type="search"
-                                            name="searchVehicle"
-                                            onChange={(event) => setVehicle(event.target.value)}
-                                            onKeyDown={handleSearch}
-                                            onInput={handleInputChange}
-                                            value={vehicle}
-                                            placeholder="Buscar"
-                                            autoComplete="off"
-                                            className="filterSearch"
-                                        />
-                                    </div>    
-                                </th>
-                                <th className="center">
-                                    Detalle    
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
-                                <tr>
-                                    <td colSpan="8" className="loadingCell">
-                                        <div className="loadingPage">
-                                            <img src={loadingGif} alt="" />
-                                            <p>Cargando</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ) : (
-                                <>
-                                    {paginatedCompanyClients?.map(companyClient => (
-                                        <tr key={companyClient._id}>
-                                            <td>{companyClient.cuit}</td>
-                                            <td>{companyClient.name}</td>
-                                            <td>{companyClient.email}</td>
-                                            <td>+{companyClient.phoneWsp.prefix}{companyClient.phoneWsp.numberPhone}</td>
-                                            <td>
-                                                {companyClient.phones?.length 
-                                                    ? companyClient?.phones.join(', ') 
-                                                    : 'N/A'}
-                                            </td>
-                                            <td>{companyClient.address ? companyClient.address : 'N/A'}</td>
-                                            <td>
-                                                {companyClient.vehicles?.length 
-                                                    ? companyClient.vehicles?.map(vehicle => vehicle.licensePlate).join(', ') 
-                                                    : 'N/A'}
-                                            </td>
-                                            <td className="center">
-                                                <a onClick={() => navigate(`/main_window/clientes/empresas/${companyClient._id}`)}>
-                                                    <img src={detail} alt="" className="detailImg" />
-                                                </a>
+            {error ? (
+                <Error />
+            ) : (
+                <>
+                    <div className="title">
+                        <h2>Empresas</h2>
+                        <div className="pagination">
+                            <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+                                ◂
+                            </button>
+                            {getPageButtons()}
+                            <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+                                ▸
+                            </button>
+                        </div>
+                        <button onClick={() => setPopUpOpen(true)}>Nuevo</button>
+                    </div>
+                    <div className="container">
+                        <div className="tableContainer">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <div className="withFilter">
+                                                <span>CUIT</span>
+                                                <input 
+                                                    type="search"
+                                                    name="searchCuit"
+                                                    onChange={(event) => setCuit(event.target.value)}
+                                                    onKeyDown={handleSearch}
+                                                    onInput={handleInputChange}
+                                                    value={cuit}
+                                                    placeholder="Buscar"
+                                                    autoComplete="off"
+                                                    className="filterSearch"
+                                                />
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div className="withFilter">
+                                                <span>Nombre</span>
+                                                <input 
+                                                    type="search"
+                                                    name="searchName"
+                                                    onChange={(event) => setName(event.target.value)}
+                                                    onKeyDown={handleSearch}
+                                                    onInput={handleInputChange}
+                                                    value={name}
+                                                    placeholder="Buscar"
+                                                    autoComplete="off"
+                                                    className="filterSearch"
+                                                />
+                                            </div>
+                                        </th>
+                                        <th>
+                                            Email    
+                                        </th>
+                                        <th>
+                                            Whatsapp    
+                                        </th>
+                                        <th>
+                                            Teléfonos    
+                                        </th>
+                                        <th>
+                                            Dirección    
+                                        </th>
+                                        <th>
+                                            <div className="withFilter">
+                                                <span>Vehículos</span>
+                                                <input 
+                                                    type="search"
+                                                    name="searchVehicle"
+                                                    onChange={(event) => setVehicle(event.target.value)}
+                                                    onKeyDown={handleSearch}
+                                                    onInput={handleInputChange}
+                                                    value={vehicle}
+                                                    placeholder="Buscar"
+                                                    autoComplete="off"
+                                                    className="filterSearch"
+                                                />
+                                            </div>    
+                                        </th>
+                                        <th className="center">
+                                            Detalle    
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {loading ? (
+                                        <tr>
+                                            <td colSpan="8" className="loadingCell">
+                                                <div className="loadingPage">
+                                                    <img src={loadingGif} alt="" />
+                                                    <p>Cargando</p>
+                                                </div>
                                             </td>
                                         </tr>
-                                    ))}
-                                </>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div className={popUpOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpOpen(false)}>
-              <div onClick={(e) => e.stopPropagation()}>
-                <NewCompanyClient onClientAdded={() => setPopUpOpen(false)}/>
-              </div>
-            </div>
+                                    ) : (
+                                        <>
+                                            {paginatedCompanyClients?.map(companyClient => (
+                                                <tr key={companyClient._id}>
+                                                    <td>{companyClient.cuit}</td>
+                                                    <td>{companyClient.name}</td>
+                                                    <td>{companyClient.email}</td>
+                                                    <td>+{companyClient.phoneWsp.prefix}{companyClient.phoneWsp.numberPhone}</td>
+                                                    <td>
+                                                        {companyClient.phones?.length 
+                                                            ? companyClient?.phones.join(', ') 
+                                                            : 'N/A'}
+                                                    </td>
+                                                    <td>{companyClient.address ? companyClient.address : 'N/A'}</td>
+                                                    <td>
+                                                        {companyClient.vehicles?.length 
+                                                            ? companyClient.vehicles?.map(vehicle => vehicle.licensePlate).join(', ') 
+                                                            : 'N/A'}
+                                                    </td>
+                                                    <td className="center">
+                                                        <a onClick={() => navigate(`/main_window/clientes/empresas/${companyClient._id}`)}>
+                                                            <img src={detail} alt="" className="detailImg" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div className={popUpOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpOpen(false)}>
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <NewCompanyClient onClientAdded={() => setPopUpOpen(false)}/>
+                    </div>
+                    </div>
+                </>
+            )}
         </div>
     )
 };

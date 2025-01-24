@@ -65,7 +65,7 @@ const Appointments = () => {
                 </div>
             </div>
         )
-    }
+    };
 
     const components = {
         month: {
@@ -99,41 +99,41 @@ const Appointments = () => {
 
     return (
         <div className="page">
-        <div className="title">
-            <h2>Turnos</h2>
-            <button onClick={() => setPopUpOpen(true)}>Nuevo</button>
-        </div>
-        <div className="container">
-            <div className={style.calendarContainer}>
-            <Calendar 
-                localizer={localizer}
-                messages={messages}
-                events={events}
-                min={dayjs('2024-01-01T07:00:00').toDate()}  // Hora apertura (07:00 AM)
-                max={dayjs('2024-01-01T17:00:00').toDate()}  // Hora cierre (17:00 PM)
-                formats={{
-                    monthHeaderFormat: (date) => {
-                        return dayjs(date)
-                            .format("MMMM - YYYY")
-                            .replace(/^./, (match) => match.toUpperCase());  // Capitaliza el primer carácter
-                    },
-                    // weekHeaderFormat: (date) => {
-                    //     return dayjs(date)
-                    //         .format("dddd - DD/MM/YY")
-                    //         .replace(/^./, (match) => match.toUpperCase());  // Capitaliza el primer carácter
-                    // },
-                    dayHeaderFormat: date => {
-                        return dayjs(date).format("dddd - DD/MM/YY").replace(/^./, (match) => match.toUpperCase());
-                    },
-                }}
-                components={components}
-            />
+            <div className="title">
+                <h2>Turnos</h2>
+                <button onClick={() => setPopUpOpen(true)}>Nuevo</button>
             </div>
-        </div>
-        <div className={popUpOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpOpen(false)}>
-            <div onClick={(e) => e.stopPropagation()}>
-                <NewAppointment onAppointmentAdded={() => setPopUpOpen(false)}/>
+            <div className="container">
+                <div className={style.calendarContainer}>
+                    <Calendar 
+                        localizer={localizer}
+                        messages={messages}
+                        events={events}
+                        min={dayjs('2024-01-01T07:00:00').toDate()}  // Hora apertura (07:00 AM)
+                        max={dayjs('2024-01-01T17:00:00').toDate()}  // Hora cierre (17:00 PM)
+                        formats={{
+                            monthHeaderFormat: (date) => {
+                                return dayjs(date)
+                                    .format("MMMM - YYYY")
+                                    .replace(/^./, (match) => match.toUpperCase());  // Capitaliza el primer carácter
+                            },
+                            // weekHeaderFormat: (date) => {
+                            //     return dayjs(date)
+                            //         .format("dddd - DD/MM/YY")
+                            //         .replace(/^./, (match) => match.toUpperCase());  // Capitaliza el primer carácter
+                            // },
+                            dayHeaderFormat: date => {
+                                return dayjs(date).format("dddd - DD/MM/YY").replace(/^./, (match) => match.toUpperCase());
+                            },
+                        }}
+                        components={components}
+                    />
+                </div>
             </div>
+            <div className={popUpOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpOpen(false)}>
+                <div onClick={(e) => e.stopPropagation()}>
+                    <NewAppointment onAppointmentAdded={() => setPopUpOpen(false)}/>
+                </div>
             </div>
         </div>
     );

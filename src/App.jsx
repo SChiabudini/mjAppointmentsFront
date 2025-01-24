@@ -19,6 +19,7 @@ import ServiceSheetDetail from './components/pages/Sheets/ServiceSheetDetail/Ser
 import MechanicalSheetDetail from './components/pages/Sheets/MechanicalSheetDetail/MechanicalSheetDetail.jsx';
 import Budgets from './components/pages/Budget/Budgets.jsx';
 import BudgetDetail from './components/pages/Budget/BudgetDetail/BudgetDetail.jsx';
+import Error from './components/pages/Error/Error.jsx';
 import { getAppointments } from './redux/appointmentActions.js';
 import { getPersonClients } from './redux/personClientActions.js';
 import { getCompanyClients } from './redux/companyClientActions.js';
@@ -58,16 +59,14 @@ useEffect(() => {
   return (
     <div className="App">
       {error ? (
-        <div className="error-message">
-          <p>Error al cargar los datos del servidor. Por favor, reiniciar el servidor.</p>
-        </div>
+        <Error />
       ) : (
         !hasFetched ? 
           <div className="loadingApp">
               <img src={logo} alt="logo"/>
               <div className="containerPoints">
                 <div class="circulo2"></div>
-                <div class="circulo1"></div>
+                <div class="circulo1"></div> 
                 <div class="circulo3"></div>
               </div>
               {/* <p className="loadingPoint"></p> */}

@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import PutMechanicalSheet from '../PutMechanicalSheet/PutMechanicalSheet.jsx';
+import Error from '../../Error/Error.jsx';
 import { getMechanicalSheetById } from '../../../../redux/mechanicalSheetActions';
+import loadingGif from "../../../../assets/img/loading.gif";
 
 const MechanicalSheetDetail = () => {
 
@@ -15,24 +17,23 @@ const MechanicalSheetDetail = () => {
 	}, [dispatch, id]);
 
 	const mechanicalSheetDetail = useSelector(state => state.mechanicalSheet?.mechanicalSheetDetail || {});    
-	// console.log(mechanicalSheetDetail);
 
+	const [error, setError] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [showDeleteModal, setShowDeleteModal] = useState(false);        
 	const [popUpOpen, setPopUpOpen] = useState(false);  
 	
 	useEffect(() => {
-		const fetchData = async () => {
-			setLoading(true);
-			await dispatch(getMechanicalSheetById(id));
-			setLoading(false);
-		};
-		fetchData();
+		// const fetchData = async () => {
+		// 	setLoading(true);
+		// 	await dispatch(getMechanicalSheetById(id));
+		// 	setLoading(false);
+		// };
+		// fetchData();
+		dispatch(getMechanicalSheetById(id))
+		.then(() => setLoading(false))
+		.catch(() => setError(true));
 	}, [dispatch, id]);
-
-	if (loading) {
-		return <div>Cargando...</div>;
-	};
 	
 	const toggleShowDeleteModal = () => {
 		setShowDeleteModal(!showDeleteModal);
@@ -40,10 +41,15 @@ const MechanicalSheetDetail = () => {
 
 	return (
 		<div className="page">
-			{/* {
+			{error ? (
+                <Error />
+            ) : (
 				loading ? (
-					<div>Cargando</div>
-				) : ( */}
+					<div className="loadingPage">
+						<img src={loadingGif} alt=""/>
+						<p>Cargando</p>
+					</div>
+				) : (
 					<div className="component">
 						<div className="title">
 							<h2>Detalle de la ficha mecánica</h2>
@@ -149,8 +155,8 @@ const MechanicalSheetDetail = () => {
 							</div>
 						</div>
 					</div>
-				{/* ) */}
-			{/* } */}
+				)
+			)}
 			<div className={popUpOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpOpen(false)}>
 				<div onClick={(e) => e.stopPropagation()}>
 					<PutMechanicalSheet onMechanicalSheetAdded={() => setPopUpOpen(false)}/>

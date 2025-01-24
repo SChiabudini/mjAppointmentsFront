@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import PutServiceSheet from '../PutServiceSheet/PutServiceSheet.jsx';
+import Error from '../../Error/Error.jsx';
 import { getServiceSheetById } from '../../../../redux/serviceSheetActions.js';
 
 const ServiceSheetDetail = () => {
@@ -10,29 +11,26 @@ const ServiceSheetDetail = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		dispatch(getServiceSheetById(id))
-	}, [dispatch, id]);
-
 	const serviceSheetDetail = useSelector(state => state.serviceSheet?.serviceSheetDetail || {});    
-	// console.log(serviceSheetDetail);
-
+    
+    const [error, setError] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [showDeleteModal, setShowDeleteModal] = useState(false);     
     const [popUpOpen, setPopUpOpen] = useState(false);      
 	
-	useEffect(() => {
-		const fetchData = async () => {
-			setLoading(true);
-			await dispatch(getServiceSheetById(id));
-			setLoading(false);
-		};
-		fetchData();
+	// useEffect(() => {
+	// 	const fetchData = async () => {
+	// 		setLoading(true);
+	// 		await dispatch(getServiceSheetById(id));
+	// 		setLoading(false);
+	// 	};
+	// 	fetchData();
+	// }, [dispatch, id]);
+    useEffect(() => {
+		dispatch(getServiceSheetById(id))
+        .then(() => setLoading(false))
+        .catch(() => setError(true));
 	}, [dispatch, id]);
-
-	if (loading) {
-		return <div>Cargando...</div>;
-	};
 	
 	const toggleShowDeleteModal = () => {
 		setShowDeleteModal(!showDeleteModal);
@@ -40,10 +38,15 @@ const ServiceSheetDetail = () => {
 
 	return (
 		<div className="page">
-            {/* {
+            {error ? (
+                <Error />
+            ) : (
                 loading ? (
-                    <div>Cargando</div>
-                ) : ( */}
+                    <div className="loadingPage">
+                        <img src={loadingGif} alt=""/>
+                        <p>Cargando</p>
+                    </div>
+                ) : (
                     <div className="component">
                         <div className="title">
                             <h2>Detalle de la ficha service</h2>
@@ -164,8 +167,8 @@ const ServiceSheetDetail = () => {
                             </div>
                         </div>
                     </div>
-                {/* ) */}
-            {/* } */}
+                )
+            )}
             <div className={popUpOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpOpen(false)}>
               <div onClick={(e) => e.stopPropagation()}>
                 <PutServiceSheet onServiceSheetAdded={() => setPopUpOpen(false)}/>
