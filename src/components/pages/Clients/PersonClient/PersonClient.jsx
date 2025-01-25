@@ -217,13 +217,13 @@ const PersonClients = () => {
                                                     <td>
                                                         {personClient.phones?.length 
                                                             ? personClient.phones.join(', ') 
-                                                            : 'N/A'}
+                                                            : 'No disponible'}
                                                     </td>
-                                                    <td>{personClient.cuilCuit ? personClient.cuilCuit : 'N/A'}</td>
+                                                    <td>{personClient.cuilCuit ? personClient.cuilCuit : 'No disponible'}</td>
                                                     <td>
                                                         {personClient.vehicles?.length 
                                                             ? personClient.vehicles?.map(vehicle => vehicle.licensePlate).join(', ') 
-                                                            : 'N/A'}
+                                                            : 'No disponible'}
                                                     </td>
                                                     <td className="center">
                                                         <a onClick={() => navigate(`/main_window/clientes/personas/${personClient._id}`)}>

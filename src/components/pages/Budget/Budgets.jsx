@@ -221,8 +221,8 @@ const Budgets = () => {
                                                     <td>{budget.number}</td>
                                                     <td>{formatDate(budget.start)}</td>
                                                     <td>{formatDate(budget.end)}</td>
-                                                    <td>{budget.personClient ? budget.personClient.name : budget.companyClient ? budget.companyClient.name : 'N/A'}</td>
-                                                    <td>{budget.vehicle ? budget.vehicle.licensePlate : 'N/A'}</td>
+                                                    <td>{budget.personClient ? budget.personClient.name : budget.companyClient ? budget.companyClient.name : 'No disponible'}</td>
+                                                    <td>{budget.vehicle ? budget.vehicle.licensePlate : 'No disponible'}</td>
                                                     <td>${budget.total}</td>
                                                     <td className='center'>
                                                         <a onClick={() => navigate(`/main_window/presupuesto/${budget._id}`)}>
