@@ -97,3 +97,17 @@ export const putVehicle = (vehicleData) => {
         }  
     };
 };
+
+export const putVehicleStatus = (vehicleId) => {    
+    return async () => {   
+        try {
+            const response = await api.put(`/vehicle/status/${vehicleId}`);
+
+            return response;
+
+        } catch (error) {
+            console.error("Error editing vehicle status: ", error.message);
+            throw new Error('Network error or server not reachable');
+        }  
+    };
+};

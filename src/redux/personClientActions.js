@@ -100,3 +100,17 @@ export const putPersonClient = (personClientData) => {
         }  
     };
 };
+
+export const putPersonClientStatus = (personClienttId) => {    
+    return async () => {   
+        try {
+            const response = await api.put(`/personClient/status/${personClienttId}`);
+
+            return response;
+
+        } catch (error) {
+            console.error("Error editing client status: ", error.message);
+            throw new Error('Network error or server not reachable');
+        }  
+    };
+};

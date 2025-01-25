@@ -59,6 +59,21 @@ export const putAppointment = (appointmentData) => {
     }
 };
 
+export const putAppointmentStatus = (appointmentId) => {    
+    return async () => {   
+        try {
+            const response = await api.put(`/appointment/status/${appointmentId}`);
+
+            return response;
+
+        } catch (error) {
+            console.error("Error editing appointment status: ", error.message);
+            throw new Error('Network error or server not reachable');
+        }  
+    };
+};
+
+
 export const deleteExpiredAppointments = () => {
     return async () => {
         try {

@@ -98,3 +98,17 @@ export const putCompanyClient = (companyClientData) => {
         }  
     };
 };
+
+export const putCompanyClientStatus = (companyClienttId) => {    
+    return async () => {   
+        try {
+            const response = await api.put(`/companyClient/status/${companyClienttId}`);
+
+            return response;
+
+        } catch (error) {
+            console.error("Error editing client status: ", error.message);
+            throw new Error('Network error or server not reachable');
+        }  
+    };
+};

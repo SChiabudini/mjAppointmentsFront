@@ -100,3 +100,17 @@ export const putServiceSheet = (serviceSheetData) => {
         }
     }
 };
+
+export const putServiceSheetStatus = (serviceSheetId) => {    
+    return async () => {   
+        try {
+            const response = await api.put(`/serviceSheet/status/${serviceSheetId}`);
+
+            return response;
+
+        } catch (error) {
+            console.error("Error editing sheet status: ", error.message);
+            throw new Error('Network error or server not reachable');
+        }  
+    };
+};
