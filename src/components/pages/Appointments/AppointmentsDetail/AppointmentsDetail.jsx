@@ -125,20 +125,23 @@ const AppointmentsDetail = () => {
                             <div className="right">
                             <p><span>Estado:&nbsp;</span>{appointmentDetail.active ? 'Activo' : 'Inactivo'}</p>
                                 {appointmentDetail.start && <p><span>Inicio del turno:&nbsp;</span>
-                                    {new Date(appointmentDetail.start).toLocaleString('es-ES', { 
-                                    day: '2-digit', 
-                                    month: '2-digit', 
-                                    year: '2-digit', 
-                                    hour: '2-digit', 
-                                    minute: '2-digit', 
-                                })} hs</p>}
-                                {appointmentDetail.end && <p><span>Finalización del turno:&nbsp;</span>{new Date(appointmentDetail.end).toLocaleString('es-ES', { 
-                                    day: '2-digit', 
-                                    month: '2-digit', 
-                                    year: '2-digit', 
-                                    hour: '2-digit', 
-                                    minute: '2-digit', 
-                                })} hs</p>}
+                                    {new Intl.DateTimeFormat('es-ES', { 
+                                        day: '2-digit', 
+                                        month: '2-digit', 
+                                        year: '2-digit', 
+                                        hour: '2-digit', 
+                                        minute: '2-digit', 
+                                        timeZone: 'UTC' // Forzar UTC
+                                }).format(new Date(appointmentDetail.start))} hs</p>}
+                                {appointmentDetail.end && <p><span>Finalización del turno:&nbsp;</span>
+                                    {new Intl.DateTimeFormat('es-ES', { 
+                                        day: '2-digit', 
+                                        month: '2-digit', 
+                                        year: '2-digit', 
+                                        hour: '2-digit', 
+                                        minute: '2-digit', 
+                                        timeZone: 'UTC' // Forzar UTC
+                                }).format(new Date(appointmentDetail.end))} hs</p>}
                                 {appointmentDetail.procedure ? (
                                     <>
                                         {appointmentDetail.procedure.service ? <p><span>Service:&nbsp;</span>sí.</p> : <p><span>Service:&nbsp;</span>no.</p>}

@@ -17,6 +17,7 @@
     box-sizing: border-box;
     font-size: 0.9rem;
     color: var(--dark-grey);
+    background-color: var(--light-orange) !important;
 }
 
 .containerEventsDay {
@@ -28,6 +29,7 @@
     box-sizing: border-box;
     font-size: 0.9rem;
     color: var(--dark-grey);
+    background-color: var(--light-orange) !important;
 }
 
 .containerEventsDay .icons{

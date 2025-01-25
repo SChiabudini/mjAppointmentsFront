@@ -745,7 +745,7 @@ th div.withFilter button.sort{
     color: var(--orange) !important;
 }
 
-.rbc-day-bg.rbc-today {
+.rbc-day-bg.rbc-today, .rbc-today{
     background-color: var(--light-grey) !important;
 }
 
