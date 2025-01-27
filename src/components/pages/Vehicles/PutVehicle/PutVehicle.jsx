@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from 'react-router-dom';
 import NewPersonClient from "../../Clients/PersonClient/NewPersonClient/NewPersonClient.jsx";
 import NewCompanyClient from "../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx";
-import { getVehicleById, getVehicles, putVehicle } from "../../../../redux/vehicleActions.js";
+import { getVehicleById, getVehicles, getAllVehicles, putVehicle } from "../../../../redux/vehicleActions.js";
 import { getPersonClients } from "../../../../redux/personClientActions.js";
 import { getCompanyClients } from "../../../../redux/companyClientActions.js";
 import loadingGif from "../../../../assets/img/loading.gif";
@@ -180,6 +180,7 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
             setEditVehicle(editVehicle);
             setSearchTerm('');
             dispatch(getVehicles());
+            dispatch(getAllVehicles());
             dispatch(getVehicleById(id));
             onVehicleAdded(response);
 

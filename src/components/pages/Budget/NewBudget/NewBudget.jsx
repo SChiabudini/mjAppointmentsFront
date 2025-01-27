@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getBudgets, postBudget } from "../../../../redux/budgetActions.js";
+import { getBudgets, getAllBudgets, postBudget } from "../../../../redux/budgetActions.js";
 import { getPersonClients } from "../../../../redux/personClientActions";
 import { getCompanyClients } from "../../../../redux/companyClientActions";
 import { getVehicles } from "../../../../redux/vehicleActions";
@@ -312,6 +312,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
             });
             setTotal(0);
             dispatch(getBudgets());
+            dispatch(getAllBudgets());
             onBudgetAdded(response);
         } catch (error) {
             setErrorMessage("*Error al crear presupuesto, revise los datos ingresados e intente nuevamente.");

@@ -5,12 +5,19 @@ export const budgetSlice = createSlice({
     initialState: {
         budgets: [],
         budgetsCopy: [],
+        budgetsAll: [],
+        budgetsAllCopy: [],
         budgetDetail: {}
     },
     reducers: {
         getBudgetsReducer: (state, action) => {
             state.budgets = action.payload;
             state.budgetsCopy = action.payload;
+        },
+
+        getBudgetsAllReducer: (state, action) => {
+            state.budgetsAll = action.payload;
+            state.budgetsAllCopy = action.payload;
         },
 
         getBudgetByIdReducer: (state, action) => {   
@@ -21,16 +28,21 @@ export const budgetSlice = createSlice({
             state.budgets = action.payload;
         },
 
+        searchBudgetsAllReducer: (state, action) => {
+            state.budgetsAll = action.payload;
+        },
+
         clearBudgetDetailReducer: (state) => {
             state.budgetDetail = {};
         },
 
         clearBudgetsReducer: (state) => {
             state.budgets = state.budgetsCopy;
+            state.budgetsAll = state.budgetsAllCopy;
         }
     }
 });
 
-export const { getBudgetsReducer, getBudgetByIdReducer, searchBudgetsReducer, clearBudgetDetailReducer, clearBudgetsReducer } = budgetSlice.actions;
+export const { getBudgetsReducer, getBudgetsAllReducer, getBudgetByIdReducer, searchBudgetsReducer, searchBudgetsAllReducer, clearBudgetDetailReducer, clearBudgetsReducer } = budgetSlice.actions;
 
 export default budgetSlice.reducer;

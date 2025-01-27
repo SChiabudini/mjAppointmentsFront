@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { getVehicles, postVehicle } from '../../../../redux/vehicleActions.js';
+import { getVehicles, getAllVehicles, postVehicle } from '../../../../redux/vehicleActions.js';
 import { getPersonClients } from '../../../../redux/personClientActions.js';
 import { getCompanyClients } from '../../../../redux/companyClientActions.js';
 import NewPersonClient from '../../Clients/PersonClient/NewPersonClient/NewPersonClient.jsx';
@@ -168,6 +168,7 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
             setSearchTerm('');            
             setSearchingPerson(true);
             dispatch(getVehicles());
+            dispatch(getAllVehicles());
             onVehicleAdded(response);
         } catch (error) {
             setErrorMessage("*Error al crear vehículo, revise los datos ingresados e intente nuevamente.");

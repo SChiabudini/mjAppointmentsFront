@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getPersonClients, postPersonClient } from "../../../../../redux/personClientActions.js";
+import { getPersonClients, getAllPersonClients, postPersonClient } from "../../../../../redux/personClientActions.js";
 import { getVehicles } from "../../../../../redux/vehicleActions.js";
 import NewVehicle from '../../../Vehicles/NewVehicle/NewVehicle.jsx';
 import clear from "../../../../../assets/img/clear.png";
@@ -189,6 +189,7 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
             setPhonePrefix('549');
             setPhoneWsp('');
             dispatch(getPersonClients());
+            dispatch(getAllPersonClients());
             onClientAdded(response);
 
         } catch (error) {

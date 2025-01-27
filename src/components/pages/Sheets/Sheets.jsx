@@ -171,8 +171,8 @@ const Sheets = () => {
                                 type="date"
                             />
                         </div>
-                        <div>
-                            <button onClick={() => setPopUpServiceOpen(true)} style={{marginRight: '1rem'}}>+ F. service</button>
+                        <div className="titleButtons">
+                            <button onClick={() => setPopUpServiceOpen(true)}>+ F. service</button>
                             <button onClick={() => setPopUpMechanicalOpen(true)}>+ F. mecánica</button>
                         </div>                
                     </div>
