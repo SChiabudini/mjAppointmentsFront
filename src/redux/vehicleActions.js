@@ -1,5 +1,5 @@
 import api from '../services/axios.js';
-import { getVehiclesReducer, getVehicleByIdReducer, searchVehiclesReducer } from './vehicleSlice.js';
+import { getVehiclesReducer, getVehiclesAllReducer, getVehicleByIdReducer, searchVehiclesReducer, searchVehiclesAllReducer } from './vehicleSlice.js';
 
 
 //-----TRAE ÚNICAMENTE LOS ACTIVOS
@@ -14,6 +14,27 @@ export const getVehicles = () => {
             const reversedData = data.reverse();
 
             dispatch(getVehiclesReducer(reversedData));
+
+        } catch (error) {           
+            console.error("Error retrieving vehicles from server: " + error.message);
+            throw new Error('Network error or server not reachable');
+        }
+    }
+
+};
+
+//-----TRAE TODOS
+
+export const getAllVehicles = () => {
+
+    return async (dispatch) => {
+        try {
+            
+            const { data } = await api.get("/vehicle/all");
+
+            const reversedData = data.reverse();
+
+            dispatch(getVehiclesAllReducer(reversedData));
 
         } catch (error) {           
             console.error("Error retrieving vehicles from server: " + error.message);
@@ -62,6 +83,37 @@ export const searchVehicles = (licensePlate, client) => {
             const reversedData = data.reverse();
 
             dispatch(searchVehiclesReducer(reversedData));
+
+        } catch (error) {
+            console.error("Vehicles search error:", error.message);
+            throw new Error('Network error or server not reachable');
+        }
+    }
+};
+
+//-----TRAE TODOS FILTRADOS
+
+export const searchAllVehicles = (licensePlate, client) => {
+
+    return async (dispatch) => {
+
+        try {
+            
+            let query = '/vehicle/all?';
+            
+            if(licensePlate){
+                query += `licensePlate=${licensePlate}&`
+            }
+
+            if(client){
+                query += `client=${client}&`
+            }
+
+            const { data } = await api.get(query);
+
+            const reversedData = data.reverse();
+
+            dispatch(searchVehiclesAllReducer(reversedData));
 
         } catch (error) {
             console.error("Vehicles search error:", error.message);

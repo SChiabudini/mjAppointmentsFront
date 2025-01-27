@@ -1,5 +1,5 @@
 import api from '../services/axios.js';
-import { getBudgetsReducer, getBudgetByIdReducer, searchBudgetsReducer } from './budgetSlice.js';
+import { getBudgetsReducer, getBudgetsAllReducer, getBudgetByIdReducer, searchBudgetsReducer, searchBudgetsAllReducer } from './budgetSlice.js';
 
 //-----TRAE ÚNICAMENTE LOS ACTIVOS
 
@@ -14,6 +14,26 @@ export const getBudgets = () => {
 
             dispatch(getBudgetsReducer(reversedData));
 
+        } catch (error) {
+            console.error("Error retrieving budgets from server: " + error.message);
+            throw new Error('Network error or server not reachable');
+        }
+    }
+
+};
+
+//-----TRAE TODOS
+
+export const getAllBudgets = () => {
+
+    return async (dispatch) => {
+        try {
+            
+            const { data } = await api.get("/budget/all");
+
+            const reversedData = data.reverse();
+
+            dispatch(getBudgetsAllReducer(reversedData));
         } catch (error) {
             console.error("Error retrieving budgets from server: " + error.message);
             throw new Error('Network error or server not reachable');
@@ -67,6 +87,41 @@ export const searchBudgets = (number, client, vehicle) => {
             const reversedData = data.reverse();
 
             dispatch(searchBudgetsReducer(reversedData));
+
+        } catch (error) {
+            console.error("Budgets search error:", error.message);
+            throw new Error('Network error or server not reachable');
+        }
+    }
+}
+
+//-----TRAE TODOS FILTRADOS
+
+export const searchAllBudgets = (number, client, vehicle) => {
+
+    return async (dispatch) => {
+
+        try {
+            
+            let query = '/budget/all?';
+            
+            if(number){
+                query += `number=${number}&`
+            }
+
+            if(client){
+                query += `client=${client}&`
+            }
+
+            if(vehicle){
+                query += `vehicle=${vehicle}&`
+            }
+
+            const { data } = await api.get(query);
+
+            const reversedData = data.reverse();
+
+            dispatch(searchBudgetsAllReducer(reversedData));
 
         } catch (error) {
             console.error("Budgets search error:", error.message);

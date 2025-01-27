@@ -4,13 +4,14 @@ import { useNavigate } from "react-router-dom";
 import NewCompanyClient from './NewCompanyClient/NewCompanyClient.jsx';
 import Error from "../../Error/Error.jsx";
 import { clearCompanyClientsReducer } from "../../../../redux/companyClientSlice.js";
-import { getCompanyClients, searchCompanyClients } from "../../../../redux/companyClientActions.js";
+import { getCompanyClients, getAllCompanyClients, searchCompanyClients, searchAllCompanyClients } from "../../../../redux/companyClientActions.js";
 import detail from "../../../../assets/img/detail.png";
 import loadingGif from "../../../../assets/img/loading.gif";
 
 const CompanyClients = () => {
 
     const companyClients = useSelector(state => state.companyClient.companyClients);
+    const allCompanyClients = useSelector(state => state.companyClient.companyClientsAll);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -19,19 +20,25 @@ const CompanyClients = () => {
     const [vehicle, setVehicle] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
+    const [showAll, setShowAll] = useState(false);
 
     useEffect(() => {
 
         if(!cuit && !name && !vehicle){
-            dispatch(getCompanyClients())
-            .catch(() => setError(true));
+            if(showAll){
+                dispatch(getAllCompanyClients())
+                .catch(() => setError(true));
+            } else {
+                dispatch(getCompanyClients())
+                .catch(() => setError(true));
+            }
         };
 
         return () => {
             dispatch(clearCompanyClientsReducer());
         };
 
-    }, [cuit, name, vehicle, dispatch]);
+    }, [cuit, name, vehicle, dispatch, showAll]);
 
     //----- ABRIR POPUP
 
@@ -43,7 +50,11 @@ const CompanyClients = () => {
         if (event.key === "Enter") {
             if (cuit.trim() || name.trim() || vehicle.trim()) {
                 setLoading(true);
-                dispatch(searchCompanyClients(cuit.trim(), name.trim(), vehicle.trim())).then(() => setLoading(false));
+                if(showAll){
+                    dispatch(searchAllCompanyClients(cuit.trim(), name.trim(), vehicle.trim())).then(() => setLoading(false));
+                } else {
+                    dispatch(searchCompanyClients(cuit.trim(), name.trim(), vehicle.trim())).then(() => setLoading(false));
+                }
                 setCurrentPage(1);
             }
         }
@@ -60,16 +71,25 @@ const CompanyClients = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
-    const paginatedCompanyClients = Array.isArray(companyClients)
-    ? companyClients.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-    : [];
-    const totalPages = Math.ceil(companyClients.length / itemsPerPage);
+    const [paginatedCompanyClients, setPaginatedCompanyClients] = useState([]);
     
-    const handlePageChange = (newPage) => {
-        if (newPage > 0 && newPage <= totalPages) {
-            setCurrentPage(newPage);
-        }
-    };
+        useEffect(() => {
+            if (Array.isArray(companyClients)) {
+                const newPaginatedCompanyClients = !showAll
+                    ? companyClients?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                    : allCompanyClients?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+        
+                // Evita actualizar el estado si no hay cambios
+                setPaginatedCompanyClients((prev) => {
+                    const prevStringified = JSON.stringify(prev);
+                    const newStringified = JSON.stringify(newPaginatedCompanyClients);
+        
+                    return prevStringified === newStringified ? prev : newPaginatedCompanyClients;
+                });
+            }
+        }, [companyClients, showAll, currentPage, itemsPerPage, allCompanyClients]);
+
+    const totalPages = Math.ceil(companyClients.length / itemsPerPage);
 
     const getPageButtons = () => {
         const buttons = [];
@@ -106,6 +126,16 @@ const CompanyClients = () => {
         return buttons;
     };
 
+    //----- MOSTRAR TODOS
+    
+    const handleAll = async () => {
+        if(allCompanyClients?.length === 0){
+            setLoading(true);
+            dispatch(getAllCompanyClients()).then(() => setLoading(false));
+        }
+        setShowAll(!showAll);
+    }
+
     return(
         <div className="page">
             {error ? (
@@ -122,8 +152,17 @@ const CompanyClients = () => {
                             <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
                                 ▸
                             </button>
-                        </div>
-                        <button onClick={() => setPopUpOpen(true)}>Nuevo</button>
+                            </div><div className="titleButtons">
+                                <label className="showAll">
+                                    <input
+                                        type="checkbox"
+                                        name="showAll"
+                                        onChange={handleAll}
+                                    />
+                                    Mostrar todos
+                                </label>
+                                <button onClick={() => setPopUpOpen(true)}>Nuevo</button>
+                            </div>
                     </div>
                     <div className="container">
                         <div className="tableContainer">

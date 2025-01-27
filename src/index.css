@@ -226,12 +226,20 @@ button:disabled {
 .titleButtons{
     display: flex;
     gap: 0.5rem;
+    align-items: center;
 }
 
 .titleButtons button{
     letter-spacing: 0.05rem;
     font-size: 0.75rem;
     padding: 0.5rem 1rem;
+}
+
+.showAll{
+    margin-right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
 }
 
 button.delete{

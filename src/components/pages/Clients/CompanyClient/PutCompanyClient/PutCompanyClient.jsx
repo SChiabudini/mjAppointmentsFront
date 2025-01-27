@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from 'react-router-dom';
-import { getPersonClientById, getPersonClients, putPersonClient } from "../../../../../redux/personClientActions.js";
-import { getCompanyClientById, getCompanyClients, putCompanyClient } from "../../../../../redux/companyClientActions.js";
+import { getCompanyClientById, getCompanyClients, getAllCompanyClients, putCompanyClient } from "../../../../../redux/companyClientActions.js";
 import NewVehicle from '../../../Vehicles/NewVehicle/NewVehicle.jsx';
 import { getVehicles } from "../../../../../redux/vehicleActions.js";
 import reboot from  "../../../../../assets/img/reboot.png";
@@ -202,6 +201,7 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
 
             setEditCompanyClient(editCompanyClient);
             dispatch(getCompanyClients());
+            dispatch(getAllCompanyClients());
             dispatch(getCompanyClientById(id));
             onClientAdded(response);
 

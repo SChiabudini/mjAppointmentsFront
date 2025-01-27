@@ -16,6 +16,19 @@ export const getAppointments = () => {
     };
 };
 
+export const getAllAppointments = () => {
+
+    return async (dispatch) => {
+        try {
+            const { data } = await api.get("/appointment/all");
+            
+        } catch (error) {
+            console.error("Error retrieving appointments from server: " + error.message);
+            throw new Error('Network error or server not reachable');
+        }
+    }
+}
+
 export const getAppointmentById = (appointmentId) => {
 
     return async (dispatch) => {
