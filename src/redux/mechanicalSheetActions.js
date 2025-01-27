@@ -103,3 +103,17 @@ export const putMechanicalSheet = (mechanicalSheetData) => {
         }
     }
 };
+
+export const putMechanicalSheetStatus = (mechanicalSheetId) => {    
+    return async () => {   
+        try {
+            const response = await api.put(`/mechanicalSheet/status/${mechanicalSheetId}`);
+
+            return response;
+
+        } catch (error) {
+            console.error("Error editing sheet status: ", error.message);
+            throw new Error('Network error or server not reachable');
+        }  
+    };
+};

@@ -274,8 +274,8 @@ const Sheets = () => {
                                                     <td>{sheet.number}</td>
                                                     <td>{formatDate(sheet.date)}</td>
                                                     <td>{sheet.vehicle.licensePlate}</td>
-                                                    <td>{sheet.personClient ? sheet.personClient.name : sheet.companyClient ? sheet.companyClient.name : 'N/A'}</td>
-                                                    <td>{sheet.keyWords ? sheet.keyWords : 'N/A'}</td>
+                                                    <td>{sheet.personClient ? sheet.personClient.name : sheet.companyClient ? sheet.companyClient.name : 'No disponible'}</td>
+                                                    <td>{sheet.keyWords ? sheet.keyWords : 'No disponible'}</td>
                                                     <td className='center'>
                                                         {sheet.oil ? (
                                                             <a onClick={() => navigate(`/main_window/fichas/service/${sheet._id}`)}>

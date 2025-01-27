@@ -195,7 +195,7 @@ const Vehicles = () => {
                                                     <td>{vehicle.model}</td>
                                                     <td>{vehicle.year}</td>
                                                     <td>{vehicle.engine}</td>
-                                                    <td>{vehicle.personClient ? vehicle.personClient.name : vehicle.companyClient ? vehicle.companyClient.name : 'N/A'}</td>
+                                                    <td>{vehicle.personClient ? vehicle.personClient.name : vehicle.companyClient ? vehicle.companyClient.name : 'No disponible'}</td>
                                                     <td className='center'>
                                                         <a onClick={() => navigate(`/main_window/vehiculos/${vehicle._id}`)}>
                                                             <img src={detail} alt="" className="detailImg" />

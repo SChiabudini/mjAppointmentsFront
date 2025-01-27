@@ -216,13 +216,13 @@ const CompanyClients = () => {
                                                     <td>
                                                         {companyClient.phones?.length 
                                                             ? companyClient?.phones.join(', ') 
-                                                            : 'N/A'}
+                                                            : 'No disponible'}
                                                     </td>
-                                                    <td>{companyClient.address ? companyClient.address : 'N/A'}</td>
+                                                    <td>{companyClient.address ? companyClient.address : 'No disponible'}</td>
                                                     <td>
                                                         {companyClient.vehicles?.length 
                                                             ? companyClient.vehicles?.map(vehicle => vehicle.licensePlate).join(', ') 
-                                                            : 'N/A'}
+                                                            : 'No disponible'}
                                                     </td>
                                                     <td className="center">
                                                         <a onClick={() => navigate(`/main_window/clientes/empresas/${companyClient._id}`)}>

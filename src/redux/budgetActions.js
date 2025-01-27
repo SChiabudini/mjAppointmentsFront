@@ -88,3 +88,17 @@ export const postBudget = (budgetData) => {
         }
     };
 };
+
+export const putBudgetStatus = (budgetId) => {    
+    return async () => {   
+        try {
+            const response = await api.put(`/budget/status/${budgetId}`);
+
+            return response;
+
+        } catch (error) {
+            console.error("Error editing budget status: ", error.message);
+            throw new Error('Network error or server not reachable');
+        }  
+    };
+};
