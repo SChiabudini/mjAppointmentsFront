@@ -20,7 +20,6 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     const [editServiceSheet, setEditServiceSheet] = useState({});
     const [errorMessage, setErrorMessage] = useState(""); 
     const [loading, setLoading] = useState(false);
-    // console.log(editServiceSheet);
       
     useEffect(() => {
         dispatch(getServiceSheetById(id));
@@ -334,7 +333,7 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                             onBlur={handleSearchBlur}
                             onKeyDown={handleKeyDown}
                         />
-                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button" disabled={editServiceSheet.vehicle}>
+                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button">
                             {showNewVehicle ? '-' : '+'}
                         </button>                             
                     </div>
@@ -398,7 +397,7 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                             onBlur={handleSearchBlur}
                             onKeyDown={handleKeyDown}
                         />
-                        <button onClick={() => setShowNewClient(!showNewClient)} type="button" disabled={editServiceSheet.personClient || editServiceSheet.companyClient}>
+                        <button onClick={() => setShowNewClient(!showNewClient)} type="button">
                             {showNewClient ? '-' : '+'}
                         </button>                                 
                     </div>

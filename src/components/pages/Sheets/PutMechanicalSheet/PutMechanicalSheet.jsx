@@ -314,7 +314,7 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                             onBlur={handleSearchBlur}
                             onKeyDown={handleKeyDown}
                         />
-                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button" disabled={editMechanicalSheet.vehicle}>
+                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button">
                             {showNewVehicle ? '-' : '+'}
                         </button>                                  
                     </div>
@@ -378,7 +378,7 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                                 onBlur={handleSearchBlur}
                                 onKeyDown={handleKeyDown}
                             />
-                            <button onClick={() => setShowNewClient(!showNewClient)} type="button" disabled={editMechanicalSheet.personClient || editMechanicalSheet.companyClient}>
+                            <button onClick={() => setShowNewClient(!showNewClient)} type="button">
                                 {showNewClient ? '-' : '+'}
                             </button>                                 
                         </div>

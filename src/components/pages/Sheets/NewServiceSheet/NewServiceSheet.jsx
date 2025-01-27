@@ -30,7 +30,6 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     const [newServiceSheet, setNewServiceSheet] = useState(initialServiceSheetState);
     const [errorMessage, setErrorMessage] = useState(""); 
     const [loading, setLoading] = useState(false);
-    console.log(newServiceSheet);
 
     //----- DISABLE BUTTON
 
