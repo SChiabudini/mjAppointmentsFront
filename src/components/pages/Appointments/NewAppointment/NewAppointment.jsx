@@ -33,6 +33,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
     const [newAppointment, setNewAppointment] = useState(initialAppointmentState);
     const [errorMessage, setErrorMessage] = useState(""); 
     const [loading, setLoading] = useState(false);
+console.log(newAppointment);
 
     //----- DISABLE BUTTON
     
@@ -48,24 +49,48 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
 
     //----- DATE
 
+    const [tempDates, setTempDates] = useState({
+        startDate: '',
+        startTime: '',
+        endDate: '',
+        endTime: '',
+    });
+
     const today = new Date();
     const offset = today.getTimezoneOffset();
     const localDate = new Date(today.getTime() - offset * 60 * 1000).toISOString().split("T")[0];
-    const minDateTime = localDate + "T00:00";
 
-    //-----------HANDLE INPUTS-----------//
-
-    const handleInputChange = (event) => {
+    const handleInputDate = (event) => {
         const { name, value } = event.target;
 
-        if (name === 'start' || name === 'end') {
-            // Almacena el valor directamente en su formato local
-            setNewAppointment({
-                ...newAppointment,
-                [name]: value,
-            });
-        }
+        // Actualiza el estado temporal de las fechas y horas
+        setTempDates((prev) => {
+            const updatedDates = { ...prev, [name]: value };
+
+            // Verifica si ambas partes (fecha y hora) están presentes para "start"
+            if (name === "startDate" || name === "startTime") {
+                if (updatedDates.startDate && updatedDates.startTime) {
+                    setNewAppointment((prev) => ({
+                        ...prev,
+                        start: `${updatedDates.startDate}T${updatedDates.startTime}`,
+                    }));
+                }
+            }
+
+            // Verifica si ambas partes (fecha y hora) están presentes para "end"
+            if (name === "endDate" || name === "endTime") {
+                if (updatedDates.endDate && updatedDates.endTime) {
+                    setNewAppointment((prev) => ({
+                        ...prev,
+                        end: `${updatedDates.endDate}T${updatedDates.endTime}`,
+                    }));
+                }
+            }
+
+            return updatedDates; // Devuelve el estado temporal actualizado
+        });
     };
+
 
     //----- LOAD CLIENTS AND VEHICLES OPTIONS
 
@@ -393,7 +418,6 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                             name="searchTermClients"
                             placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
                             value={searchTermClients}
-                            // onChange={handleInputChange}
                             onChange={(e) => setSearchTermClients(e.target.value)}
                             onFocus={handleSearchFocus}
                             onBlur={handleSearchBlur}
@@ -429,21 +453,47 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                         <div className="formRow">
                             <label htmlFor="start">Inicio*</label>
                             <input 
-                                type="datetime-local" 
-                                name="start" 
-                                value={newAppointment.start}
-                                onChange={handleInputChange}
-                                min={minDateTime}
+                                type="date" 
+                                name="startDate" 
+                                min={localDate}
+                                onChange={handleInputDate}
+                            />
+                            <input 
+                                type="time" 
+                                name="startTime" 
+                                min="07:00"
+                                max="16:59"
+                                onChange={handleInputDate}
+                                onInput={(e) => {
+                                    if (e.target.value < "07:00" || e.target.value > "16:59") {
+                                        e.target.value = ""; // Limpia el input si el valor no es válido
+                                        e.target.setCustomValidity("Horario no válido. Selecciona entre 07:00 y 16:59.");
+                                        e.target.reportValidity();
+                                    }
+                                }}
                             />
                         </div>
                         <div className="formRow">
                             <label htmlFor="end">Finalización*</label>
                             <input 
-                                type="datetime-local" 
-                                name="end" 
-                                value={newAppointment.end}
-                                onChange={handleInputChange}
-                                min={minDateTime}
+                                type="date" 
+                                name="endDate" 
+                                min={localDate}
+                                onChange={handleInputDate}
+                            />
+                            <input 
+                                type="time" 
+                                name="endTime" 
+                                min="07:00"
+                                max="16:59"
+                                onChange={handleInputDate}
+                                onInput={(e) => {
+                                    if (e.target.value < "07:00" || e.target.value > "16:59") {
+                                        e.target.value = ""; // Limpia el input si el valor no es válido
+                                        e.target.setCustomValidity("Horario no válido. Selecciona entre 07:00 y 16:59.");
+                                        e.target.reportValidity();
+                                    }
+                                }}
                             />
                         </div>
                         <div className="formRow"><label>Procedimiento*</label></div>
@@ -492,7 +542,6 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                         {errorMessage && <p className="errorMessage">{errorMessage}</p>}
                     </div>
                 </form>
-
             </div>
         </div>
     );
