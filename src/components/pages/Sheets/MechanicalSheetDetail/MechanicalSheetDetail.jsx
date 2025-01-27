@@ -83,10 +83,10 @@ const MechanicalSheetDetail = () => {
 										{mechanicalSheetDetail.personClient.cuilCuit && <p><span>CUIL/CUIT:&nbsp;</span>{mechanicalSheetDetail.personClient.cuilCuit}</p>}
 										{mechanicalSheetDetail.personClient.email && <p><span>Correo electrónico:&nbsp;</span>{mechanicalSheetDetail.personClient.email}</p>}
 										{mechanicalSheetDetail.personClient.phoneWsp ? (
-											<p><span>Whatsapp:&nbsp;</span>{mechanicalSheetDetail.personClient.phoneWsp}</p>
-										) : (
-											<p>No hay teléfono con Whatsapp registrado.</p>
-										)} 
+                                            <p><span>Whatsapp:&nbsp;</span>+{mechanicalSheetDetail.personClient.phoneWsp.prefix}{mechanicalSheetDetail.personClient.phoneWsp.numberPhone}</p>
+                                        ) : (
+                                            <p>No hay teléfono con Whatsapp registrado.</p>
+                                        )} 
 										{mechanicalSheetDetail.personClient.phones?.length > 0 ? (
 											<div>
 												<p><span>Teléfonos:&nbsp;</span></p>
@@ -112,10 +112,10 @@ const MechanicalSheetDetail = () => {
 										{mechanicalSheetDetail.companyClient.address && <p><span>Dirección:&nbsp;</span>{mechanicalSheetDetail.companyClient.address}</p>}
 										{mechanicalSheetDetail.companyClient.email && <p><span>Correo electrónico:&nbsp;</span>{mechanicalSheetDetail.companyClient.email}</p>}
 										{mechanicalSheetDetail.companyClient.phoneWsp ? (
-											<p><span>Whatsapp:&nbsp;</span>{mechanicalSheetDetail.companyClient.phoneWsp}</p>
-										) : (
-											<p>No hay teléfono con Whatsapp registrado.</p>
-										)} 
+                                            <p><span>Whatsapp:&nbsp;</span>+{mechanicalSheetDetail.companyClient.phoneWsp.prefix}{mechanicalSheetDetail.companyClient.phoneWsp.numberPhone}</p>
+                                        ) : (
+                                            <p>No hay teléfono con Whatsapp registrado.</p>
+                                        )} 
 										{mechanicalSheetDetail.companyClient.phones?.length > 0 ? (
 											<div>
 												<p><span>Teléfonos:&nbsp;</span></p>

@@ -30,6 +30,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     const [newServiceSheet, setNewServiceSheet] = useState(initialServiceSheetState);
     const [errorMessage, setErrorMessage] = useState(""); 
     const [loading, setLoading] = useState(false);
+    console.log(newServiceSheet);
 
     //----- DISABLE BUTTON
 
@@ -86,6 +87,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     const [dropdownVisibleClients, setDropdownVisibleClients] = useState(false);
     const [selectedIndexClients, setSelectedIndexClients] = useState(-1);
     const [showNewClient, setShowNewClient] = useState(false);
+    
 
     useEffect(() => {
         const clients = searchingPerson ? personClients : companyClients;
@@ -99,13 +101,16 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
 
     const handleClientSelection = (client) => {
         const clientName = client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`;
+
         setSearchTermClients(clientName);
         setDropdownVisibleClients(false);
-        if (searchingPerson) {
-            setNewServiceSheet({ ...newServiceSheet, personClient: client._id, companyClient: null });
-        } else {
-            setNewServiceSheet({ ...newServiceSheet, companyClient: client._id, personClient: null });
-        }
+
+        setNewServiceSheet({
+            ...newServiceSheet,
+            personClient: searchingPerson ? client._id : null,
+            companyClient: searchingPerson ? null : client._id,
+        });
+
     };
 
     //----- HANDLE VEHICLES
@@ -309,7 +314,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                             onBlur={handleSearchBlur}
                             onKeyDown={handleKeyDown}
                         />
-                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button" disabled={newServiceSheet.vehicle}>
+                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button">
                             {showNewVehicle ? '-' : '+'}
                         </button>                                
                     </div>
@@ -376,7 +381,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                             onBlur={handleSearchBlur}
                             onKeyDown={handleKeyDown}
                         />
-                        <button onClick={() => setShowNewClient(!showNewClient)} type="button" disabled={newServiceSheet.personClient || newServiceSheet.companyClient}>
+                        <button onClick={() => setShowNewClient(!showNewClient)} type="button">
                             {showNewClient ? '-' : '+'}
                         </button>                                 
                     </div>
