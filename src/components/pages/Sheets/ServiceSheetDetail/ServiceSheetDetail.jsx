@@ -7,6 +7,7 @@ import { getServiceSheetById, putServiceSheetStatus, getServiceSheets } from '..
 import { clearServiceSheetDetailReducer } from '../../../../redux/serviceSheetSlice.js';
 import loadingGif from "../../../../assets/img/loading.gif";
 
+
 const ServiceSheetDetail = () => {
 
   	let { id } = useParams();
@@ -93,6 +94,7 @@ const ServiceSheetDetail = () => {
                                         {serviceSheetDetail.personClient.email && <p><span>Correo electrónico:&nbsp;</span>{serviceSheetDetail.personClient.email}</p>}
                                         {serviceSheetDetail.personClient.phoneWsp.numberPhone ? (
                                             <li><span>Whatsapp:&nbsp;</span>+{serviceSheetDetail.personClient.phoneWsp.prefix}{serviceSheetDetail.personClient.phoneWsp.numberPhone}</li>
+
                                         ) : (
                                             <li><span>Whatsapp:&nbsp;</span>No Whatsapp registrado.</li>
                                         )} 

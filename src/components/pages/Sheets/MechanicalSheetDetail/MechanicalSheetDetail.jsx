@@ -106,6 +106,7 @@ const MechanicalSheetDetail = () => {
                                         ) : (
                                             <li><span>Teléfonos:&nbsp;</span>No tiene teléfono registrado.</li>
                                         )}
+
 									</div>
 								) : (
 									<></>

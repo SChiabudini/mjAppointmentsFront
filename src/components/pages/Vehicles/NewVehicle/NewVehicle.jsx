@@ -220,7 +220,7 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                             }
                         }}/>
                     </div>
-                    {yearTooHigh && <div className="formRow"><p>No puede ingresar un año superior al presente.</p></div>}
+                    {yearTooHigh && <div className="formRow"><p className="errorMessage">No puede ingresar un año superior al presente.</p></div>}
                     <div className="formRow">
                         <label htmlFor="engine">Motor*</label>
                         <input type="text" name="engine" value={newVehicle.engine} onChange={handleInputChange}/>

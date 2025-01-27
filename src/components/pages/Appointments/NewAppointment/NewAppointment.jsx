@@ -331,7 +331,6 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
             </div>
             <div className="container">
                 <div className="formRow">Los campos con (*) son obligatorios.</div>
-                
                 <div className="clientSelection">
                     <div className="formRow">
                         <label>Vehículo*</label>
