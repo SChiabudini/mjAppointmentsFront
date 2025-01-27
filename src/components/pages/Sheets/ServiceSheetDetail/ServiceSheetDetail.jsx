@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import PutServiceSheet from '../PutServiceSheet/PutServiceSheet.jsx';
 import Error from '../../Error/Error.jsx';
+import loadingGif from "../../../../assets/img/loading.gif";
 import { getServiceSheetById } from '../../../../redux/serviceSheetActions.js';
 
 const ServiceSheetDetail = () => {
@@ -80,7 +81,7 @@ const ServiceSheetDetail = () => {
                                         {serviceSheetDetail.personClient.cuilCuit && <p><span>CUIL/CUIT:&nbsp;</span>{serviceSheetDetail.personClient.cuilCuit}</p>}
                                         {serviceSheetDetail.personClient.email && <p><span>Correo electrónico:&nbsp;</span>{serviceSheetDetail.personClient.email}</p>}
                                         {serviceSheetDetail.personClient.phoneWsp ? (
-                                            <p><span>Whatsapp:&nbsp;</span>{serviceSheetDetail.personClient.phoneWsp}</p>
+                                            <p><span>Whatsapp:&nbsp;</span>+{serviceSheetDetail.personClient.phoneWsp.prefix}{serviceSheetDetail.personClient.phoneWsp.numberPhone}</p>
                                         ) : (
                                             <p>No hay teléfono con Whatsapp registrado.</p>
                                         )} 
@@ -109,10 +110,10 @@ const ServiceSheetDetail = () => {
                                         {serviceSheetDetail.companyClient.address && <p><span>Dirección:&nbsp;</span>{serviceSheetDetail.companyClient.address}</p>}
                                         {serviceSheetDetail.companyClient.email && <p><span>Correo electrónico:&nbsp;</span>{serviceSheetDetail.companyClient.email}</p>}
                                         {serviceSheetDetail.companyClient.phoneWsp ? (
-                                            <p><span>Whatsapp:&nbsp;</span>{serviceSheetDetail.companyClient.phoneWsp}</p>
+                                            <p><span>Whatsapp:&nbsp;</span>+{serviceSheetDetail.companyClient.phoneWsp.prefix}{serviceSheetDetail.companyClient.phoneWsp.numberPhone}</p>
                                         ) : (
                                             <p>No hay teléfono con Whatsapp registrado.</p>
-                                        )} 
+                                        )}  
                                         {serviceSheetDetail.companyClient.phones?.length > 0 ? (
                                             <div>
                                                 <p><span>Teléfonos:&nbsp;</span></p>
