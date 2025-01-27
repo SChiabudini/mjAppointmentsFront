@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import PutServiceSheet from '../PutServiceSheet/PutServiceSheet.jsx';
 import Error from '../../Error/Error.jsx';
-import { getServiceSheetById } from '../../../../redux/serviceSheetActions.js';
+import { getServiceSheetById, putServiceSheetStatus } from '../../../../redux/serviceSheetActions.js';
 
 const ServiceSheetDetail = () => {
 

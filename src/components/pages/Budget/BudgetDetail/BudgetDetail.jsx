@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import Error from "../../Error/Error.jsx";
-import { getBudgetById } from "../../../../redux/budgetActions.js";
+import { getBudgetById, putBudgetStatus } from "../../../../redux/budgetActions.js";
 import { clearBudgetDetailReducer } from "../../../../redux/budgetSlice.js";
 import logo from "./logoBG.png";
 import loadingGif from "../../../../assets/img/loading.gif";

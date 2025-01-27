@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import PutAppointment from '../PutAppointment/PutAppointment.jsx';
 import Error from '../../Error/Error.jsx';
-import { getAppointmentById } from '../../../../redux/appointmentActions.js';
+import { getAppointmentById, putAppointmentStatus } from '../../../../redux/appointmentActions.js';
 import { clearAppointmentDetailReducer } from '../../../../redux/appointmentSlice.js';
 import loadingGif from "../../../../assets/img/loading.gif";
 

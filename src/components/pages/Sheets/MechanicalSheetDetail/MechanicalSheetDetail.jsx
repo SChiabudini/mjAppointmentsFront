@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import PutMechanicalSheet from '../PutMechanicalSheet/PutMechanicalSheet.jsx';
 import Error from '../../Error/Error.jsx';
-import { getMechanicalSheetById } from '../../../../redux/mechanicalSheetActions';
+import { getMechanicalSheetById, putMechanicalSheetStatus } from '../../../../redux/mechanicalSheetActions';
 import loadingGif from "../../../../assets/img/loading.gif";
 
 const MechanicalSheetDetail = () => {

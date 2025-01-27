@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import PutPersonClient from '../PutPersonClient/PutPersonClient.jsx';
 import Error from '../../../Error/Error.jsx';
-import { getPersonClientById } from '../../../../../redux/personClientActions.js';
+import { getPersonClientById, putPersonClientStatus } from '../../../../../redux/personClientActions.js';
 import { clearPersonClientDetailReducer } from '../../../../../redux/personClientSlice.js';
 import loadingGif from "../../../../../assets/img/loading.gif";
 import style from "./PersonClientDetail.module.css";

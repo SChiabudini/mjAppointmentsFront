@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import PutVehicle from '../PutVehicle/PutVehicle.jsx';
 import Error from '../../Error/Error.jsx';
-import { getVehicleById } from '../../../../redux/vehicleActions.js';
+import { getVehicleById, putVehicleStatus } from '../../../../redux/vehicleActions.js';
 import { clearVehicleDetailReducer } from '../../../../redux/vehicleSlice.js';
 import loadingGif from "../../../../assets/img/loading.gif";
 

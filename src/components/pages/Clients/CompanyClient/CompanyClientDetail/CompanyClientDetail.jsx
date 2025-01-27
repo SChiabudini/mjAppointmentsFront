@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getCompanyClientById } from '../../../../../redux/companyClientActions';
+import { getCompanyClientById, putCompanyClientStatus } from '../../../../../redux/companyClientActions';
 import { clearCompanyClientDetailReducer } from '../../../../../redux/companyClientSlice.js';
 import PutCompanyClient from '../PutCompanyClient/PutCompanyClient.jsx';
 import Error from '../../../Error/Error.jsx';
