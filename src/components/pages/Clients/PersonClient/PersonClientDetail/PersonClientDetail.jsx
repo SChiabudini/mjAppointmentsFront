@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import PutPersonClient from '../PutPersonClient/PutPersonClient.jsx';
 import Error from '../../../Error/Error.jsx';
-import { getPersonClientById, putPersonClientStatus } from '../../../../../redux/personClientActions.js';
+import { getPersonClientById, putPersonClientStatus, getPersonClients } from '../../../../../redux/personClientActions.js';
 import { clearPersonClientDetailReducer } from '../../../../../redux/personClientSlice.js';
 import loadingGif from "../../../../../assets/img/loading.gif";
 import style from "./PersonClientDetail.module.css";
@@ -18,18 +18,36 @@ const PersonClientDetail = () => {
 
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);    
-    const [popUpOpen, setPopUpOpen] = useState(false);
 
     useEffect(() => {
         dispatch(getPersonClientById(id))
         .then(() => setLoading(false))
         .catch(() => setError(true));
-        
-            return () => {
-                dispatch(clearPersonClientDetailReducer());
-            };
+
+        return () => {
+            dispatch(clearPersonClientDetailReducer());
+        };
     }, [dispatch, id]);
+
+    //----- ABRIR POPUP
+    const [popUpOpen, setPopUpOpen] = useState(false);
+
+    //----- DESACTIVAR ELEMENTO
+    
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+    const handleDelete = async () => {
+        dispatch(putPersonClientStatus(id))
+        .then(
+            dispatch(getPersonClients()).then(
+                navigate(`/main_window/clientes/personas`)
+            )
+        ).catch(
+            dispatch(getPersonClients()).then(
+                navigate(`/main_window/clientes/personas`)
+            )
+        );
+    }
 
     return(
         <div className="page">
@@ -48,7 +66,7 @@ const PersonClientDetail = () => {
                             <div className="titleButtons">
                                 {/* {personClientDetail.active ? <button onClick={() => navigate(`/main_window/clientes/personas/edit/${id}`)}>Editar</button> : ''} */}
                                 {personClientDetail.active ? <button onClick={() => setPopUpOpen(true)}>Editar</button> : ''}
-                                {!personClientDetail.active ? <button className="add" onClick={() => setShowDeleteModal(!showDeleteModal)}>Activar</button> : <button className="delete" onClick={() => setShowDeleteModal(!showDeleteModal)}>Desactivar</button>}
+                                {!personClientDetail.active ? <button className="add" onClick={() => setShowDeleteModal(!showDeleteModal)}>Reactivar</button> : <button className="delete" onClick={() => setShowDeleteModal(!showDeleteModal)}>Archivar</button>}
                                 <button onClick={() => navigate(`/main_window/clientes/personas`)}>Atrás</button>
                             </div>
                         </div>
@@ -62,7 +80,7 @@ const PersonClientDetail = () => {
                                 {personClientDetail.phoneWsp ? (
                                     <p><span>Whatsapp:&nbsp;</span>+{personClientDetail.phoneWsp?.prefix}{personClientDetail.phoneWsp?.numberPhone}</p>
                                 ) : (
-                                    <p>No hay teléfono con Whatsapp registrado.</p>
+                                    <p><span>Whatsapp:&nbsp;</span>No hay teléfono con Whatsapp registrado.</p>
                                 )}  
                                 {personClientDetail.phones?.length > 0 ? (
                                     <p><span>Teléfono(s):&nbsp;</span>{personClientDetail.phones?.join(', ')}</p>
@@ -171,6 +189,23 @@ const PersonClientDetail = () => {
                 <PutPersonClient onClientAdded={() => setPopUpOpen(false)}/>
               </div>
             </div>
+            {showDeleteModal ?
+                <div className="deleteModal">
+                    <div className="deleteModalContainer">
+                        <p>{personClientDetail.active ? "¿Está seguro que desea archivar este cliente?" : "¿Está seguro que desea reactivar este cliente?"}</p>
+                        <div className="deleteModalButtons">
+                            <button onClick={() => setShowDeleteModal(false)}>Cancelar</button>
+                            {personClientDetail.active ?
+                                <button onClick={handleDelete} className="delete">Archivar</button>
+                            : 
+                                <button onClick={handleDelete} className="add">Reactivar</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                :
+                <></>
+            }
         </div>
     )
 };

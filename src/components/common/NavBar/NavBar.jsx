@@ -11,7 +11,7 @@ const NavBar = () => {
         if (name === 'turnos') navigate('/');
         if (name === 'vehiculos') navigate('/main_window/vehiculos');
         if (name === 'fichas') navigate('/main_window/fichas');
-        if (name === 'presupuesto') navigate('/main_window/presupuesto');
+        if (name === 'presupuestos') navigate('/main_window/presupuestos');
     };
 
     const handleClientClick = (subsection) => {
@@ -51,7 +51,7 @@ const NavBar = () => {
             <div className={`${style.NavLink} ${location.pathname.startsWith('/main_window/fichas') ? style.selected : ''}`} onClick={() => handleClick('fichas')}>
                 Fichas
             </div>
-            <div className={`${style.NavLink} ${location.pathname.startsWith('/main_window/presupuesto') ? style.selected : ''}`} onClick={() => handleClick('presupuesto')}>
+            <div className={`${style.NavLink} ${location.pathname.startsWith('/main_window/presupuestos') ? style.selected : ''}`} onClick={() => handleClick('presupuestos')}>
                 Presupuesto
             </div>
         </div>

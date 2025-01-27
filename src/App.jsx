@@ -92,8 +92,8 @@ useEffect(() => {
                   <Route path='/main_window/fichas' element={<Sheets />}/>
                   <Route path='/main_window/fichas/service/:id' element={<ServiceSheetDetail />}/>
                   <Route path='/main_window/fichas/mecanica/:id' element={<MechanicalSheetDetail />}/>
-                  <Route path='/main_window/presupuesto' element={<Budgets />}/>
-                  <Route path='/main_window/presupuesto/:id' element={<BudgetDetail />}/>
+                  <Route path='/main_window/presupuestos' element={<Budgets />}/>
+                  <Route path='/main_window/presupuestos/:id' element={<BudgetDetail />}/>
                 </Routes>
             </div>
           </>

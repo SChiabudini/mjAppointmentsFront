@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import PutVehicle from '../PutVehicle/PutVehicle.jsx';
 import Error from '../../Error/Error.jsx';
-import { getVehicleById, putVehicleStatus } from '../../../../redux/vehicleActions.js';
+import { getVehicleById, getVehicles, putVehicleStatus } from '../../../../redux/vehicleActions.js';
 import { clearVehicleDetailReducer } from '../../../../redux/vehicleSlice.js';
 import loadingGif from "../../../../assets/img/loading.gif";
 
@@ -19,7 +19,6 @@ const VehicleDetail = () => {
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);    
 
     useEffect(() => {
         dispatch(getVehicleById(id))
@@ -33,6 +32,23 @@ const VehicleDetail = () => {
 
     //----- ABRIR POPUP
     const [popUpOpen, setPopUpOpen] = useState(false);
+
+    //----- DESACTIVAR ELEMENTO
+
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+    const handleDelete = async () => {
+        dispatch(putVehicleStatus(id))
+        .then(
+            dispatch(getVehicles()).then(
+                navigate(`/main_window/vehiculos`)
+            )
+        ).catch(
+            dispatch(getVehicles()).then(
+                navigate(`/main_window/vehiculos`)
+            )
+        );
+    }
 
     return(
         <div className="page">
@@ -50,7 +66,7 @@ const VehicleDetail = () => {
                             <h2>Detalle del vehículo</h2>
                             <div className="titleButtons">
                                 {vehicleDetail.active ? <button onClick={() => setPopUpOpen(true)}>Editar</button> : ''}
-                                {!vehicleDetail.active ? <button className="add" onClick={() => setShowDeleteModal(!showDeleteModal)}>Activar</button> : <button className="delete" onClick={() => setShowDeleteModal(!showDeleteModal)}>Eliminar</button>}
+                                {!vehicleDetail.active ? <button className="add" onClick={() => setShowDeleteModal(!showDeleteModal)}>Reactivar</button> : <button className="delete" onClick={() => setShowDeleteModal(!showDeleteModal)}>Archivar</button>}
                                 <button onClick={() => navigate(`/main_window/vehiculos`)}>Atrás</button>
                             </div>
                         </div>
@@ -73,10 +89,10 @@ const VehicleDetail = () => {
                                                 {vehicleDetail.personClient.dni && <li><span>DNI:&nbsp;</span>{vehicleDetail.personClient.dni}</li>}
                                                 {vehicleDetail.personClient.cuilCuit && <li><span>CUIL/CUIT:&nbsp;</span>{vehicleDetail.personClient.cuilCuit}</li>}
                                                 {vehicleDetail.personClient.email && <li><span>Correo electrónico:&nbsp;</span>{vehicleDetail.personClient.email}</li>}
-                                                {vehicleDetail.personClient.phoneWsp ? (
-                                                    <li><span>Whatsapp:&nbsp;</span>+{vehicleDetail.personClient.phoneWsp}</li>
+                                                {vehicleDetail.personClient.phoneWsp.numberPhone ? (
+                                                    <li><span>Whatsapp:&nbsp;</span>+{vehicleDetail.personClient.phoneWsp.prefix}{vehicleDetail.personClient.phoneWsp.numberPhone}</li>
                                                 ) : (
-                                                    <p>No hay teléfono con Whatsapp registrado.</p>
+                                                    <li><span>Whatsapp:&nbsp;</span>No Whatsapp registrado.</li>
                                                 )} 
                                                 {vehicleDetail.personClient.phones?.length > 0 ? (
                                                     <div>
@@ -86,7 +102,7 @@ const VehicleDetail = () => {
                                                         </li>
                                                     </div>
                                                 ) : (
-                                                    <li>No tiene teléfono registrado.</li>
+                                                    <li><span>Teléfonos:&nbsp;</span>No tiene teléfono registrado.</li>
                                                 )}
                                             </ul>         
                                         </div>
@@ -98,10 +114,10 @@ const VehicleDetail = () => {
                                                 {vehicleDetail.companyClient.cuit && <li><span>CUIT:&nbsp;</span>{vehicleDetail.companyClient.cuit}</li>}
                                                 {vehicleDetail.companyClient.address && <li><span>Dirección:&nbsp;</span>{vehicleDetail.companyClient.address}</li>}
                                                 {vehicleDetail.companyClient.email && <li><span>Correo electrónico:&nbsp;</span>{vehicleDetail.companyClient.email}</li>}
-                                                {vehicleDetail.companyClient.phoneWsp ? (
-                                                    <li><span>Whatsapp:&nbsp;</span>{vehicleDetail.companyClient.phoneWsp}</li>
+                                                {vehicleDetail.companyClient.phoneWsp.numberPhone ? (
+                                                    <li><span>Whatsapp:&nbsp;</span>+{vehicleDetail.companyClient.phoneWsp.prefix}{vehicleDetail.companyClient.phoneWsp.numberPhone}</li>
                                                 ) : (
-                                                    <p>No hay teléfono con Whatsapp registrado.</p>
+                                                    <li><span>Whatsapp:&nbsp;</span>No Whatsapp registrado.</li>
                                                 )} 
                                                 {vehicleDetail.companyClient.phones?.length > 0 ? (
                                                     <div>
@@ -111,7 +127,7 @@ const VehicleDetail = () => {
                                                         </li>
                                                     </div>
                                                 ) : (
-                                                    <li>No tiene teléfono registrado.</li>
+                                                    <li><span>Teléfonos:&nbsp;</span>No tiene teléfono registrado.</li>
                                                 )}
                                             </ul>
                                         </div>
@@ -200,6 +216,24 @@ const VehicleDetail = () => {
                 <PutVehicle onVehicleAdded={() => setPopUpOpen(false)}/>
               </div>
             </div>
+            {showDeleteModal ?
+                <div className="deleteModal">
+                    <div className="deleteModalContainer">
+                        <p>{vehicleDetail.active ? "¿Está seguro que desea archivar este vehículo?" : "¿Está seguro que desea reactivar este vehículo?"}</p>
+                        <div className="deleteModalButtons">
+                            <button onClick={() => setShowDeleteModal(false)}>Cancelar</button>
+                            {vehicleDetail.active ?
+                                <button onClick={handleDelete} className="delete">Archivar</button>
+                            : 
+                                <button onClick={handleDelete} className="add">Reactivar</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                :
+                <></>
+            }
+            
         </div>
     )
 };

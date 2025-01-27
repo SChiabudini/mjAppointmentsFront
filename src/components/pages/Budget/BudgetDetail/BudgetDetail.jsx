@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import Error from "../../Error/Error.jsx";
-import { getBudgetById, putBudgetStatus } from "../../../../redux/budgetActions.js";
+import { getBudgetById, putBudgetStatus, getBudgets } from "../../../../redux/budgetActions.js";
 import { clearBudgetDetailReducer } from "../../../../redux/budgetSlice.js";
 import logo from "./logoBG.png";
 import loadingGif from "../../../../assets/img/loading.gif";
@@ -31,6 +31,26 @@ const BudgetDetail = () => {
         };
 
     }, [dispatch, id]);
+
+    //----- ABRIR POPUP
+    const [popUpOpen, setPopUpOpen] = useState(false);
+
+    //----- DESACTIVAR ELEMENTO
+    
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+    const handleDelete = async () => {
+        dispatch(putBudgetStatus(id))
+        .then(
+            dispatch(getBudgets()).then(
+                navigate(`/main_window/presupuestos`)
+            )
+        ).catch(
+            dispatch(getBudgets()).then(
+                navigate(`/main_window/presupuestos`)
+            )
+        );
+    }
 
     const total = budgetDetail.items?.reduce((sum, item) => {
         return sum + item.price * item.quantity;
@@ -71,7 +91,9 @@ const BudgetDetail = () => {
                                     >
                                         <img src={print} alt="Print"/>
                                     </button>
-                                    <button onClick={() => navigate(`/main_window/presupuesto`)}>Atrás</button>
+                                    {budgetDetail.active ? <button onClick={() => setPopUpOpen(true)}>Editar</button> : ''}
+                                    {!budgetDetail.active ? <button className="add" onClick={() => setShowDeleteModal(!showDeleteModal)}>Reactivar</button> : <button className="delete" onClick={() => setShowDeleteModal(!showDeleteModal)}>Archivar</button>}
+                                    <button onClick={() => navigate(`/main_window/presupuestos`)}>Atrás</button>
                                 </div>
                             </div>                    
                         </div>
@@ -112,12 +134,8 @@ const BudgetDetail = () => {
                                             </div>
                                             <div>
                                                 {budgetDetail.personClient.cuilCuit && <p><span>CUIL/CUIT:</span> {budgetDetail.personClient.cuilCuit}</p>}
-                                                {budgetDetail.personClient.phones?.length && <p><span>Teléfonos:</span> {budgetDetail.personClient.phones?.join(', ')}</p>}
-                                                {budgetDetail.personClient.phoneWsp ? (
-                                                    <p><span>Whatsapp:&nbsp;</span>{budgetDetail.personClient.phoneWsp}</p>
-                                                ) : (
-                                                    <p>No hay teléfono con Whatsapp registrado.</p>
-                                                )}
+                                                {budgetDetail.personClient.phoneWsp.numberPhone && <p><span>Whatsapp:&nbsp;</span>+{budgetDetail.personClient.phoneWsp.prefix}{budgetDetail.personClient.phoneWsp.numberPhone}</p>}
+                                                {budgetDetail.personClient.phones?.length > 0 && <p><span>Teléfonos:</span> {budgetDetail.personClient.phones?.join(', ')}</p>}
                                                 {budgetDetail.vehicle && <p><span>Vehículo:</span> {budgetDetail.vehicle.licensePlate}</p>}
                                             </div>
                                         </div>
@@ -131,12 +149,8 @@ const BudgetDetail = () => {
 
                                             <div>
                                                 {budgetDetail.companyClient.address && <p><span>Dirección:</span> {budgetDetail.companyClient.address}</p>}
-                                                {budgetDetail.companyClient.phoneWsp ? (
-                                                    <p><span>Whatsapp:&nbsp;</span>{budgetDetail.companyClient.phoneWsp}</p>
-                                                ) : (
-                                                    <p>No hay teléfono con Whatsapp registrado.</p>
-                                                )}
-                                                {budgetDetail.companyClient.phones?.length && <p><span>Teléfonos:</span> {budgetDetail.companyClient.phones.join(', ')}</p>}
+                                                {budgetDetail.companyClient.phoneWsp.numberPhone && <p><span>Whatsapp:&nbsp;</span>+{budgetDetail.companyClient.phoneWsp.prefix}{budgetDetail.companyClient.phoneWsp.numberPhone}</p>}
+                                                {budgetDetail.companyClient.phones?.length > 0 && <p><span>Teléfonos:</span> {budgetDetail.companyClient.phones?.join(', ')}</p>}
                                                 {budgetDetail.vehicle && <p><span>Vehículo:</span> {budgetDetail.vehicle.licensePlate}</p>}
                                             </div>
                                         </div>
@@ -176,6 +190,23 @@ const BudgetDetail = () => {
 
                     </div>
                 )
+            }
+            {showDeleteModal ?
+                <div className="deleteModal">
+                    <div className="deleteModalContainer">
+                        <p>{budgetDetail.active ? "¿Está seguro que desea archivar este presupuesto?" : "¿Está seguro que desea reactivar este presupuesto?"}</p>
+                        <div className="deleteModalButtons">
+                            <button onClick={() => setShowDeleteModal(false)}>Cancelar</button>
+                            {budgetDetail.active ?
+                                <button onClick={handleDelete} className="delete">Archivar</button>
+                            : 
+                                <button onClick={handleDelete} className="add">Reactivar</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                :
+                <></>
             }
         </div>
     );

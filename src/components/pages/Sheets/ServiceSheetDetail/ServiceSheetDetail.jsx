@@ -3,7 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import PutServiceSheet from '../PutServiceSheet/PutServiceSheet.jsx';
 import Error from '../../Error/Error.jsx';
-import { getServiceSheetById, putServiceSheetStatus } from '../../../../redux/serviceSheetActions.js';
+import { getServiceSheetById, putServiceSheetStatus, getServiceSheets } from '../../../../redux/serviceSheetActions.js';
+import { clearServiceSheetDetailReducer } from '../../../../redux/serviceSheetSlice.js';
+import loadingGif from "../../../../assets/img/loading.gif";
 
 const ServiceSheetDetail = () => {
 
@@ -15,26 +17,36 @@ const ServiceSheetDetail = () => {
     
     const [error, setError] = useState(false);
 	const [loading, setLoading] = useState(true);
-	const [showDeleteModal, setShowDeleteModal] = useState(false);     
-    const [popUpOpen, setPopUpOpen] = useState(false);      
-	
-	// useEffect(() => {
-	// 	const fetchData = async () => {
-	// 		setLoading(true);
-	// 		await dispatch(getServiceSheetById(id));
-	// 		setLoading(false);
-	// 	};
-	// 	fetchData();
-	// }, [dispatch, id]);
+
     useEffect(() => {
 		dispatch(getServiceSheetById(id))
         .then(() => setLoading(false))
         .catch(() => setError(true));
+
+        return () => {
+            dispatch(clearServiceSheetDetailReducer());
+        };
 	}, [dispatch, id]);
-	
-	const toggleShowDeleteModal = () => {
-		setShowDeleteModal(!showDeleteModal);
-	};
+
+    //----- ABRIR POPUP
+    const [popUpOpen, setPopUpOpen] = useState(false);
+
+    //----- DESACTIVAR ELEMENTO
+    
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+    const handleDelete = async () => {
+        dispatch(putServiceSheetStatus(id))
+        .then(
+            dispatch(getServiceSheets()).then(
+                navigate(`/main_window/fichas`)
+            )
+        ).catch(
+            dispatch(getServiceSheets()).then(
+                navigate(`/main_window/fichas`)
+            )
+        );
+    }
 
 	return (
 		<div className="page">
@@ -52,7 +64,7 @@ const ServiceSheetDetail = () => {
                             <h2>Detalle de la ficha service</h2>
                             <div className="titleButtons">
                                 {serviceSheetDetail.active ? <button onClick={() => setPopUpOpen(true)}>Editar</button> : ''}
-                                {!serviceSheetDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Activar</button> : <button className="delete" onClick={toggleShowDeleteModal}>Desactivar</button>}
+                                {!serviceSheetDetail.active ? <button className="add" onClick={() => setShowDeleteModal(!showDeleteModal)}>Reactivar</button> : <button className="delete" onClick={() => setShowDeleteModal(!showDeleteModal)}>Archivar</button>}
                                 <button onClick={() => navigate(`/main_window/fichas`)}>Atrás</button>
                             </div>
                         </div>
@@ -79,24 +91,20 @@ const ServiceSheetDetail = () => {
                                         {serviceSheetDetail.personClient.dni && <p><span>DNI:&nbsp;</span>{serviceSheetDetail.personClient.dni}</p>}
                                         {serviceSheetDetail.personClient.cuilCuit && <p><span>CUIL/CUIT:&nbsp;</span>{serviceSheetDetail.personClient.cuilCuit}</p>}
                                         {serviceSheetDetail.personClient.email && <p><span>Correo electrónico:&nbsp;</span>{serviceSheetDetail.personClient.email}</p>}
-                                        {serviceSheetDetail.personClient.phoneWsp ? (
-                                            <p><span>Whatsapp:&nbsp;</span>{serviceSheetDetail.personClient.phoneWsp}</p>
+                                        {serviceSheetDetail.personClient.phoneWsp.numberPhone ? (
+                                            <li><span>Whatsapp:&nbsp;</span>+{serviceSheetDetail.personClient.phoneWsp.prefix}{serviceSheetDetail.personClient.phoneWsp.numberPhone}</li>
                                         ) : (
-                                            <p>No hay teléfono con Whatsapp registrado.</p>
+                                            <li><span>Whatsapp:&nbsp;</span>No Whatsapp registrado.</li>
                                         )} 
                                         {serviceSheetDetail.personClient.phones?.length > 0 ? (
                                             <div>
-                                                <p><span>Teléfonos:&nbsp;</span></p>
-                                                {serviceSheetDetail.personClient.phones?.map((phone, index) => (
-                                                    <ul key={index}>
-                                                        <li>
-                                                            {<p><span>{phone}</span></p>}
-                                                        </li>
-                                                    </ul>
-                                                ))}
+                                                <li>
+                                                    <span>Teléfonos:&nbsp;</span>
+                                                    {serviceSheetDetail.personClient.phones?.join(', ')}
+                                                </li>
                                             </div>
                                         ) : (
-                                            <p><span>No tiene teléfono registrado.</span></p>
+                                            <li><span>Teléfonos:&nbsp;</span>No tiene teléfono registrado.</li>
                                         )}
                                     </div>
                                 ) : (
@@ -108,24 +116,20 @@ const ServiceSheetDetail = () => {
                                         {serviceSheetDetail.companyClient.cuit && <p><span>CUIT:&nbsp;</span>{serviceSheetDetail.companyClient.cuit}</p>}
                                         {serviceSheetDetail.companyClient.address && <p><span>Dirección:&nbsp;</span>{serviceSheetDetail.companyClient.address}</p>}
                                         {serviceSheetDetail.companyClient.email && <p><span>Correo electrónico:&nbsp;</span>{serviceSheetDetail.companyClient.email}</p>}
-                                        {serviceSheetDetail.companyClient.phoneWsp ? (
-                                            <p><span>Whatsapp:&nbsp;</span>{serviceSheetDetail.companyClient.phoneWsp}</p>
+                                        {serviceSheetDetail.companyClient.phoneWsp.numberPhone ? (
+                                            <li><span>Whatsapp:&nbsp;</span>+{serviceSheetDetail.companyClient.phoneWsp.prefix}{serviceSheetDetail.companyClient.phoneWsp.numberPhone}</li>
                                         ) : (
-                                            <p>No hay teléfono con Whatsapp registrado.</p>
+                                            <li><span>Whatsapp:&nbsp;</span>No Whatsapp registrado.</li>
                                         )} 
                                         {serviceSheetDetail.companyClient.phones?.length > 0 ? (
                                             <div>
-                                                <p><span>Teléfonos:&nbsp;</span></p>
-                                                {serviceSheetDetail.companyClient.phones?.map((phone, index) => (
-                                                    <ul key={index}>
-                                                        <li>
-                                                            {<p><span>{phone}</span></p>}
-                                                        </li>
-                                                    </ul>
-                                                ))}
+                                                <li>
+                                                    <span>Teléfonos:&nbsp;</span>
+                                                    {serviceSheetDetail.companyClient.phones?.join(', ')}
+                                                </li>
                                             </div>
                                         ) : (
-                                            <p><span>No tiene teléfono registrado.</span></p>
+                                            <li><span>Teléfonos:&nbsp;</span>No tiene teléfono registrado.</li>
                                         )}
                                     </div>
                                 ) : (
@@ -174,6 +178,23 @@ const ServiceSheetDetail = () => {
                 <PutServiceSheet onServiceSheetAdded={() => setPopUpOpen(false)}/>
               </div>
             </div>
+            {showDeleteModal ?
+                <div className="deleteModal">
+                    <div className="deleteModalContainer">
+                        <p>{serviceSheetDetail.active ? "¿Está seguro que desea archivar esta ficha?" : "¿Está seguro que desea reactivar esta ficha?"}</p>
+                        <div className="deleteModalButtons">
+                            <button onClick={() => setShowDeleteModal(false)}>Cancelar</button>
+                            {serviceSheetDetail.active ?
+                                <button onClick={handleDelete} className="delete">Archivar</button>
+                            : 
+                                <button onClick={handleDelete} className="add">Reactivar</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                :
+                <></>
+            }
         </div>
 	)
 };

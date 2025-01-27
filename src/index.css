@@ -798,6 +798,9 @@ button.rbc-active{
     background-color: var(--light-orange) !important;
 }
 
+.rbc-agenda-view table.rbc-agenda-table tbody > tr > td{
+    vertical-align: middle !important;
+}
 
 /*-- LOADING --*/
 
@@ -828,6 +831,51 @@ button.rbc-active{
 .loadingCell {
     text-align: center;
     padding: 2rem;
+}
+
+/*-- DELETE MODAL --*/
+
+.deleteModal{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.deleteModalContainer{
+    background-color: #fff;
+    padding: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.deleteModalContainer p{
+    text-align: center;
+}
+
+.deleteModalButtons{
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.deleteModalButtons button:hover{
+    background-color: var(--orange);
+    color: white;
 }
 
 /*-- PRINT CSS --*/

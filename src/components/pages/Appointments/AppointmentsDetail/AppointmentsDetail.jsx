@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import PutAppointment from '../PutAppointment/PutAppointment.jsx';
 import Error from '../../Error/Error.jsx';
-import { getAppointmentById, putAppointmentStatus } from '../../../../redux/appointmentActions.js';
+import { getAppointmentById, putAppointmentStatus, getAppointments } from '../../../../redux/appointmentActions.js';
 import { clearAppointmentDetailReducer } from '../../../../redux/appointmentSlice.js';
 import loadingGif from "../../../../assets/img/loading.gif";
 
@@ -17,8 +17,6 @@ const AppointmentsDetail = () => {
 
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);     
-    const [popUpOpen, setPopUpOpen] = useState(false);   
     
     useEffect(() => {
         dispatch(getAppointmentById(id))
@@ -30,6 +28,26 @@ const AppointmentsDetail = () => {
         }
 
     }, [dispatch, id]);   
+
+    //----- ABRIR POPUP
+    const [popUpOpen, setPopUpOpen] = useState(false);
+
+    //----- DESACTIVAR ELEMENTO
+    
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+    const handleDelete = async () => {
+        dispatch(putAppointmentStatus(id))
+        .then(
+            dispatch(getAppointments()).then(
+                navigate(`/`)
+            )
+        ).catch(
+            dispatch(getAppointments()).then(
+                navigate(`/`)
+            )
+        );
+    }
 
     return(
         <div className="page">
@@ -48,8 +66,8 @@ const AppointmentsDetail = () => {
                             <div className="titleButtons">
                                 {appointmentDetail.active ? <button onClick={() => setPopUpOpen(true)}>Editar</button> : ''}
                                 {!appointmentDetail.active 
-                                    ? <button className="add" onClick={() => setShowDeleteModal(!showDeleteModal)}>Activar</button> 
-                                    : <button className="delete" onClick={() => setShowDeleteModal(!showDeleteModal)}>Desactivar</button>}
+                                    ? <button className="add" onClick={() => setShowDeleteModal(!showDeleteModal)}>Reactivar</button> 
+                                    : <button className="delete" onClick={() => setShowDeleteModal(!showDeleteModal)}>Archivar</button>}
                                 <button onClick={() => navigate(`/`)}>Atrás</button>
                             </div>
                         </div>
@@ -166,6 +184,23 @@ const AppointmentsDetail = () => {
                     <PutAppointment onAppointmentAdded={() => setPopUpOpen(false)}/>
                 </div>
             </div>
+            {showDeleteModal ?
+                <div className="deleteModal">
+                    <div className="deleteModalContainer">
+                        <p>{appointmentDetail.active ? "¿Está seguro que desea archivar este turno?" : "¿Está seguro que desea reactivar este turno?"}</p>
+                        <div className="deleteModalButtons">
+                            <button onClick={() => setShowDeleteModal(false)}>Cancelar</button>
+                            {appointmentDetail.active ?
+                                <button onClick={handleDelete} className="delete">Archivar</button>
+                            : 
+                                <button onClick={handleDelete} className="add">Reactivar</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                :
+                <></>
+            }
         </div>
     )
 }
