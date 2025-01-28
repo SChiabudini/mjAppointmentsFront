@@ -931,16 +931,18 @@ button.rbc-active{
 
 .dateSheet {
     display: flex;
+    gap: 0.5rem;
     align-items: center;
-    justify-content: space-around;
 }
 
-.dateSheet input[type="checkbox"] {
-    margin: 10px !important;
+.dateSheet label{
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
 }
 
-.dateSheet input[type="date"] {
-    width: 40% !important;
+.dateSheet input{
+    width: fit-content !important;
 }
 
 .dateSheet button {
@@ -950,5 +952,5 @@ button.rbc-active{
 }
 
 .dateSheet button img {
-    width: 30%;
+    width: 1rem;
 }

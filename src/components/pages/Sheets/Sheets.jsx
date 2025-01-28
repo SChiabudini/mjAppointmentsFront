@@ -4,14 +4,16 @@ import { useNavigate } from "react-router-dom";
 import NewServiceSheet from './NewServiceSheet/NewServiceSheet.jsx';
 import NewMechanicalSheet from './NewMechanicalSheet/NewMechanicalSheet.jsx';
 import Error from '../Error/Error.jsx';
-import { getServiceSheets, getAllServiceSheets, searchServiceSheets, searchAllServiceSheets } from "../../../redux/serviceSheetActions.js";
-import { getMechanicalSheets, getAllMechanicalSheets, searchMechanicalSheets, searchAllMechanicalSheets } from "../../../redux/mechanicalSheetActions.js";
+import { getServiceSheets, getAllServiceSheets, searchServiceSheets, searchAllServiceSheets, searchAllServiceSheetsByDate, searchServiceSheetsByDate } from "../../../redux/serviceSheetActions.js";
+import { getMechanicalSheets, getAllMechanicalSheets, searchMechanicalSheets, searchAllMechanicalSheets, searchAllMechanicalSheetsByDate, searchMechanicalSheetsByDate } from "../../../redux/mechanicalSheetActions.js";
 import { clearServiceSheetsReducer } from "../../../redux/serviceSheetSlice.js";
 import { clearMechanicalSheetsReducer } from '../../../redux/mechanicalSheetSlice.js';
 import detail from "../../../assets/img/detail.png";
 import loadingGif from "../../../assets/img/loading.gif";
 import clear from "../../../assets/img/clear.png";
 import clearHover from "../../../assets/img/clearHover.png";
+import search from "../../../assets/img/search.png";
+import searchHover from "../../../assets/img/searchHover.png";
 
 
 const Sheets = () => {
@@ -27,32 +29,18 @@ const Sheets = () => {
     const sheets = [...serviceSheets, ...mechanicalSheets].sort((a, b) => new Date(b.date) - new Date(a.date));
     const allSheets = [...allServiceSheets, ...allMechanicalSheets].sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    //----- FILTRO POR DATE
-    const [isDateFilterEnabled, setIsDateFilterEnabled] = useState(false);
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
-
-    const handleDateFilterToggle = (e) => {
-        setIsDateFilterEnabled(e.target.checked);
-        if (!e.target.checked) resetDate();
-    };
-
-    const resetDate = () => {
-        setStartDate('');
-        setEndDate('');
-    };
-
     const [number, setNumber] = useState('');
-    const [date, setDate] = useState('');
     const [client, setClient] = useState('');
     const [vehicle, setVehicle] = useState('');
     const [keyWords, setKeyWords] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
     const [showAll, setShowAll] = useState(false);
 
     useEffect(() => {
-        if(!number && !date && !client && !vehicle && !keyWords){
+        if(!number && !client && !vehicle && !keyWords && startDate === '' && endDate === ''){
             if(showAll){
                 dispatch(getAllServiceSheets()).catch(() => setError(true));
                 dispatch(getAllMechanicalSheets()).catch(() => setError(true));
@@ -67,7 +55,7 @@ const Sheets = () => {
             dispatch(clearMechanicalSheetsReducer());
         };
 
-    }, [number, date, client, vehicle, keyWords, dispatch, showAll]);
+    }, [number, client, vehicle, keyWords, dispatch, showAll, startDate, endDate]);
 
     //----- ABRIR POPUP
 
@@ -83,11 +71,11 @@ const Sheets = () => {
             if (number.trim() || vehicle.trim() || client.trim() || keyWords.trim()) {
                 setLoading(true);
                 if(showAll){
-                    dispatch(searchAllServiceSheets(number.trim(), vehicle.trim(), client.trim()));
-                    dispatch(searchAllMechanicalSheets(number.trim(), vehicle.trim(), client.trim(), keyWords.trim())).then(() => setLoading(false));
+                    dispatch(searchAllServiceSheets(number.trim(), vehicle.trim(), client.trim())).catch(() => setError(true));
+                    dispatch(searchAllMechanicalSheets(number.trim(), vehicle.trim(), client.trim(), keyWords.trim())).then(() => setLoading(false)).catch(() => setError(true));
                 } else{
-                    dispatch(searchServiceSheets(number.trim(), vehicle.trim(), client.trim()));
-                    dispatch(searchMechanicalSheets(number.trim(), vehicle.trim(), client.trim(), keyWords.trim())).then(() => setLoading(false));
+                    dispatch(searchServiceSheets(number.trim(), vehicle.trim(), client.trim())).catch(() => setError(true));
+                    dispatch(searchMechanicalSheets(number.trim(), vehicle.trim(), client.trim(), keyWords.trim())).then(() => setLoading(false)).catch(() => setError(true));
                 }
                 setCurrentPage(1);
                 if(keyWords.trim()){
@@ -103,6 +91,27 @@ const Sheets = () => {
             dispatch(clearMechanicalSheetsReducer());
             setCurrentPage(1);
             setToggle(false);
+        }
+    };
+
+    //----- FILTRO POR DATE
+
+    const resetDate = () => {
+        setStartDate('');
+        setEndDate('');
+    };
+
+    const handleSearchByDate = async () => {
+        if(startDate !== '' && endDate !== ''){
+
+            setLoading(true);
+            if(showAll){
+                dispatch(searchAllServiceSheetsByDate(startDate, endDate)).catch(() => setError(true));
+                dispatch(searchAllMechanicalSheetsByDate(startDate, endDate)).then(() => setLoading(false)).catch(() => setError(true));
+            } else {
+                dispatch(searchServiceSheetsByDate(startDate, endDate)).catch(() => setError(true));
+                dispatch(searchMechanicalSheetsByDate(startDate, endDate)).then(() => setLoading(false)).catch(() => setError(true));
+            }
         }
     };
 
@@ -192,8 +201,8 @@ const Sheets = () => {
     const handleAll = async () => {
         if(allServiceSheets?.length === 0 || allMechanicalSheets?.length === 0){
             setLoading(true);
-            dispatch(getAllServiceSheets());
-            dispatch(getAllMechanicalSheets()).then(() => setLoading(false));
+            dispatch(getAllServiceSheets()).catch(() => setError(true));
+            dispatch(getAllMechanicalSheets()).then(() => setLoading(false)).catch(() => setError(true));;
         }
         setShowAll(!showAll);
     }
@@ -216,32 +225,36 @@ const Sheets = () => {
                             </button>
                         </div>
                         <div className="dateSheet">
-                            <input
-                                type="checkbox"
-                                name="forDate"
-                                onChange={handleDateFilterToggle}
-                                checked={isDateFilterEnabled}
-                            />
-                            <input
-                                type="date"
-                                value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
-                                disabled={!isDateFilterEnabled}
-                            />
-                            <button 
-                                onClick={resetDate} 
-                                onMouseEnter={(e) => e.currentTarget.firstChild.src = clearHover} 
-                                onMouseLeave={(e) => e.currentTarget.firstChild.src = clear}
-                                disabled={!isDateFilterEnabled}
-                            >
-                                <img src={clear} alt="Print"/>
-                            </button>
-                            <input
-                                type="date"
-                                value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
-                                disabled={!isDateFilterEnabled}
-                            />
+                                <input
+                                    type="date"
+                                    value={startDate}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                />
+                                
+                                <input
+                                    type="date"
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                />
+
+                                <button 
+                                    onClick={handleSearchByDate} 
+                                    onMouseEnter={(e) => e.currentTarget.firstChild.src = searchHover} 
+                                    onMouseLeave={(e) => e.currentTarget.firstChild.src = search}
+                                    disabled={startDate === '' || endDate === ''}
+                                >
+                                    <img src={search} alt="Print"/>
+                                </button>
+
+                                <button 
+                                    onClick={resetDate} 
+                                    onMouseEnter={(e) => e.currentTarget.firstChild.src = clearHover} 
+                                    onMouseLeave={(e) => e.currentTarget.firstChild.src = clear}
+                                    disabled={startDate === '' || endDate === ''}
+                                >
+                                    <img src={clear} alt="Print"/>
+                                </button>
+                                   
                         </div>
                         <div className="titleButtons">
                                 <label className="showAll">

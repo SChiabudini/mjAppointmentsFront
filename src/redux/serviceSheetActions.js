@@ -98,12 +98,18 @@ export const searchServiceSheets = (number, vehicle, client) => {
 
 //-----TRAE SOLO LOS ACTIVOS POR FECHA
 
-export const searchServiceSheetsByDate = (gap) => {
+export const searchServiceSheetsByDate = (startDate, endDate) => {
     
     return async (dispatch) =>{
         try {
 
-            const { data } = await api.get("/serviceSheet/date", gap);
+            let query = '/serviceSheet?';
+
+            if(startDate && endDate){
+                query += `start=${startDate}&end=${endDate}`
+            }
+
+            const { data } = await api.get(query);
 
             const reversedData = data.reverse();
 
@@ -153,12 +159,18 @@ export const searchAllServiceSheets = (number, vehicle, client) => {
 
 //-----TRAE TODOS POR FECHA
 
-export const searchAllServiceSheetsByDate = (gap) => {
+export const searchAllServiceSheetsByDate = (startDate, endDate) => {
     
     return async (dispatch) =>{
         try {
 
-            const { data } = await api.get("/serviceSheet/all/date", gap);
+            let query = '/serviceSheet/all?';
+
+            if(startDate && endDate){
+                query += `start=${startDate}&end=${endDate}`
+            }
+
+            const { data } = await api.get(query);
 
             const reversedData = data.reverse();
 

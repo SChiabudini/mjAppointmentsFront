@@ -101,12 +101,18 @@ export const searchMechanicalSheets = (number, vehicle, client, keyWords) => {
 
 //-----TRAE SOLO LOS ACTIVOS POR FECHA
 
-export const searchMechanicalSheetsByDate = (gap) => {
+export const searchMechanicalSheetsByDate = (startDate, endDate) => {
     
     return async (dispatch) =>{
         try {
 
-            const { data } = await api.get("/mechanicalSheet/date", gap);
+            let query = '/mechanicalSheet?';
+
+            if(startDate && endDate){
+                query += `start=${startDate}&end=${endDate}`
+            }
+
+            const { data } = await api.get(query);
 
             const reversedData = data.reverse();
 
@@ -160,12 +166,18 @@ export const searchAllMechanicalSheets = (number, vehicle, client, keyWords) => 
 
 //-----TRAE TODOS POR FECHA
 
-export const searchAllMechanicalSheetsByDate = (gap) => {
+export const searchAllMechanicalSheetsByDate = (startDate, endDate) => {
     
     return async (dispatch) =>{
         try {
 
-            const { data } = await api.get("/mechanicalSheet/all/date", gap);
+            let query = '/mechanicalSheet/all?';
+
+            if(startDate && endDate){
+                query += `start=${startDate}&end=${endDate}`
+            }
+
+            const { data } = await api.get(query);
 
             const reversedData = data.reverse();
 
