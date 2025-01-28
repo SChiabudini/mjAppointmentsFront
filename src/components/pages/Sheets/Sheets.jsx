@@ -309,7 +309,7 @@ const Sheets = () => {
                                     ) : (
                                         <>
                                             {paginatedSheets?.map(sheet => (
-                                                <tr key={sheet._id}>
+                                                <tr key={sheet._id} className={`${!sheet.active ? 'disabled' : ''}`}>
                                                     <td>{sheet.oil ? "Service" : "Mecánica"}</td>
                                                     <td>{sheet.number}</td>
                                                     <td>{formatDate(sheet.date)}</td>

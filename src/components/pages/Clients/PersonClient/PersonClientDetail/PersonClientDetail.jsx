@@ -64,14 +64,12 @@ const PersonClientDetail = () => {
                         <div className="title">
                             <h2>Detalle del Cliente</h2>
                             <div className="titleButtons">
-                                {/* {personClientDetail.active ? <button onClick={() => navigate(`/main_window/clientes/personas/edit/${id}`)}>Editar</button> : ''} */}
                                 {personClientDetail.active ? <button onClick={() => setPopUpOpen(true)}>Editar</button> : ''}
                                 {!personClientDetail.active ? <button className="add" onClick={() => setShowDeleteModal(!showDeleteModal)}>Reactivar</button> : <button className="delete" onClick={() => setShowDeleteModal(!showDeleteModal)}>Archivar</button>}
                                 <button onClick={() => navigate(`/main_window/clientes/personas`)}>Atrás</button>
                             </div>
                         </div>
-                        {/* <div className={!personClientDetail.active ? `container ${style.contentInactive}` : `container ${style.content}`}> */}
-                        <div className="columns">
+                        <div className={`columns ${!personClientDetail.active ? 'disabled' : ''}`}>
                             <div className="left">
                                 <p><span>Estado:&nbsp;</span>{personClientDetail.active ? 'Activo' : 'Inactivo'}</p>
                                 {personClientDetail.dni && <p><span>DNI:&nbsp;</span>{personClientDetail.dni}</p>}

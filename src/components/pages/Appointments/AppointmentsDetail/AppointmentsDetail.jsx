@@ -71,8 +71,7 @@ const AppointmentsDetail = () => {
                                 <button onClick={() => navigate(`/`)}>Atrás</button>
                             </div>
                         </div>
-                        {/* <div className={!appointmentDetail.active ? `container ${style.contentInactive}` : `container ${style.content}`}> */}
-                        <div className="columns">
+                        <div className={`columns ${!appointmentDetail.active ? 'disabled' : ''}`}>
                             <div className="left">
                                 <div>
                                 {(appointmentDetail.personClient || appointmentDetail.companyClient) && (

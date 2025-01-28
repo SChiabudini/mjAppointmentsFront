@@ -50,10 +50,10 @@ const Appointments = () => {
     }));  
 
     const MonthEvent = (props) => {
-        const { _id, procedureIconMechanic, procedureIconService, vehicleLicensePlate } = props.event;
+        const { _id, active, procedureIconMechanic, procedureIconService, vehicleLicensePlate } = props.event;
 
         return (
-            <div className={style.containerEventsMonth} onClick={() => navigate(`/main_window/turnos/${_id}`)}>
+            <div className={`${style.containerEventsMonth} ${!active ? 'disabled' : ''}`} onClick={() => navigate(`/main_window/turnos/${_id}`)}>
                 <div className={style.icons}>
                     {procedureIconMechanic && <img src={iconMechanic} alt="mechanic-icon" className={style.icon} />}
                     {procedureIconService && <img src={iconService} alt="service-icon" className={style.icon} />}
@@ -64,10 +64,10 @@ const Appointments = () => {
     };
 
     const WeekEvent = (props) => {
-        const { _id, startTime, endTime, personClient, companyClient, procedureIconMechanic, procedureIconService, vehicleLicensePlate, vehicleBrandAndModel } = props.event;
+        const { _id, active, startTime, endTime, personClient, companyClient, procedureIconMechanic, procedureIconService, vehicleLicensePlate, vehicleBrandAndModel } = props.event;
 
         return (
-            <div className={style.containerEventsWeek} onClick={() => navigate(`/main_window/turnos/${_id}`)}>
+            <div className={`${style.containerEventsWeek} ${!active ? 'disabled' : ''}`} onClick={() => navigate(`/main_window/turnos/${_id}`)}>
                 <div>{startTime}hs - {endTime}hs</div>
                 <div className={style.icons}>
                     {procedureIconMechanic && <img src={iconMechanic} alt="mechanic-icon" className={style.icon} />}
@@ -82,10 +82,10 @@ const Appointments = () => {
     }
 
     const DayEvent = (props) => {
-        const { _id, startTime, endTime, procedureTitle, personClient, companyClient, procedureIconMechanic, procedureIconService, vehicleLicensePlate, vehicleBrandAndModel } = props.event;
+        const { _id, active, startTime, endTime, procedureTitle, personClient, companyClient, procedureIconMechanic, procedureIconService, vehicleLicensePlate, vehicleBrandAndModel } = props.event;
 
         return (
-            <div className={style.containerEventsDay} onClick={() => navigate(`/main_window/turnos/${_id}`)}>
+            <div className={`${style.containerEventsDay} ${!active ? 'disabled' : ''}`} onClick={() => navigate(`/main_window/turnos/${_id}`)}>
                 <div>Desde {startTime}hs hasta {endTime}hs</div>
                 <div className={style.icons}>
                     {procedureIconMechanic && <p><img src={iconMechanic} alt="mechanic-icon" className={style.icon} /> <span>Mecánica</span></p>}
@@ -102,10 +102,10 @@ const Appointments = () => {
     }
 
     const AgendaEvent = (props) => {
-        const { _id, procedureTitle, personClient, companyClient, procedureIconMechanic, procedureIconService, vehicleLicensePlate, vehicleBrandAndModel } = props.event;
+        const { _id, active, procedureTitle, personClient, companyClient, procedureIconMechanic, procedureIconService, vehicleLicensePlate, vehicleBrandAndModel } = props.event;
 
         return (
-            <div className={style.containerEventsAgenda} onClick={() => navigate(`/main_window/turnos/${_id}`)}>
+            <div className={`${style.containerEventsAgenda} ${!active ? 'disabled' : ''}`} onClick={() => navigate(`/main_window/turnos/${_id}`)}>
                 <div className={style.icons}>
                     {procedureIconMechanic && <img src={iconMechanic} alt="mechanic-icon" className={style.icon} />}
                     {procedureIconService && <img src={iconService} alt="service-icon" className={style.icon} />}

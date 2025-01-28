@@ -70,8 +70,7 @@ const VehicleDetail = () => {
                                 <button onClick={() => navigate(`/main_window/vehiculos`)}>Atrás</button>
                             </div>
                         </div>
-                        {/* <div className={!vehicleDetail.active ? `container ${style.contentInactive}` : `container ${style.content}`}> */}
-                        <div className="columns">
+                        <div className={`columns ${!vehicleDetail.active ? 'disabled' : ''}`}>
                             <div className="left">
                                 <p><span>Estado:&nbsp;</span>{vehicleDetail.active ? 'Activo' : 'Inactivo'}</p>
                                 {vehicleDetail.licensePlate && <p><span>Patente:&nbsp;</span>{vehicleDetail.licensePlate}</p>}

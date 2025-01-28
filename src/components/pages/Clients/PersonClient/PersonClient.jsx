@@ -254,7 +254,7 @@ const PersonClients = () => {
                                     ) : (
                                         <>
                                             {paginatedPersonClients?.map(personClient => (
-                                                <tr key={personClient._id}>
+                                                <tr key={personClient._id} className={`${!personClient.active ? 'disabled' : ''}`}>
                                                     <td>{personClient.dni}</td>
                                                     <td>{personClient.name}</td>
                                                     <td>{personClient.email}</td>

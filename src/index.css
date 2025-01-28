@@ -160,6 +160,10 @@ h2{
     overflow: auto; /* Evita desbordamientos visuales */
 }
 
+.disabled{
+    opacity: 0.3;
+}
+
 .columns {
     flex: 1; /* Para que ocupe todo el espacio disponible en la columna */
     box-sizing: border-box;
