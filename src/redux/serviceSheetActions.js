@@ -1,5 +1,5 @@
 import api from '../services/axios.js';
-import { getServiceSheetsReducer, getServiceSheetByIdReducer, searchServiceSheetsReducer } from './serviceSheetSlice.js';
+import { getServiceSheetsReducer, getServiceSheetsAllReducer, getServiceSheetByIdReducer, searchServiceSheetsReducer, searchServiceSheetsAllReducer } from './serviceSheetSlice.js';
 
 //-----TRAE ÚNICAMENTE LOS ACTIVOS
 
@@ -13,6 +13,27 @@ export const getServiceSheets = () => {
             const reversedData = data.reverse();
 
             dispatch(getServiceSheetsReducer(reversedData));
+
+        } catch (error) {           
+            console.error("Error retrieving service sheets from server: " + error.message);
+            throw new Error('Network error or server not reachable');
+        }
+    }
+
+};
+
+//-----TRAE TODOS
+
+export const getAllServiceSheets = () => {
+
+    return async (dispatch) => {
+        try {
+            
+            const { data } = await api.get("/serviceSheet/all");
+
+            const reversedData = data.reverse();
+
+            dispatch(getServiceSheetsAllReducer(reversedData));
 
         } catch (error) {           
             console.error("Error retrieving service sheets from server: " + error.message);
@@ -67,6 +88,41 @@ export const searchServiceSheets = (number, vehicle, client) => {
             const reversedData = data.reverse();
 
             dispatch(searchServiceSheetsReducer(reversedData));
+
+        } catch (error) {
+            console.error("Service sheets search error:", error.message);
+            throw new Error('Network error or server not reachable');
+        }
+    }
+}
+
+//-----TRAE TODOS FILTRADOS
+
+export const searchAllServiceSheets = (number, vehicle, client) => {
+
+    return async (dispatch) => {
+
+        try {
+            
+            let query = '/serviceSheet/all?';
+            
+            if(number){
+                query += `number=${number}&`
+            }
+
+            if(vehicle){
+                query += `vehicle=${vehicle}&`
+            }
+
+            if(client){
+                query += `client=${client}&`
+            }
+
+            const { data } = await api.get(query);
+
+            const reversedData = data.reverse();
+
+            dispatch(searchServiceSheetsAllReducer(reversedData));
 
         } catch (error) {
             console.error("Service sheets search error:", error.message);

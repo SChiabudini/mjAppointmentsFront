@@ -5,12 +5,19 @@ export const mechanicalSheetSlice = createSlice({
     initialState: {
         mechanicalSheets: [],
         mechanicalSheetsCopy: [],
+        mechanicalSheetsAll: [],
+        mechanicalSheetsAllCopy: [],
         mechanicalSheetDetail: {}
     },
     reducers: {
         getMechanicalSheetsReducer: (state, action) => {
             state.mechanicalSheets = action.payload;
             state.mechanicalSheetsCopy = action.payload;
+        },
+
+        getMechanicalSheetsAllReducer: (state, action) => {
+            state.mechanicalSheetsAll = action.payload;
+            state.mechanicalSheetsAllCopy = action.payload;
         },
         
         getMechanicalSheetByIdReducer: (state, action) => {
@@ -21,16 +28,21 @@ export const mechanicalSheetSlice = createSlice({
             state.mechanicalSheets = action.payload;
         },
 
+        searchMechanicalSheetsAllReducer: (state, action) => {
+            state.mechanicalSheetsAll = action.payload;
+        },
+
         clearMechanicalSheetDetailReducer: (state) => {
             state.mechanicalSheetDetail = {};
         },
 
         clearMechanicalSheetsReducer: (state) => {
             state.mechanicalSheets = state.mechanicalSheetsCopy;
+            state.mechanicalSheetsAll = state.mechanicalSheetsAllCopy;
         }
     }
 });
 
-export const { getMechanicalSheetsReducer, getMechanicalSheetByIdReducer, searchMechanicalSheetsReducer, clearMechanicalSheetDetailReducer, clearMechanicalSheetsReducer } = mechanicalSheetSlice.actions;
+export const { getMechanicalSheetsReducer, getMechanicalSheetsAllReducer, getMechanicalSheetByIdReducer, searchMechanicalSheetsReducer, searchMechanicalSheetsAllReducer, clearMechanicalSheetDetailReducer, clearMechanicalSheetsReducer } = mechanicalSheetSlice.actions;
 
 export default mechanicalSheetSlice.reducer;
