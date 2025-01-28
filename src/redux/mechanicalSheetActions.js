@@ -1,5 +1,5 @@
 import api from '../services/axios.js';
-import { getMechanicalSheetsReducer, getMechanicalSheetByIdReducer, searchMechanicalSheetsReducer } from './mechanicalSheetSlice.js';
+import { getMechanicalSheetsReducer, getMechanicalSheetsAllReducer, getMechanicalSheetByIdReducer, searchMechanicalSheetsReducer, searchMechanicalSheetsAllReducer } from './mechanicalSheetSlice.js';
 
 //-----TRAE ÚNICAMENTE LOS ACTIVOS
 
@@ -13,6 +13,27 @@ export const getMechanicalSheets = () => {
             const reversedData = data.reverse();
 
             dispatch(getMechanicalSheetsReducer(reversedData));
+
+        } catch (error) {           
+            console.error("Error retrieving mechanical sheets from server: " + error.message);
+            throw new Error('Network error or server not reachable');
+        }
+    }
+
+};
+
+//-----TRAE TODOS
+
+export const getAllMechanicalSheets = () => {
+
+    return async (dispatch) => {
+        try {
+            
+            const { data } = await api.get("/mechanicalSheet/all");
+
+            const reversedData = data.reverse();
+
+            dispatch(getMechanicalSheetsAllReducer(reversedData));
 
         } catch (error) {           
             console.error("Error retrieving mechanical sheets from server: " + error.message);
@@ -70,6 +91,45 @@ export const searchMechanicalSheets = (number, vehicle, client, keyWords) => {
             const reversedData = data.reverse();
 
             dispatch(searchMechanicalSheetsReducer(reversedData));
+
+        } catch (error) {
+            console.error("Mechanical sheets search error:", error.message);
+            throw new Error('Network error or server not reachable');
+        }
+    }
+}
+
+//-----TRAE TODOS FILTRADOS
+
+export const searchAllMechanicalSheets = (number, vehicle, client, keyWords) => {
+
+    return async (dispatch) => {
+
+        try {
+            
+            let query = '/mechanicalSheet/all?';
+            
+            if(number){
+                query += `number=${number}&`
+            }
+
+            if(vehicle){
+                query += `vehicle=${vehicle}&`
+            }
+
+            if(client){
+                query += `client=${client}&`
+            }
+
+            if(keyWords){
+                query += `keyWords=${keyWords}&`
+            }
+
+            const { data } = await api.get(query);
+
+            const reversedData = data.reverse();
+
+            dispatch(searchMechanicalSheetsAllReducer(reversedData));
 
         } catch (error) {
             console.error("Mechanical sheets search error:", error.message);
