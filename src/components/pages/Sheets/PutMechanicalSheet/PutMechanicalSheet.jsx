@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import NewPersonClient from "../../Clients/PersonClient/NewPersonClient/NewPersonClient.jsx";
 import NewCompanyClient from "../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx";
 import NewVehicle from "../../Vehicles/NewVehicle/NewVehicle.jsx";
-import { getMechanicalSheetById, getMechanicalSheets, putMechanicalSheet } from "../../../../redux/mechanicalSheetActions.js";
+import { getMechanicalSheetById, getMechanicalSheets, getAllMechanicalSheets, putMechanicalSheet } from "../../../../redux/mechanicalSheetActions.js";
 import { getPersonClients } from "../../../../redux/personClientActions";
 import { getCompanyClients } from "../../../../redux/companyClientActions";
 import { getVehicles } from "../../../../redux/vehicleActions";
@@ -282,6 +282,7 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
             setSearchTermClients('');
             setSearchTermVehicles('');
             dispatch(getMechanicalSheets());
+            dispatch(getAllMechanicalSheets());
             dispatch(getMechanicalSheetById(id));
             onMechanicalSheetAdded(response);
         } catch (error) {

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import NewVehicle from './NewVehicle/NewVehicle.jsx';
 import Error from '../Error/Error.jsx';
-import { getVehicles, searchVehicles } from "../../../redux/vehicleActions.js";
+import { getVehicles, getAllVehicles, searchVehicles, searchAllVehicles } from "../../../redux/vehicleActions.js";
 import { clearVehiclesReducer } from "../../../redux/vehicleSlice.js";
 import detail from "../../../assets/img/detail.png";
 import loadingGif from "../../../assets/img/loading.gif";
@@ -11,6 +11,7 @@ import loadingGif from "../../../assets/img/loading.gif";
 const Vehicles = () => {
 
     const vehicles = useSelector(state => state.vehicle.vehicles);
+    const allVehicles = useSelector(state => state.vehicle.vehiclesAll);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -18,17 +19,22 @@ const Vehicles = () => {
     const [client, setClient] = useState('');
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [showAll, setShowAll] = useState(false);
 
     useEffect(() => {
         if(!licensePlate && !client){
-            dispatch(getVehicles()).catch(() => setError(true));
+            if(showAll){
+                dispatch(getAllVehicles()).catch(() => setError(true));
+            } else{
+                dispatch(getVehicles()).catch(() => setError(true));
+            }
         };
 
         return () => {
             dispatch(clearVehiclesReducer());
         };
 
-    }, [licensePlate, client, dispatch]);
+    }, [licensePlate, client, dispatch, showAll]);
 
     //----- ABRIR POPUP
 
@@ -40,7 +46,11 @@ const Vehicles = () => {
         if (event.key === "Enter") {
             if (licensePlate.trim() || client.trim()) {
                 setLoading(true);
-                dispatch(searchVehicles(licensePlate.trim(), client.trim())).then(() => setLoading(false));
+                if(showAll){
+                    dispatch(searchAllVehicles(licensePlate.trim(), client.trim())).then(() => setLoading(false));
+                } else{
+                    dispatch(searchVehicles(licensePlate.trim(), client.trim())).then(() => setLoading(false));
+                }
                 setCurrentPage(1);
             }
         }
@@ -57,9 +67,24 @@ const Vehicles = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
-    const paginatedVehicles = Array.isArray(vehicles) 
-    ? vehicles.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-    : [];
+    const [paginatedVehicles, setPaginatedVehicles] = useState([]);
+
+    useEffect(() => {
+        if (Array.isArray(vehicles)) {
+            const newPaginatedVehicles = !showAll
+                ? vehicles.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                : allVehicles.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    
+            // Evita actualizar el estado si no hay cambios
+            setPaginatedVehicles((prev) => {
+                const prevStringified = JSON.stringify(prev);
+                const newStringified = JSON.stringify(newPaginatedVehicles);
+    
+                return prevStringified === newStringified ? prev : newPaginatedVehicles;
+            });
+        }
+    }, [vehicles, showAll, currentPage, itemsPerPage, allVehicles]);
+
     const totalPages = Math.ceil(vehicles.length / itemsPerPage);
 
     const handlePageChange = (newPage) => {
@@ -103,6 +128,16 @@ const Vehicles = () => {
         return buttons;
     };
 
+    //----- MOSTRAR TODOS
+    
+    const handleAll = async () => {
+        if(allVehicles?.length === 0){
+            setLoading(true);
+            dispatch(getAllVehicles()).then(() => setLoading(false));
+        }
+        setShowAll(!showAll);
+    }
+
     return(
         <div className="page">
             {error ? (
@@ -120,7 +155,17 @@ const Vehicles = () => {
                                 ▸
                             </button>
                         </div>
-                        <button onClick={() => setPopUpOpen(true)}>Nuevo</button>
+                        <div className="titleButtons">
+                            <label className="showAll">
+                                <input
+                                    type="checkbox"
+                                    name="showAll"
+                                    onChange={handleAll}
+                                />
+                                Mostrar todos
+                            </label>
+                            <button onClick={() => setPopUpOpen(true)}>Nuevo</button>
+                        </div>
                     </div>
                     <div className="container">
                         <div className="tableContainer">
@@ -189,13 +234,13 @@ const Vehicles = () => {
                                     ) : (
                                         <>
                                             {paginatedVehicles?.map(vehicle => (
-                                                <tr key={vehicle._id}>
+                                                <tr key={vehicle._id} className={`${!vehicle.active ? 'disabled' : ''}`}>
                                                     <td>{vehicle.licensePlate}</td>
                                                     <td>{vehicle.brand}</td>
                                                     <td>{vehicle.model}</td>
                                                     <td>{vehicle.year}</td>
                                                     <td>{vehicle.engine}</td>
-                                                    <td>{vehicle.personClient ? vehicle.personClient.name : vehicle.companyClient ? vehicle.companyClient.name : 'N/A'}</td>
+                                                    <td>{vehicle.personClient ? vehicle.personClient.name : vehicle.companyClient ? vehicle.companyClient.name : 'No disponible'}</td>
                                                     <td className='center'>
                                                         <a onClick={() => navigate(`/main_window/vehiculos/${vehicle._id}`)}>
                                                             <img src={detail} alt="" className="detailImg" />

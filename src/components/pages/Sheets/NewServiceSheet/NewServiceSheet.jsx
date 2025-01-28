@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getServiceSheets, postServiceSheet } from "../../../../redux/serviceSheetActions.js";
+import { getServiceSheets, getAllServiceSheets, postServiceSheet } from "../../../../redux/serviceSheetActions.js";
 import { getPersonClients } from "../../../../redux/personClientActions";
 import { getCompanyClients } from "../../../../redux/companyClientActions";
 import { getVehicles } from "../../../../redux/vehicleActions";
@@ -276,6 +276,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
             setSearchTermClients('');
             setSearchTermVehicles('');
             dispatch(getServiceSheets());
+            dispatch(getAllServiceSheets());
             onServiceSheetAdded(response);
         } catch (error) {
             setErrorMessage("*Error al crear ficha service, revise los datos ingresados e intente nuevamente.");

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getCompanyClients, postCompanyClient } from "../../../../../redux/companyClientActions";
+import { getCompanyClients, getAllCompanyClients, postCompanyClient } from "../../../../../redux/companyClientActions";
 import { getVehicles } from "../../../../../redux/vehicleActions";
 import NewVehicle from '../../../Vehicles/NewVehicle/NewVehicle.jsx';
 import clear from "../../../../../assets/img/clear.png";
@@ -193,6 +193,7 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
 
             setNewCompanyClient(initialCompanyClientState);
             dispatch(getCompanyClients());
+            dispatch(getAllCompanyClients());
             onClientAdded(response);
         } catch (error) {
             setErrorMessage("*Error al crear cliente, revise los datos ingresados e intente nuevamente.");

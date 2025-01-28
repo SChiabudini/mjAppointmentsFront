@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import NewPersonClient from "../../Clients/PersonClient/NewPersonClient/NewPersonClient.jsx";
 import NewCompanyClient from "../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx";
 import NewVehicle from "../../Vehicles/NewVehicle/NewVehicle.jsx";
-import { getAppointmentById, getAppointments, putAppointment } from "../../../../redux/appointmentActions.js";
+import { getAppointmentById, getAppointments, getAllAppointments, putAppointment } from "../../../../redux/appointmentActions.js";
 import reboot from  "../../../../assets/img/reboot.png";
 import rebootHover from "../../../../assets/img/rebootHover.png";
 import loadingGif from "../../../../assets/img/loading.gif";
@@ -327,6 +327,7 @@ const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => 
 
             setEditAppointment(editAppointment);
             dispatch(getAppointments());
+            dispatch(getAllAppointments());
             dispatch(getAppointmentById(id));
             onAppointmentAdded(response);
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getCompanyClientById } from '../../../../../redux/companyClientActions';
+import { getCompanyClientById, putCompanyClientStatus, getCompanyClients } from '../../../../../redux/companyClientActions';
 import { clearCompanyClientDetailReducer } from '../../../../../redux/companyClientSlice.js';
 import PutCompanyClient from '../PutCompanyClient/PutCompanyClient.jsx';
 import Error from '../../../Error/Error.jsx';
@@ -18,18 +18,36 @@ const CompanyClientDetail = () => {
 
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);    
-    const [popUpOpen, setPopUpOpen] = useState(false);
 
     useEffect(() => {
         dispatch(getCompanyClientById(id))
         .then(() => setLoading(false))
         .catch(() => setError(true));
-        
+
         return () => {
             dispatch(clearCompanyClientDetailReducer());
         };
-    }, [dispatch, id]);   
+    }, [dispatch, id]);
+
+    //----- ABRIR POPUP
+    const [popUpOpen, setPopUpOpen] = useState(false);
+
+    //----- DESACTIVAR ELEMENTO
+    
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+    const handleDelete = async () => {
+        dispatch(putCompanyClientStatus(id))
+        .then(
+            dispatch(getCompanyClients()).then(
+                navigate(`/main_window/clientes/empresas`)
+            )
+        ).catch(
+            dispatch(getCompanyClients()).then(
+                navigate(`/main_window/clientes/empresas`)
+            )
+        );
+    }
 
     return(
         <div className="page">
@@ -47,21 +65,19 @@ const CompanyClientDetail = () => {
                             <h2>Detalle de la empresa</h2>
                             <div className="titleButtons">
                                 {companyClientDetail.active ? <button onClick={() => setPopUpOpen(true)}>Editar</button> : ''}
-                                {!companyClientDetail.active ? <button className="add" onClick={() => setShowDeleteModal(!showDeleteModal)}>Activar</button> : <button className="delete" onClick={() => setShowDeleteModal(!showDeleteModal)}>Desactivar</button>}
+                                {!companyClientDetail.active ? <button className="add" onClick={() => setShowDeleteModal(!showDeleteModal)}>Reactivar</button> : <button className="delete" onClick={() => setShowDeleteModal(!showDeleteModal)}>Archivar</button>}
                                 <button onClick={() => navigate(`/main_window/clientes/empresas`)}>Atrás</button>
                             </div>
                         </div>
-                        {/* <div className={!companyClientDetail.active ? `container ${style.contentInactive}` : `container ${style.content}`}> */}
-                        <div className="columns">
+                        <div className={`columns ${!companyClientDetail.active ? 'disabled' : ''}`}>
                             <div className="left">
-                            {/* <div className={style.column}> */}
                                 <p><span>Estado:&nbsp;</span>{companyClientDetail.active ? 'Activo' : 'Inactivo'}</p>
                                 {companyClientDetail.cuit && <p><span>CUIT:&nbsp;</span>{companyClientDetail.cuit}</p>}
                                 {companyClientDetail.name && <p><span>Nombre:&nbsp;</span>{companyClientDetail.name}</p>}
                                 {companyClientDetail.phoneWsp ? (
                                     <p><span>Whatsapp:&nbsp;</span>+{companyClientDetail.phoneWsp.prefix}{companyClientDetail.phoneWsp.numberPhone}</p>
                                 ) : (
-                                    <p>No hay teléfono con Whatsapp registrado.</p>
+                                    <p><span>Whatsapp:&nbsp;</span>No hay teléfono con Whatsapp registrado.</p>
                                 )}                        
                                 {companyClientDetail.phones?.length > 0 ? (
                                     <p><span>Teléfono(s):&nbsp;</span>{companyClientDetail.phones?.join(', ')}</p>
@@ -171,6 +187,23 @@ const CompanyClientDetail = () => {
                     <PutCompanyClient onClientAdded={() => setPopUpOpen(false)}/>
                 </div>
             </div>
+            {showDeleteModal ?
+                <div className="deleteModal">
+                    <div className="deleteModalContainer">
+                        <p>{companyClientDetail.active ? "¿Está seguro que desea archivar este cliente?" : "¿Está seguro que desea reactivar este cliente?"}</p>
+                        <div className="deleteModalButtons">
+                            <button onClick={() => setShowDeleteModal(false)}>Cancelar</button>
+                            {companyClientDetail.active ?
+                                <button onClick={handleDelete} className="delete">Archivar</button>
+                            : 
+                                <button onClick={handleDelete} className="add">Reactivar</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                :
+                <></>
+            }
         </div>
     )
 };

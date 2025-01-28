@@ -96,6 +96,8 @@ table {
     --black: #000000;
     --orange: #ff6600;
     --light-orange: #fecba9;
+    --dark-orange: #8b5a37;
+    --off-orange: #bd7341;
     --red: #ad0000;
     --green: #08702b;
     --border-light: solid 1px #f1f1f1;
@@ -156,6 +158,10 @@ h2{
     display: flex; /* Para usar flexbox */
     flex-direction: column; /* Columna para el diseño vertical */
     overflow: auto; /* Evita desbordamientos visuales */
+}
+
+.disabled{
+    opacity: 0.3;
 }
 
 .columns {
@@ -224,12 +230,20 @@ button:disabled {
 .titleButtons{
     display: flex;
     gap: 0.5rem;
+    align-items: center;
 }
 
 .titleButtons button{
     letter-spacing: 0.05rem;
     font-size: 0.75rem;
     padding: 0.5rem 1rem;
+}
+
+.showAll{
+    margin-right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
 }
 
 button.delete{
@@ -813,6 +827,9 @@ button.rbc-active{
     background-color: var(--light-orange) !important;
 }
 
+.rbc-agenda-view table.rbc-agenda-table tbody > tr > td{
+    vertical-align: middle !important;
+}
 
 /*-- LOADING --*/
 
@@ -843,6 +860,51 @@ button.rbc-active{
 .loadingCell {
     text-align: center;
     padding: 2rem;
+}
+
+/*-- DELETE MODAL --*/
+
+.deleteModal{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.deleteModalContainer{
+    background-color: #fff;
+    padding: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.deleteModalContainer p{
+    text-align: center;
+}
+
+.deleteModalButtons{
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.deleteModalButtons button:hover{
+    background-color: var(--orange);
+    color: white;
 }
 
 /*-- PRINT CSS --*/

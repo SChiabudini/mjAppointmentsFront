@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getMechanicalSheets, postMechanicalSheet } from "../../../../redux/mechanicalSheetActions.js";
+import { getMechanicalSheets, getAllMechanicalSheets, postMechanicalSheet } from "../../../../redux/mechanicalSheetActions.js";
 import { getPersonClients } from "../../../../redux/personClientActions";
 import { getCompanyClients } from "../../../../redux/companyClientActions";
 import { getVehicles } from "../../../../redux/vehicleActions";
@@ -255,6 +255,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
             setSearchTermClients('');
             setSearchTermVehicles('');
             dispatch(getMechanicalSheets());
+            dispatch(getAllMechanicalSheets());
             onMechanicalSheetAdded(response);
         } catch (error) {
             setErrorMessage("*Error al crear ficha mecánica, revise los datos ingresados e intente nuevamente.");

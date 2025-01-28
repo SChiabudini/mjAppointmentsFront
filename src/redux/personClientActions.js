@@ -1,5 +1,5 @@
 import api from '../services/axios.js';
-import { getPersonClientsReducer, getPersonClientByIdReducer, searchPersonClientsReducer } from './personClientSlice.js';
+import { getPersonClientsReducer, getPersonClientsAllReducer, getPersonClientByIdReducer, searchPersonClientsReducer, searchPersonClientsAllReducer } from './personClientSlice.js';
 
 //-----TRAE ÚNICAMENTE LOS ACTIVOS
 
@@ -13,6 +13,28 @@ export const getPersonClients = () => {
             const reversedData = data.reverse();
 
             dispatch(getPersonClientsReducer(reversedData));
+
+        } catch (error) {
+            
+            console.error("Error retrieving clients from server: " + error.message);
+            throw new Error('Network error or server not reachable');
+        }
+    }
+
+};
+
+//-----TRAE TODOS
+
+export const getAllPersonClients = () => {
+
+    return async (dispatch) => {
+        try {
+            
+            const { data } = await api.get("/personClient/all");
+
+            const reversedData = data.reverse();
+
+            dispatch(getPersonClientsAllReducer(reversedData));
 
         } catch (error) {
             
@@ -74,6 +96,40 @@ export const searchPersonClients = (dni, name, vehicle) => {
     }
 }
 
+//-----TRAE TODOS FILTRADOS
+export const searchAllPersonClients = (dni, name, vehicle) => {
+
+    return async (dispatch) => {
+
+        try {
+            
+            let query = '/personClient/all?';
+            
+            if(dni){
+                query += `dni=${dni}&`
+            }
+
+            if(name){
+                query += `name=${name}&`
+            }
+
+            if(vehicle){
+                query += `vehicle=${vehicle}&`
+            }
+
+            const { data } = await api.get(query);
+
+            const reversedData = data.reverse();
+
+            dispatch(searchPersonClientsAllReducer(reversedData));
+
+        } catch (error) {
+            console.error("Clients search error:", error.message);
+            throw new Error('Network error or server not reachable');
+        }
+    }
+}
+
 export const postPersonClient = (clientData) => {
     return async () => {
         try {
@@ -96,6 +152,20 @@ export const putPersonClient = (personClientData) => {
 
         } catch (error) {
             console.error("Error editing a person client: ", error.message);
+            throw new Error('Network error or server not reachable');
+        }  
+    };
+};
+
+export const putPersonClientStatus = (personClienttId) => {    
+    return async () => {   
+        try {
+            const response = await api.put(`/personClient/status/${personClienttId}`);
+
+            return response;
+
+        } catch (error) {
+            console.error("Error editing client status: ", error.message);
             throw new Error('Network error or server not reachable');
         }  
     };

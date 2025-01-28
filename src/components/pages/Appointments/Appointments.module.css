@@ -18,6 +18,8 @@
     font-size: 0.9rem;
     color: var(--dark-grey);
     background-color: var(--light-orange) !important;
+    max-height: 100%; /* Puedes ajustarlo según tus necesidades */
+    overflow-y: auto; /* Agrega un scroll vertical si el contenido excede el alto */
 }
 
 .containerEventsDay {
@@ -30,6 +32,38 @@
     font-size: 0.9rem;
     color: var(--dark-grey);
     background-color: var(--light-orange) !important;
+    max-height: 100%; /* Puedes ajustarlo según tus necesidades */
+    overflow-y: auto; /* Agrega un scroll vertical si el contenido excede el alto */
+}
+
+.containerEventsWeek {
+    display: flex;
+    flex-direction: column;
+    padding: 0.35rem;
+    align-items: start;
+    gap: 0.5rem;
+    box-sizing: border-box;
+    font-size: 0.9rem;
+    color: var(--dark-grey);
+    background-color: var(--light-orange) !important;
+    max-height: 100%; /* Ajusta según tus necesidades */
+    overflow-y: auto; /* Agrega un scroll vertical si el contenido excede el alto */
+}
+
+/* Estilos del scroll */
+.containerEventsWeek::-webkit-scrollbar, .containerEventsDay::-webkit-scrollbar {
+    width: 6px; /* Ancho del scroll */
+}
+
+.containerEventsWeek::-webkit-scrollbar-track, .containerEventsDay::-webkit-scrollbar-track {
+    background-color: var(--dark-orange); /* Fondo del track */
+    border-radius: 10px; /* Bordes redondeados */
+}
+
+.containerEventsWeek::-webkit-scrollbar-thumb, .containerEventsDay::-webkit-scrollbar-thumb {
+    background-color: var(--off-orange); /* Color del scroll */
+    border-radius: 10px; /* Bordes redondeados */
+    transition: background-color 0.3s ease; /* Animación suave */
 }
 
 .containerEventsDay .icons{

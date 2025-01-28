@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import NewBudget from "./NewBudget/NewBudget.jsx";
 import Error from "../Error/Error.jsx";
-import { getBudgets, searchBudgets } from "../../../redux/budgetActions.js";
+import { getBudgets, getAllBudgets, searchBudgets, searchAllBudgets } from "../../../redux/budgetActions.js";
 import { clearBudgetsReducer } from "../../../redux/budgetSlice.js";
 import detail from "../../../assets/img/detail.png";
 import loadingGif from "../../../assets/img/loading.gif";
@@ -11,6 +11,7 @@ import loadingGif from "../../../assets/img/loading.gif";
 const Budgets = () => {
 
     const budgets = useSelector(state => state.budget.budgets);
+    const allBudgets = useSelector(state => state.budget.budgetsAll);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -19,17 +20,23 @@ const Budgets = () => {
     const [ vehicle, setVehicle ] = useState('');
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [showAll, setShowAll] = useState(false);
 
     useEffect(() => {
-        if(!number && client && vehicle){
-            dispatch(getBudgets())
-            .catch(() => setError(true));
+        if(!number && !client && !vehicle){
+            if(showAll){
+                dispatch(getAllBudgets())
+                .catch(() => setError(true));
+            } else{
+                dispatch(getBudgets())
+                .catch(() => setError(true));
+            }
         };
 
         return () => {
             dispatch(clearBudgetsReducer());
         };
-    }, [number, client, vehicle, dispatch]);
+    }, [number, client, vehicle, dispatch, showAll]);
 
     //----- ABRIR POPUP
     
@@ -41,7 +48,11 @@ const Budgets = () => {
         if (event.key === "Enter") {
             if (number.trim() || client.trim() || vehicle.trim()) {
                 setLoading(true);
-                dispatch(searchBudgets(number.trim(), client.trim(), vehicle.trim())).then(() => setLoading(false));
+                if(showAll){
+                    dispatch(searchAllBudgets(number.trim(), client.trim(), vehicle.trim())).then(() => setLoading(false));
+                } else{
+                    dispatch(searchBudgets(number.trim(), client.trim(), vehicle.trim())).then(() => setLoading(false));
+                }
                 setCurrentPage(1);
             }
         }
@@ -58,9 +69,24 @@ const Budgets = () => {
     
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
-    const paginatedBudgets = Array.isArray(budgets) 
-    ? budgets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-    : [];
+    const [paginatedBudgets, setPaginatedBudgets] = useState([]);
+
+    useEffect(() => {
+        if (Array.isArray(budgets)) {
+            const newPaginatedBudgets = !showAll
+                ? budgets?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                : allBudgets?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    
+            // Evita actualizar el estado si no hay cambios
+            setPaginatedBudgets((prev) => {
+                const prevStringified = JSON.stringify(prev);
+                const newStringified = JSON.stringify(newPaginatedBudgets);
+    
+                return prevStringified === newStringified ? prev : newPaginatedBudgets;
+            });
+        }
+    }, [budgets, showAll, currentPage, itemsPerPage, allBudgets]);
+
     const totalPages = Math.ceil(budgets.length / itemsPerPage);
 
     const handlePageChange = (newPage) => {
@@ -118,6 +144,16 @@ const Budgets = () => {
         return buttons;
     };
 
+    //----- MOSTRAR TODOS
+
+    const handleAll = async () => {
+        if(allBudgets?.length === 0){
+            setLoading(true);
+            dispatch(getAllBudgets()).then(() => setLoading(false));
+        }
+        setShowAll(!showAll);
+    }
+
     return(
         <div className="page">
             {error ? (
@@ -135,7 +171,17 @@ const Budgets = () => {
                                 ▸
                             </button>
                         </div>
-                        <button onClick={() => setPopUpOpen(true)}>Nuevo</button>
+                        <div className="titleButtons">
+                            <label className="showAll">
+                                <input
+                                    type="checkbox"
+                                    name="showAll"
+                                    onChange={handleAll}
+                                />
+                                Mostrar todos
+                            </label>
+                            <button onClick={() => setPopUpOpen(true)}>Nuevo</button>
+                        </div>
                     </div>
                     <div className="container">
                         <div className="tableContainer">
@@ -217,15 +263,15 @@ const Budgets = () => {
                                     ) : (
                                         <>
                                             {paginatedBudgets?.map(budget => (
-                                                <tr key={budget._id}>
+                                                <tr key={budget._id} className={`${!budget.active ? 'disabled' : ''}`}>
                                                     <td>{budget.number}</td>
                                                     <td>{formatDate(budget.start)}</td>
                                                     <td>{formatDate(budget.end)}</td>
-                                                    <td>{budget.personClient ? budget.personClient.name : budget.companyClient ? budget.companyClient.name : 'N/A'}</td>
-                                                    <td>{budget.vehicle ? budget.vehicle.licensePlate : 'N/A'}</td>
+                                                    <td>{budget.personClient ? budget.personClient.name : budget.companyClient ? budget.companyClient.name : 'No disponible'}</td>
+                                                    <td>{budget.vehicle ? budget.vehicle.licensePlate : 'No disponible'}</td>
                                                     <td>${budget.total}</td>
                                                     <td className='center'>
-                                                        <a onClick={() => navigate(`/main_window/presupuesto/${budget._id}`)}>
+                                                        <a onClick={() => navigate(`/main_window/presupuestos/${budget._id}`)}>
                                                             <img src={detail} alt="" className="detailImg" />
                                                         </a>
                                                     </td>

@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import PutMechanicalSheet from '../PutMechanicalSheet/PutMechanicalSheet.jsx';
 import Error from '../../Error/Error.jsx';
-import { getMechanicalSheetById } from '../../../../redux/mechanicalSheetActions';
+import { getMechanicalSheetById, putMechanicalSheetStatus, getMechanicalSheets } from '../../../../redux/mechanicalSheetActions';
+import { clearMechanicalSheetDetailReducer } from '../../../../redux/mechanicalSheetSlice.js';
 import loadingGif from "../../../../assets/img/loading.gif";
 
 const MechanicalSheetDetail = () => {
@@ -12,32 +13,40 @@ const MechanicalSheetDetail = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		dispatch(getMechanicalSheetById(id))
-	}, [dispatch, id]);
-
 	const mechanicalSheetDetail = useSelector(state => state.mechanicalSheet?.mechanicalSheetDetail || {});    
 
 	const [error, setError] = useState(false);
 	const [loading, setLoading] = useState(true);
-	const [showDeleteModal, setShowDeleteModal] = useState(false);        
-	const [popUpOpen, setPopUpOpen] = useState(false);  
-	
+
 	useEffect(() => {
-		// const fetchData = async () => {
-		// 	setLoading(true);
-		// 	await dispatch(getMechanicalSheetById(id));
-		// 	setLoading(false);
-		// };
-		// fetchData();
 		dispatch(getMechanicalSheetById(id))
 		.then(() => setLoading(false))
 		.catch(() => setError(true));
+
+		return () => {
+			dispatch(clearMechanicalSheetDetailReducer());
+		};
 	}, [dispatch, id]);
+
+	//----- ABRIR POPUP
+	const [popUpOpen, setPopUpOpen] = useState(false);
+
+	//----- DESACTIVAR ELEMENTO
 	
-	const toggleShowDeleteModal = () => {
-		setShowDeleteModal(!showDeleteModal);
-	};
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+	const handleDelete = async () => {
+		dispatch(putMechanicalSheetStatus(id))
+		.then(
+			dispatch(getMechanicalSheets()).then(
+				navigate(`/main_window/fichas`)
+			)
+		).catch(
+			dispatch(getMechanicalSheets()).then(
+				navigate(`/main_window/fichas`)
+			)
+		);
+	}
 
 	return (
 		<div className="page">
@@ -55,15 +64,12 @@ const MechanicalSheetDetail = () => {
 							<h2>Detalle de la ficha mecánica</h2>
 							<div className="titleButtons">
 								{mechanicalSheetDetail.active ? <button onClick={() => setPopUpOpen(true)}>Editar</button> : ''}
-								{!mechanicalSheetDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Activar</button> : <button className="delete" onClick={toggleShowDeleteModal}>Desactivar</button>}
+								{!mechanicalSheetDetail.active ? <button className="add" onClick={() => setShowDeleteModal(!showDeleteModal)}>Reactivar</button> : <button className="delete" onClick={() => setShowDeleteModal(!showDeleteModal)}>Archivar</button>}
 								<button onClick={() => navigate(`/main_window/fichas`)}>Atrás</button>
 							</div>
 						</div>
-						{/* <div className={!mechanicalSheetDetail.active ? `container ${style.contentInactive}` : `container ${style.content}`}> */}
-						<div>
+						<div className={`columns ${!mechanicalSheetDetail.active ? 'disabled' : ''}`}>
 							<div>
-							{/* <div className={style.column}> */}
-								{/* <p><span>Estado:&nbsp;</span>{mechanicalSheetDetail.active ? 'Activo' : 'Inactivo'}</p> */}
 								{mechanicalSheetDetail.number && <p><span>Número de ficha:&nbsp;</span>{mechanicalSheetDetail.number}</p>}
 								{mechanicalSheetDetail.date && <p><span>Fecha:&nbsp;</span></p>}
 								<p><span>{new Date(mechanicalSheetDetail.date).toLocaleString('es-ES', { 
@@ -82,25 +88,22 @@ const MechanicalSheetDetail = () => {
 										{mechanicalSheetDetail.personClient.dni && <p><span>DNI:&nbsp;</span>{mechanicalSheetDetail.personClient.dni}</p>}
 										{mechanicalSheetDetail.personClient.cuilCuit && <p><span>CUIL/CUIT:&nbsp;</span>{mechanicalSheetDetail.personClient.cuilCuit}</p>}
 										{mechanicalSheetDetail.personClient.email && <p><span>Correo electrónico:&nbsp;</span>{mechanicalSheetDetail.personClient.email}</p>}
-										{mechanicalSheetDetail.personClient.phoneWsp ? (
-                                            <p><span>Whatsapp:&nbsp;</span>+{mechanicalSheetDetail.personClient.phoneWsp.prefix}{mechanicalSheetDetail.personClient.phoneWsp.numberPhone}</p>
+										{mechanicalSheetDetail.personClient.phoneWsp.numberPhone ? (
+                                            <li><span>Whatsapp:&nbsp;</span>+{mechanicalSheetDetail.personClient.phoneWsp.prefix}{mechanicalSheetDetail.personClient.phoneWsp.numberPhone}</li>
                                         ) : (
-                                            <p>No hay teléfono con Whatsapp registrado.</p>
+                                            <li><span>Whatsapp:&nbsp;</span>No Whatsapp registrado.</li>
                                         )} 
-										{mechanicalSheetDetail.personClient.phones?.length > 0 ? (
-											<div>
-												<p><span>Teléfonos:&nbsp;</span></p>
-												{mechanicalSheetDetail.personClient.phones?.map((phone, index) => (
-													<ul key={index}>
-														<li>
-															{<p><span>{phone}</span></p>}
-														</li>
-													</ul>
-												))}
-											</div>
-										) : (
-											<p><span>No tiene teléfono registrado.</span></p>
-										)}
+                                        {mechanicalSheetDetail.personClient.phones?.length > 0 ? (
+                                            <div>
+                                                <li>
+                                                    <span>Teléfonos:&nbsp;</span>
+                                                    {mechanicalSheetDetail.personClient.phones?.join(', ')}
+                                                </li>
+                                            </div>
+                                        ) : (
+                                            <li><span>Teléfonos:&nbsp;</span>No tiene teléfono registrado.</li>
+                                        )}
+
 									</div>
 								) : (
 									<></>
@@ -111,25 +114,21 @@ const MechanicalSheetDetail = () => {
 										{mechanicalSheetDetail.companyClient.cuit && <p><span>CUIT:&nbsp;</span>{mechanicalSheetDetail.companyClient.cuit}</p>}
 										{mechanicalSheetDetail.companyClient.address && <p><span>Dirección:&nbsp;</span>{mechanicalSheetDetail.companyClient.address}</p>}
 										{mechanicalSheetDetail.companyClient.email && <p><span>Correo electrónico:&nbsp;</span>{mechanicalSheetDetail.companyClient.email}</p>}
-										{mechanicalSheetDetail.companyClient.phoneWsp ? (
-                                            <p><span>Whatsapp:&nbsp;</span>+{mechanicalSheetDetail.companyClient.phoneWsp.prefix}{mechanicalSheetDetail.companyClient.phoneWsp.numberPhone}</p>
+										{mechanicalSheetDetail.companyClient.phoneWsp.numberPhone ? (
+                                            <li><span>Whatsapp:&nbsp;</span>+{mechanicalSheetDetail.companyClient.phoneWsp.prefix}{mechanicalSheetDetail.companyClient.phoneWsp.numberPhone}</li>
                                         ) : (
-                                            <p>No hay teléfono con Whatsapp registrado.</p>
+                                            <li><span>Whatsapp:&nbsp;</span>No Whatsapp registrado.</li>
                                         )} 
-										{mechanicalSheetDetail.companyClient.phones?.length > 0 ? (
-											<div>
-												<p><span>Teléfonos:&nbsp;</span></p>
-												{mechanicalSheetDetail.companyClient.phones?.map((phone, index) => (
-													<ul key={index}>
-														<li>
-															{<p><span>{phone}</span></p>}
-														</li>
-													</ul>
-												))}
-											</div>
-										) : (
-											<p><span>No tiene teléfono registrado.</span></p>
-										)}
+                                        {mechanicalSheetDetail.companyClient.phones?.length > 0 ? (
+                                            <div>
+                                                <li>
+                                                    <span>Teléfonos:&nbsp;</span>
+                                                    {mechanicalSheetDetail.companyClient.phones?.join(', ')}
+                                                </li>
+                                            </div>
+                                        ) : (
+                                            <li><span>Teléfonos:&nbsp;</span>No tiene teléfono registrado.</li>
+                                        )}
 									</div>
 								) : (
 									<></>
@@ -162,6 +161,23 @@ const MechanicalSheetDetail = () => {
 					<PutMechanicalSheet onMechanicalSheetAdded={() => setPopUpOpen(false)}/>
 				</div>
 			</div>
+			{showDeleteModal ?
+                <div className="deleteModal">
+                    <div className="deleteModalContainer">
+                        <p>{mechanicalSheetDetail.active ? "¿Está seguro que desea archivar esta ficha?" : "¿Está seguro que desea reactivar esta ficha?"}</p>
+                        <div className="deleteModalButtons">
+                            <button onClick={() => setShowDeleteModal(false)}>Cancelar</button>
+                            {mechanicalSheetDetail.active ?
+                                <button onClick={handleDelete} className="delete">Archivar</button>
+                            : 
+                                <button onClick={handleDelete} className="add">Reactivar</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                :
+                <></>
+            }
 		</div>
 	)
 };

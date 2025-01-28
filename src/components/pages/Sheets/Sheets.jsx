@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import NewServiceSheet from './NewServiceSheet/NewServiceSheet.jsx';
 import NewMechanicalSheet from './NewMechanicalSheet/NewMechanicalSheet.jsx';
 import Error from '../Error/Error.jsx';
-import { getServiceSheets, searchServiceSheets } from "../../../redux/serviceSheetActions.js";
-import { getMechanicalSheets, searchMechanicalSheets } from "../../../redux/mechanicalSheetActions.js";
+import { getServiceSheets, getAllServiceSheets, searchServiceSheets, searchAllServiceSheets } from "../../../redux/serviceSheetActions.js";
+import { getMechanicalSheets, getAllMechanicalSheets, searchMechanicalSheets, searchAllMechanicalSheets } from "../../../redux/mechanicalSheetActions.js";
 import { clearServiceSheetsReducer } from "../../../redux/serviceSheetSlice.js";
 import { clearMechanicalSheetsReducer } from '../../../redux/mechanicalSheetSlice.js';
 import detail from "../../../assets/img/detail.png";
@@ -15,7 +15,10 @@ const Sheets = () => {
 
     const serviceSheets = useSelector(state => state.serviceSheet.serviceSheets);
     const mechanicalSheets = useSelector(state => state.mechanicalSheet.mechanicalSheets);
+    const allMechanicalSheets = useSelector(state => state.mechanicalSheet.mechanicalSheetsAll);
+    const allServiceSheets = useSelector(state => state.serviceSheet.serviceSheetsAll);
     const sheets = [...serviceSheets, ...mechanicalSheets].sort((a, b) => new Date(b.date) - new Date(a.date));
+    const allSheets = [...allServiceSheets, ...allMechanicalSheets].sort((a, b) => new Date(b.date) - new Date(a.date));
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -26,12 +29,17 @@ const Sheets = () => {
     const [keyWords, setKeyWords] = useState('');
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [showAll, setShowAll] = useState(false);
 
     useEffect(() => {
         if(!number && !date && !client && !vehicle && !keyWords){
-            dispatch(getServiceSheets()).catch(() => setError(true));
-            dispatch(getMechanicalSheets()).catch(() => setError(true));
-            setLoading(false)
+            if(showAll){
+                dispatch(getAllServiceSheets()).catch(() => setError(true));
+                dispatch(getAllMechanicalSheets()).catch(() => setError(true));
+            } else {
+                dispatch(getServiceSheets()).catch(() => setError(true));
+                dispatch(getMechanicalSheets()).catch(() => setError(true));
+            }
         };
 
         return () => {
@@ -39,7 +47,7 @@ const Sheets = () => {
             dispatch(clearMechanicalSheetsReducer());
         };
 
-    }, [number, date, client, vehicle, keyWords, dispatch]);
+    }, [number, date, client, vehicle, keyWords, dispatch, showAll]);
 
     //----- ABRIR POPUP
 
@@ -54,8 +62,13 @@ const Sheets = () => {
         if (event.key === "Enter") {
             if (number.trim() || vehicle.trim() || client.trim() || keyWords.trim()) {
                 setLoading(true);
-                dispatch(searchServiceSheets(number.trim(), vehicle.trim(), client.trim()));
-                dispatch(searchMechanicalSheets(number.trim(), vehicle.trim(), client.trim(), keyWords.trim())).then(() => setLoading(false));
+                if(showAll){
+                    dispatch(searchAllServiceSheets(number.trim(), vehicle.trim(), client.trim()));
+                    dispatch(searchAllMechanicalSheets(number.trim(), vehicle.trim(), client.trim(), keyWords.trim())).then(() => setLoading(false));
+                } else{
+                    dispatch(searchServiceSheets(number.trim(), vehicle.trim(), client.trim()));
+                    dispatch(searchMechanicalSheets(number.trim(), vehicle.trim(), client.trim(), keyWords.trim())).then(() => setLoading(false));
+                }
                 setCurrentPage(1);
                 if(keyWords.trim()){
                     setToggle(true);
@@ -80,20 +93,28 @@ const Sheets = () => {
     const [ paginatedSheets, setPaginatedSheets ] = useState([]);
 
     useEffect(() => {
-        if (Array.isArray(sheets)) {
-            const newPaginatedSheets = !toggle
-                ? sheets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                : mechanicalSheets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+        let sheetsToPaginate = [];
     
-            // Evita actualizar el estado si no hay cambios
+        if (!showAll && !toggle) {
+            sheetsToPaginate = sheets;
+        } else if (!showAll && toggle) {
+            sheetsToPaginate = mechanicalSheets;
+        } else if (showAll && !toggle) {
+            sheetsToPaginate = allSheets; 
+        } else if (showAll && toggle) {
+            sheetsToPaginate = allMechanicalSheets;
+        }
+    
+        if (Array.isArray(sheetsToPaginate)) {
+            const newPaginatedSheets = sheetsToPaginate.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+            
             setPaginatedSheets((prev) => {
                 const prevStringified = JSON.stringify(prev);
                 const newStringified = JSON.stringify(newPaginatedSheets);
-    
                 return prevStringified === newStringified ? prev : newPaginatedSheets;
             });
         }
-    }, [sheets, toggle, currentPage, itemsPerPage, mechanicalSheets]);
+    }, [sheets, toggle, currentPage, itemsPerPage, mechanicalSheets, showAll, allSheets, allMechanicalSheets]);    
     
     const totalPages = Math.ceil(sheets.length / itemsPerPage);
 
@@ -146,6 +167,17 @@ const Sheets = () => {
         return formattedDate;
     };
 
+    //----- MOSTRAR TODOS
+    
+    const handleAll = async () => {
+        if(allServiceSheets?.length === 0 || allMechanicalSheets?.length === 0){
+            setLoading(true);
+            dispatch(getAllServiceSheets());
+            dispatch(getAllMechanicalSheets()).then(() => setLoading(false));
+        }
+        setShowAll(!showAll);
+    }
+
     return (
         <div className="page">
             {error ? (
@@ -171,8 +203,16 @@ const Sheets = () => {
                                 type="date"
                             />
                         </div>
-                        <div>
-                            <button onClick={() => setPopUpServiceOpen(true)} style={{marginRight: '1rem'}}>+ F. service</button>
+                        <div className="titleButtons">
+                            <label className="showAll">
+                                <input
+                                    type="checkbox"
+                                    name="showAll"
+                                    onChange={handleAll}
+                                />
+                                Mostrar todos
+                            </label>
+                            <button onClick={() => setPopUpServiceOpen(true)}>+ F. service</button>
                             <button onClick={() => setPopUpMechanicalOpen(true)}>+ F. mecánica</button>
                         </div>                
                     </div>
@@ -269,13 +309,13 @@ const Sheets = () => {
                                     ) : (
                                         <>
                                             {paginatedSheets?.map(sheet => (
-                                                <tr key={sheet._id}>
+                                                <tr key={sheet._id} className={`${!sheet.active ? 'disabled' : ''}`}>
                                                     <td>{sheet.oil ? "Service" : "Mecánica"}</td>
                                                     <td>{sheet.number}</td>
                                                     <td>{formatDate(sheet.date)}</td>
                                                     <td>{sheet.vehicle.licensePlate}</td>
-                                                    <td>{sheet.personClient ? sheet.personClient.name : sheet.companyClient ? sheet.companyClient.name : 'N/A'}</td>
-                                                    <td>{sheet.keyWords ? sheet.keyWords : 'N/A'}</td>
+                                                    <td>{sheet.personClient ? sheet.personClient.name : sheet.companyClient ? sheet.companyClient.name : 'No disponible'}</td>
+                                                    <td>{sheet.keyWords ? sheet.keyWords : 'No disponible'}</td>
                                                     <td className='center'>
                                                         {sheet.oil ? (
                                                             <a onClick={() => navigate(`/main_window/fichas/service/${sheet._id}`)}>

@@ -5,12 +5,19 @@ export const appointmentSlice = createSlice({
     initialState: {
         appointments: [],
         appointmentsCopy: [],
+        appointmentsAll: [],
+        appointmentsAllCopy: [],
         appointmentDetail: {},
     },
     reducers: {
         getAppointmentsReducer: (state, action) => {
             state.appointments = action.payload;
             state.appointmentsCopy = action.payload;
+        },
+
+        getAppointmentsAllReducer: (state, action) => {
+            state.appointmentsAll = action.payload;
+            state.appointmentsAllCopy = action.payload;
         },
 
         getAppointmentByIdReducer: (state, action) => {
@@ -28,10 +35,11 @@ export const appointmentSlice = createSlice({
 
         clearAppointmentsReducer: (state) => {
             state.appointments = state.appointmentsCopy;
+            state.appointmentsAll = state.appointmentsAllCopy;
         }
     }
 });
 
-export const { getAppointmentsReducer, getAppointmentByIdReducer, postAppointmentReducer, clearAppointmentDetailReducer,  clearAppointmentsReducer} = appointmentSlice.actions;
+export const { getAppointmentsReducer, getAppointmentsAllReducer, getAppointmentByIdReducer, postAppointmentReducer, clearAppointmentDetailReducer,  clearAppointmentsReducer} = appointmentSlice.actions;
 
 export default appointmentSlice.reducer;

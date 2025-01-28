@@ -3,18 +3,22 @@ import React, { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import iconMechanic from './icons/mechanic.png';
 import iconService from './icons/service.png';
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { Calendar, dayjsLocalizer } from 'react-big-calendar';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import NewAppointment from './NewAppointment/NewAppointment.jsx';
+import { getAllAppointments } from '../../../redux/appointmentActions.js';
 
 dayjs.locale('es');
 
 const Appointments = () => {
 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const [showAll, setShowAll] = useState(false);
 
     //----- ABRIR POPUP
     const [popUpOpen, setPopUpOpen] = useState(false);
@@ -22,9 +26,11 @@ const Appointments = () => {
     const localizer = dayjsLocalizer(dayjs);
 
     const appointments = useSelector(state => state.appointment.appointments);
+    const allAppointments = useSelector(state => state.appointment.appointmentsAll);
 
-    const events = appointments?.map(appointment => ({
+    const events = (showAll ? allAppointments : appointments)?.map(appointment => ({
         _id: appointment._id ? appointment._id : '',
+        active: appointment.active,
         start: dayjs(appointment.start).add(3, 'hours').toDate(),
         end: dayjs(appointment.end).add(3, 'hours').toDate(),
         startTime: appointment.start
@@ -44,83 +50,75 @@ const Appointments = () => {
     }));  
 
     const MonthEvent = (props) => {
-        const { _id, procedureIconMechanic, procedureIconService, vehicleLicensePlate } = props.event;
+        const { _id, active, procedureIconMechanic, procedureIconService, vehicleLicensePlate } = props.event;
 
         return (
-            <div onClick={() => navigate(`/main_window/turnos/${_id}`)}>
-                <div className={style.containerEventsMonth}>
-                    <div className={style.icons}>
-                        {procedureIconMechanic && <img src={iconMechanic} alt="mechanic-icon" className={style.icon} />}
-                        {procedureIconService && <img src={iconService} alt="service-icon" className={style.icon} />}
-                    </div>
-                    <div className={style.licensePlate}>{vehicleLicensePlate}</div>
+            <div className={`${style.containerEventsMonth} ${!active ? 'disabled' : ''}`} onClick={() => navigate(`/main_window/turnos/${_id}`)}>
+                <div className={style.icons}>
+                    {procedureIconMechanic && <img src={iconMechanic} alt="mechanic-icon" className={style.icon} />}
+                    {procedureIconService && <img src={iconService} alt="service-icon" className={style.icon} />}
                 </div>
+                <div className={style.licensePlate}>{vehicleLicensePlate}</div>
             </div>
-            )
+        )
     };
 
     const WeekEvent = (props) => {
-        const { _id, startTime, endTime, personClient, companyClient, procedureIconMechanic, procedureIconService, vehicleLicensePlate, vehicleBrandAndModel } = props.event;
+        const { _id, active, startTime, endTime, personClient, companyClient, procedureIconMechanic, procedureIconService, vehicleLicensePlate, vehicleBrandAndModel } = props.event;
 
         return (
-            <div onClick={() => navigate(`/main_window/turnos/${_id}`)}>
-                <div className={style.containerEventsWeek}>
-                    <div>{startTime}hs - {endTime}hs</div>
-                    <div className={style.icons}>
-                        {procedureIconMechanic && <img src={iconMechanic} alt="mechanic-icon" className={style.icon} />}
-                        {procedureIconService && <img src={iconService} alt="service-icon" className={style.icon} />}
-                    </div>
-                    {personClient && <div className={style.licensePlate}>{personClient}</div>}
-                    {companyClient && <div className={style.licensePlate}>{companyClient}</div>}
-                    {vehicleLicensePlate && <div className={style.licensePlate}>{vehicleLicensePlate}</div>}
-                    {vehicleBrandAndModel && <div className={style.licensePlate}>{vehicleBrandAndModel}</div>}
+            <div className={`${style.containerEventsWeek} ${!active ? 'disabled' : ''}`} onClick={() => navigate(`/main_window/turnos/${_id}`)}>
+                <div>{startTime}hs - {endTime}hs</div>
+                <div className={style.icons}>
+                    {procedureIconMechanic && <img src={iconMechanic} alt="mechanic-icon" className={style.icon} />}
+                    {procedureIconService && <img src={iconService} alt="service-icon" className={style.icon} />}
                 </div>
+                {personClient && <div className={style.licensePlate}>{personClient}</div>}
+                {companyClient && <div className={style.licensePlate}>{companyClient}</div>}
+                {vehicleLicensePlate && <div className={style.licensePlate}>{vehicleLicensePlate}</div>}
+                {vehicleBrandAndModel && <div className={style.licensePlate}>{vehicleBrandAndModel}</div>}
             </div>
         )
     }
 
     const DayEvent = (props) => {
-        const { _id, startTime, endTime, procedureTitle, personClient, companyClient, procedureIconMechanic, procedureIconService, vehicleLicensePlate, vehicleBrandAndModel } = props.event;
+        const { _id, active, startTime, endTime, procedureTitle, personClient, companyClient, procedureIconMechanic, procedureIconService, vehicleLicensePlate, vehicleBrandAndModel } = props.event;
 
         return (
-            <div onClick={() => navigate(`/main_window/turnos/${_id}`)}>
-                <div className={style.containerEventsDay}>
-                    <div>Desde {startTime}hs hasta {endTime}hs</div>
-                    <div className={style.icons}>
-                        {procedureIconMechanic && <p><img src={iconMechanic} alt="mechanic-icon" className={style.icon} /> <span>Mecánica</span></p>}
-                        {procedureIconService && <p><img src={iconService} alt="service-icon" className={style.icon} /> <span>Service</span></p>}
-                    </div>
-                    {personClient && <div className={style.licensePlate}>Cliente: {personClient}</div>}
-                    {companyClient && <div className={style.licensePlate}>Cliente: {companyClient}</div>}
-                    {vehicleLicensePlate && <div className={style.licensePlate}>Vehículo:</div>}
-                    {vehicleLicensePlate && <div className={style.licensePlate}>{vehicleLicensePlate}</div>}
-                    {vehicleBrandAndModel && <div className={style.licensePlate}>{vehicleBrandAndModel}</div>}
-                    {procedureTitle && <div className={style.licensePlate}>Título: {procedureTitle}</div>}
+            <div className={`${style.containerEventsDay} ${!active ? 'disabled' : ''}`} onClick={() => navigate(`/main_window/turnos/${_id}`)}>
+                <div>Desde {startTime}hs hasta {endTime}hs</div>
+                <div className={style.icons}>
+                    {procedureIconMechanic && <p><img src={iconMechanic} alt="mechanic-icon" className={style.icon} /> <span>Mecánica</span></p>}
+                    {procedureIconService && <p><img src={iconService} alt="service-icon" className={style.icon} /> <span>Service</span></p>}
                 </div>
+                {personClient && <div className={style.licensePlate}>Cliente: {personClient}</div>}
+                {companyClient && <div className={style.licensePlate}>Cliente: {companyClient}</div>}
+                {vehicleLicensePlate && <div className={style.licensePlate}>Vehículo:</div>}
+                {vehicleLicensePlate && <div className={style.licensePlate}>{vehicleLicensePlate}</div>}
+                {vehicleBrandAndModel && <div className={style.licensePlate}>{vehicleBrandAndModel}</div>}
+                {procedureTitle && <div className={style.licensePlate}>Título: {procedureTitle}</div>}
             </div>
         )
     }
 
     const AgendaEvent = (props) => {
-        const { _id, procedureTitle, personClient, companyClient, procedureIconMechanic, procedureIconService, vehicleLicensePlate, vehicleBrandAndModel } = props.event;
+        const { _id, active, procedureTitle, personClient, companyClient, procedureIconMechanic, procedureIconService, vehicleLicensePlate, vehicleBrandAndModel } = props.event;
 
         return (
-            <div onClick={() => navigate(`/main_window/turnos/${_id}`)}>
-                <div className={style.containerEventsAgenda}>
-                    <div className={style.icons}>
-                        {procedureIconMechanic && <img src={iconMechanic} alt="mechanic-icon" className={style.icon} />}
-                        {procedureIconService && <img src={iconService} alt="service-icon" className={style.icon} />}
-                    </div>
-                    -
-                    {personClient && <div className={style.licensePlate}>{personClient}</div>}
-                    {companyClient && <div className={style.licensePlate}>{companyClient}</div>}
-                    -
-                    {vehicleLicensePlate && <div className={style.licensePlate}>{vehicleLicensePlate}</div>}
-                    -
-                    {vehicleBrandAndModel && <div className={style.licensePlate}>{vehicleBrandAndModel}</div>}
-                    -
-                    {procedureTitle && <div className={style.licensePlate}>{procedureTitle}</div>}
+            <div className={`${style.containerEventsAgenda} ${!active ? 'disabled' : ''}`} onClick={() => navigate(`/main_window/turnos/${_id}`)}>
+                <div className={style.icons}>
+                    {procedureIconMechanic && <img src={iconMechanic} alt="mechanic-icon" className={style.icon} />}
+                    {procedureIconService && <img src={iconService} alt="service-icon" className={style.icon} />}
                 </div>
+                -
+                {personClient && <div className={style.licensePlate}>{personClient}</div>}
+                {companyClient && <div className={style.licensePlate}>{companyClient}</div>}
+                -
+                {vehicleLicensePlate && <div className={style.licensePlate}>{vehicleLicensePlate}</div>}
+                -
+                {vehicleBrandAndModel && <div className={style.licensePlate}>{vehicleBrandAndModel}</div>}
+                -
+                {procedureTitle && <div className={style.licensePlate}>{procedureTitle}</div>}
             </div>
         )
     }
@@ -156,11 +154,30 @@ const Appointments = () => {
         noEventsInRange: "Sin turnos agendados"
     };
 
+    //----- MOSTRAR TODOS
+    
+    const handleAll = async () => {
+        if(allAppointments?.length === 0){
+            dispatch(getAllAppointments());
+        }
+        setShowAll(!showAll);
+    }
+
     return (
         <div className="page">
         <div className="title">
             <h2>Turnos</h2>
-            <button onClick={() => setPopUpOpen(true)}>Nuevo</button>
+            <div className="titleButtons">
+                <label className="showAll">
+                    <input
+                        type="checkbox"
+                        name="showAll"
+                        onChange={handleAll}
+                    />
+                    Mostrar todos
+                </label>
+                <button onClick={() => setPopUpOpen(true)}>Nuevo</button>
+            </div>
         </div>
         <div className="container">
             <div className={style.calendarContainer}>

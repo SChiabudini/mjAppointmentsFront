@@ -4,13 +4,14 @@ import { useNavigate } from "react-router-dom";
 import NewPersonClient from './NewPersonClient/NewPersonClient.jsx';
 import Error from "../../Error/Error.jsx";
 import { clearPersonClientsReducer } from "../../../../redux/personClientSlice.js";
-import { getPersonClients, searchPersonClients } from "../../../../redux/personClientActions.js";
+import { getAllPersonClients, getPersonClients, searchPersonClients, searchAllPersonClients } from "../../../../redux/personClientActions.js";
 import detail from "../../../../assets/img/detail.png";
 import loadingGif from "../../../../assets/img/loading.gif";
 
 const PersonClients = () => {
 
     const personClients = useSelector(state => state.personClient.personClients);
+    const allPersonClients = useSelector(state => state.personClient.personClientsAll);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -19,19 +20,25 @@ const PersonClients = () => {
     const [vehicle, setVehicle] = useState('');
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [showAll, setShowAll] = useState(false);
 
     useEffect(() => {
 
         if(!dni && !name && !vehicle){
-            dispatch(getPersonClients())
-            .catch(() => setError(true));   
+            if(showAll){
+                dispatch(getAllPersonClients())
+                .catch(() => setError(true));
+            } else{
+                dispatch(getPersonClients())
+                .catch(() => setError(true));
+            }
         };
 
         return () => {
             dispatch(clearPersonClientsReducer());
         };
 
-    }, [dni, name, vehicle, dispatch]);
+    }, [dni, name, vehicle, dispatch, showAll]);
 
     //----- ABRIR POPUP
 
@@ -43,7 +50,11 @@ const PersonClients = () => {
         if (event.key === "Enter") {
             if (dni.trim() || name.trim() || vehicle.trim()) {
                 setLoading(true);
-                dispatch(searchPersonClients(dni.trim(), name.trim(), vehicle.trim())).then(() => setLoading(false));
+                if(showAll){
+                    dispatch(searchAllPersonClients(dni.trim(), name.trim(), vehicle.trim())).then(() => setLoading(false));
+                } else{
+                    dispatch(searchPersonClients(dni.trim(), name.trim(), vehicle.trim())).then(() => setLoading(false));
+                }                
                 setCurrentPage(1);
             }
         }
@@ -60,9 +71,23 @@ const PersonClients = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
-    const paginatedPersonClients = Array.isArray(personClients)
-    ? personClients.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-    : [];
+    const [paginatedPersonClients, setPaginatedPersonClients] = useState([]);
+    
+    useEffect(() => {
+        if (Array.isArray(personClients)) {
+            const newPaginatedPersonClients = !showAll
+                ? personClients.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                : allPersonClients.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    
+            // Evita actualizar el estado si no hay cambios
+            setPaginatedPersonClients((prev) => {
+                const prevStringified = JSON.stringify(prev);
+                const newStringified = JSON.stringify(newPaginatedPersonClients);
+    
+                return prevStringified === newStringified ? prev : newPaginatedPersonClients;
+            });
+        }
+    }, [personClients, showAll, currentPage, itemsPerPage, allPersonClients]);
     const totalPages = Math.ceil(personClients.length / itemsPerPage);
     
     const handlePageChange = (newPage) => {
@@ -106,6 +131,16 @@ const PersonClients = () => {
         return buttons;
     };
 
+    //----- MOSTRAR TODOS
+    
+    const handleAll = async () => {
+        if(allPersonClients?.length === 0){
+            setLoading(true);
+            dispatch(getAllPersonClients()).then(() => setLoading(false));
+        }
+        setShowAll(!showAll);
+    }
+
     return(
         <div className="page">
             {error ? (
@@ -124,7 +159,17 @@ const PersonClients = () => {
                             </button>
                             
                         </div>
-                        <button onClick={() => setPopUpOpen(true)}>Nuevo</button>
+                        <div className="titleButtons">
+                            <label className="showAll">
+                                <input
+                                    type="checkbox"
+                                    name="showAll"
+                                    onChange={handleAll}
+                                />
+                                Mostrar todos
+                            </label>
+                            <button onClick={() => setPopUpOpen(true)}>Nuevo</button>
+                        </div>
                     </div>
                     <div className="container">
                         <div className="tableContainer">
@@ -209,7 +254,7 @@ const PersonClients = () => {
                                     ) : (
                                         <>
                                             {paginatedPersonClients?.map(personClient => (
-                                                <tr key={personClient._id}>
+                                                <tr key={personClient._id} className={`${!personClient.active ? 'disabled' : ''}`}>
                                                     <td>{personClient.dni}</td>
                                                     <td>{personClient.name}</td>
                                                     <td>{personClient.email}</td>
@@ -217,13 +262,13 @@ const PersonClients = () => {
                                                     <td>
                                                         {personClient.phones?.length 
                                                             ? personClient.phones.join(', ') 
-                                                            : 'N/A'}
+                                                            : 'No disponible'}
                                                     </td>
-                                                    <td>{personClient.cuilCuit ? personClient.cuilCuit : 'N/A'}</td>
+                                                    <td>{personClient.cuilCuit ? personClient.cuilCuit : 'No disponible'}</td>
                                                     <td>
                                                         {personClient.vehicles?.length 
                                                             ? personClient.vehicles?.map(vehicle => vehicle.licensePlate).join(', ') 
-                                                            : 'N/A'}
+                                                            : 'No disponible'}
                                                     </td>
                                                     <td className="center">
                                                         <a onClick={() => navigate(`/main_window/clientes/personas/${personClient._id}`)}>
