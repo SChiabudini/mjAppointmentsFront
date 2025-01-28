@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import NewCompanyClient from '../../Clients/CompanyClient/NewCompanyClient/NewCompanyClient.jsx';
 import NewPersonClient from '../../Clients/PersonClient/NewPersonClient/NewPersonClient.jsx';
 import NewVehicle from '../../Vehicles/NewVehicle/NewVehicle.jsx';
-import { getAppointments, postAppointment } from '../../../../redux/appointmentActions.js';
+import { getAppointments, getAllAppointments, postAppointment } from '../../../../redux/appointmentActions.js';
 import clear from  "../../../../assets/img/clear.png";
 import clearHover from "../../../../assets/img/clearHover.png";
 import loadingGif from "../../../../assets/img/loading.gif";
@@ -279,10 +279,6 @@ console.log(newAppointment);
         });
     }; 
 
-    useEffect(() => {
-        dispatch(getAppointments);
-    }, [newAppointment]);
-
     //----- RESET
 
     const resetForm = () => {
@@ -323,6 +319,7 @@ console.log(newAppointment);
                 setLoading(false);
                 console.log("Appointment successfully saved");
                 dispatch(getAppointments());
+                dispatch(getAllAppointments());
                 setNewAppointment(initialAppointmentState); // Resetear el formulario
                 onAppointmentAdded(response);
                 setNewProcedure(initialProcedure);

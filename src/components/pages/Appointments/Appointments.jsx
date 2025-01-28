@@ -3,18 +3,22 @@ import React, { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import iconMechanic from './icons/mechanic.png';
 import iconService from './icons/service.png';
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { Calendar, dayjsLocalizer } from 'react-big-calendar';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import NewAppointment from './NewAppointment/NewAppointment.jsx';
+import { getAllAppointments } from '../../../redux/appointmentActions.js';
 
 dayjs.locale('es');
 
 const Appointments = () => {
 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const [showAll, setShowAll] = useState(false);
 
     //----- ABRIR POPUP
     const [popUpOpen, setPopUpOpen] = useState(false);
@@ -22,9 +26,11 @@ const Appointments = () => {
     const localizer = dayjsLocalizer(dayjs);
 
     const appointments = useSelector(state => state.appointment.appointments);
+    const allAppointments = useSelector(state => state.appointment.appointmentsAll);
 
-    const events = appointments?.map(appointment => ({
+    const events = (showAll ? allAppointments : appointments)?.map(appointment => ({
         _id: appointment._id ? appointment._id : '',
+        active: appointment.active,
         start: dayjs(appointment.start).add(3, 'hours').toDate(),
         end: dayjs(appointment.end).add(3, 'hours').toDate(),
         startTime: appointment.start
@@ -148,11 +154,30 @@ const Appointments = () => {
         noEventsInRange: "Sin turnos agendados"
     };
 
+    //----- MOSTRAR TODOS
+    
+    const handleAll = async () => {
+        if(allAppointments?.length === 0){
+            dispatch(getAllAppointments());
+        }
+        setShowAll(!showAll);
+    }
+
     return (
         <div className="page">
         <div className="title">
             <h2>Turnos</h2>
-            <button onClick={() => setPopUpOpen(true)}>Nuevo</button>
+            <div className="titleButtons">
+                <label className="showAll">
+                    <input
+                        type="checkbox"
+                        name="showAll"
+                        onChange={handleAll}
+                    />
+                    Mostrar todos
+                </label>
+                <button onClick={() => setPopUpOpen(true)}>Nuevo</button>
+            </div>
         </div>
         <div className="container">
             <div className={style.calendarContainer}>

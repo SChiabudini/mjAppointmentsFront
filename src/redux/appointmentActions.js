@@ -1,5 +1,5 @@
 import api from '../services/axios.js';
-import { getAppointmentsReducer, getAppointmentByIdReducer, postAppointmentReducer } from './appointmentSlice.js';
+import { getAppointmentsReducer, getAppointmentsAllReducer, getAppointmentByIdReducer, postAppointmentReducer } from './appointmentSlice.js';
 
 export const getAppointments = () => {
 
@@ -22,12 +22,14 @@ export const getAllAppointments = () => {
         try {
             const { data } = await api.get("/appointment/all");
             
+            dispatch(getAppointmentsAllReducer(data));
+
         } catch (error) {
             console.error("Error retrieving appointments from server: " + error.message);
             throw new Error('Network error or server not reachable');
-        }
-    }
-}
+        };
+    };
+};
 
 export const getAppointmentById = (appointmentId) => {
 
