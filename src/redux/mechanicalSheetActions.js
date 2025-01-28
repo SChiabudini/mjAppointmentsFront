@@ -99,6 +99,26 @@ export const searchMechanicalSheets = (number, vehicle, client, keyWords) => {
     }
 }
 
+//-----TRAE SOLO LOS ACTIVOS POR FECHA
+
+export const searchMechanicalSheetsByDate = (gap) => {
+    
+    return async (dispatch) =>{
+        try {
+
+            const { data } = await api.get("/mechanicalSheet/date", gap);
+
+            const reversedData = data.reverse();
+
+            dispatch(searchMechanicalSheetsReducer(reversedData));
+
+        } catch (error) {
+            console.error("Mechanical sheets search error:", error.message);
+            throw new Error('Network error or server not reachable');
+        }
+    }
+}
+
 //-----TRAE TODOS FILTRADOS
 
 export const searchAllMechanicalSheets = (number, vehicle, client, keyWords) => {
@@ -126,6 +146,26 @@ export const searchAllMechanicalSheets = (number, vehicle, client, keyWords) => 
             }
 
             const { data } = await api.get(query);
+
+            const reversedData = data.reverse();
+
+            dispatch(searchMechanicalSheetsAllReducer(reversedData));
+
+        } catch (error) {
+            console.error("Mechanical sheets search error:", error.message);
+            throw new Error('Network error or server not reachable');
+        }
+    }
+}
+
+//-----TRAE TODOS POR FECHA
+
+export const searchAllMechanicalSheetsByDate = (gap) => {
+    
+    return async (dispatch) =>{
+        try {
+
+            const { data } = await api.get("/mechanicalSheet/all/date", gap);
 
             const reversedData = data.reverse();
 

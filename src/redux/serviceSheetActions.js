@@ -96,6 +96,26 @@ export const searchServiceSheets = (number, vehicle, client) => {
     }
 }
 
+//-----TRAE SOLO LOS ACTIVOS POR FECHA
+
+export const searchServiceSheetsByDate = (gap) => {
+    
+    return async (dispatch) =>{
+        try {
+
+            const { data } = await api.get("/serviceSheet/date", gap);
+
+            const reversedData = data.reverse();
+
+            dispatch(searchServiceSheetsReducer(reversedData));
+
+        } catch (error) {
+            console.error("Service sheets search error:", error.message);
+            throw new Error('Network error or server not reachable');
+        }
+    }
+}
+
 //-----TRAE TODOS FILTRADOS
 
 export const searchAllServiceSheets = (number, vehicle, client) => {
@@ -119,6 +139,26 @@ export const searchAllServiceSheets = (number, vehicle, client) => {
             }
 
             const { data } = await api.get(query);
+
+            const reversedData = data.reverse();
+
+            dispatch(searchServiceSheetsAllReducer(reversedData));
+
+        } catch (error) {
+            console.error("Service sheets search error:", error.message);
+            throw new Error('Network error or server not reachable');
+        }
+    }
+}
+
+//-----TRAE TODOS POR FECHA
+
+export const searchAllServiceSheetsByDate = (gap) => {
+    
+    return async (dispatch) =>{
+        try {
+
+            const { data } = await api.get("/serviceSheet/all/date", gap);
 
             const reversedData = data.reverse();
 
