@@ -315,6 +315,24 @@ select:focus {
   border: none;
 }
 
+input[type="date"] {
+    width: 30% !important;
+    padding: 4px;              
+    background-color: #f8f8f8;
+    border: 1px solid #ccc;  
+    font-size: 14px;           
+    color: #333;       
+}
+
+input[type="time"] {
+    width: 30% !important;
+    padding: 2.6px;              
+    background-color: #f8f8f8;
+    border: 1px solid #ccc;  
+    font-size: 14px;           
+    color: #333;       
+}
+
 .dropdown {
     list-style: none;
     margin: 0;
@@ -555,56 +573,13 @@ th div.withFilter button.sort{
     align-items: center;
 }
 
-.formRowWithButton {
-    padding: 0.5rem 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
 .formRow label{
     width: 37%;
-}
-
-.formRowWithButton label {
-    width: 35%;
-    
 }
 
 .formRow input{
     width: 60%;
     box-sizing: border-box;
-}
-
-.formRowWithButton div{
-    width: 60%;
-    display: flex;
-    align-items: center;
-}
-
-.formRowWithButton div input{
-    width: calc(93% - 0.5rem);
-    box-sizing: border-box;
-}
-
-.formRowWithButton div input.phonePrefix{
-    width: 15%;
-    margin: 0 0.25rem;
-}
-
-.formRowWithButton button {
-    border: 1px solid var(--dark-grey);
-    padding: 0;
-    margin: 0;
-    margin-left: 0.5rem;
-    box-sizing: border-box;
-    flex: 0 0 auto;
-    height: 100%;
-    width: 7%;
-}
-
-.formRowWithButton button:hover{
-    border-color: var(--orange);
 }
 
 .formRow textarea{
@@ -640,6 +615,48 @@ th div.withFilter button.sort{
 
 .formRow ul li button:hover{
     color: black;
+}
+
+.formRowWithButton {
+    padding: 0.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.formRowWithButton label {
+    width: 35%;
+}
+
+.formRowWithButton div{
+    width: 60%;
+    display: flex;
+    align-items: center;
+}
+
+.formRowWithButton div input{
+    width: calc(93% - 0.5rem);
+    box-sizing: border-box;
+}
+
+.formRowWithButton div input.phonePrefix{
+    width: 15%;
+    margin: 0 0.25rem;
+}
+
+.formRowWithButton button {
+    border: 1px solid var(--dark-grey);
+    padding: 0;
+    margin: 0;
+    margin-left: 0.5rem;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    height: 100%;
+    width: 7%;
+}
+
+.formRowWithButton button:hover{
+    border-color: var(--orange);
 }
 
 .clientSelection{

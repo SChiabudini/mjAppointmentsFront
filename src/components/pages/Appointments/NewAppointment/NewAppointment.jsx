@@ -31,7 +31,11 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
     };
 
     const [newAppointment, setNewAppointment] = useState(initialAppointmentState);
-    const [errorMessage, setErrorMessage] = useState(""); 
+    const [errorMessage, setErrorMessage] = useState({
+        startTime: '',
+        endTime: '',
+        submit: ''
+    }); 
     const [loading, setLoading] = useState(false);
 console.log(newAppointment);
 
@@ -91,6 +95,22 @@ console.log(newAppointment);
         });
     };
 
+    const handleTimeInput = (e, type) => {
+        const value = e.target.value;
+
+        if (value < "07:00" || value > "16:59") {
+            e.target.value = ""; // Limpia el input si el valor no es válido
+            setErrorMessage(prevErrors => ({
+                ...prevErrors,
+                [type]: "Horario no válido. Selecciona entre 07:00 y 16:59."
+            }));
+        } else {
+            setErrorMessage(prevErrors => ({
+                ...prevErrors,
+                [type]: ''
+            }));
+        }
+    };
 
     //----- LOAD CLIENTS AND VEHICLES OPTIONS
 
@@ -283,10 +303,21 @@ console.log(newAppointment);
 
     const resetForm = () => {
         setNewAppointment(initialAppointmentState);
+        setTempDates({
+            startDate: '',
+            startTime: '',
+            endDate: '',
+            endTime: ''
+        });
         setNewProcedure(initialProcedure);
         setSearchingPerson(true);
         setSearchTermClients('');
         setSearchTermVehicles('');
+        setErrorMessage({
+            startTime: '',
+            endTime: '',
+            submit: ''
+        });
     };
     
     //-----------SUBMIT-----------//
@@ -301,7 +332,11 @@ console.log(newAppointment);
         event.preventDefault();
     
         setLoading(true);
-        setErrorMessage("");
+        setErrorMessage({
+            startTime: '',
+            endTime: '',
+            submit: ''
+        });
 
         const appointmentData = {
             start: newAppointment.start,
@@ -320,18 +355,16 @@ console.log(newAppointment);
                 console.log("Appointment successfully saved");
                 dispatch(getAppointments());
                 dispatch(getAllAppointments());
-                setNewAppointment(initialAppointmentState); // Resetear el formulario
                 onAppointmentAdded(response);
-                setNewProcedure(initialProcedure);
-                setSearchTermClients('');
-                setSearchTermVehicles('');
-                setShowNewClient(false);
-                setShowNewVehicle(false);
-                setSearchingPerson(true);
+                resetForm();
             };
 
         } catch (error) {
-            setErrorMessage("*Error al crear turno, revise los datos ingresados e intente nuevamente.");
+            // setErrorMessage("*Error al crear turno, revise los datos ingresados e intente nuevamente.");
+            setErrorMessage(prevErrors => ({
+                ...prevErrors,
+                submit: "*Error al crear turno, revise los datos ingresados e intente nuevamente."
+            }));
             console.error("Error saving appointment:", error);
             setLoading(false);
         }
@@ -452,47 +485,46 @@ console.log(newAppointment);
                             <input 
                                 type="date" 
                                 name="startDate" 
+                                value={tempDates.startDate}
                                 min={localDate}
                                 onChange={handleInputDate}
                             />
                             <input 
                                 type="time" 
                                 name="startTime" 
-                                min="07:00"
-                                max="16:59"
+                                value={tempDates.startTime}
                                 onChange={handleInputDate}
-                                onInput={(e) => {
-                                    if (e.target.value < "07:00" || e.target.value > "16:59") {
-                                        e.target.value = ""; // Limpia el input si el valor no es válido
-                                        e.target.setCustomValidity("Horario no válido. Selecciona entre 07:00 y 16:59.");
-                                        e.target.reportValidity();
-                                    }
-                                }}
+                                // onInput={(e) => {
+                                //     if (e.target.value < "07:00" || e.target.value > "16:59") {
+                                //         e.target.value = ""; // Limpia el input si el valor no es válido
+                                //         e.target.setCustomValidity("Horario no válido. Selecciona entre 07:00 y 16:59.");
+                                //         e.target.reportValidity();
+                                //     } else {
+                                //         e.target.setCustomValidity(''); // Limpiar cualquier mensaje de error anterior
+                                //     }
+                                // }}
+                                onInput={(e) => handleTimeInput(e, 'startTime')}
                             />
                         </div>
+                        {errorMessage.startTime && <p className="errorMessage">{errorMessage.startTime}</p>}
                         <div className="formRow">
                             <label htmlFor="end">Finalización*</label>
                             <input 
                                 type="date" 
                                 name="endDate" 
+                                value={tempDates.endDate}
                                 min={localDate}
                                 onChange={handleInputDate}
                             />
                             <input 
                                 type="time" 
                                 name="endTime" 
-                                min="07:00"
-                                max="16:59"
+                                value={tempDates.endTime}
                                 onChange={handleInputDate}
-                                onInput={(e) => {
-                                    if (e.target.value < "07:00" || e.target.value > "16:59") {
-                                        e.target.value = ""; // Limpia el input si el valor no es válido
-                                        e.target.setCustomValidity("Horario no válido. Selecciona entre 07:00 y 16:59.");
-                                        e.target.reportValidity();
-                                    }
-                                }}
+                                onInput={(e) => handleTimeInput(e, 'endTime')}
                             />
                         </div>
+                        {errorMessage.endTime && <p className="errorMessage">{errorMessage.endTime}</p>}
                         <div className="formRow"><label>Procedimiento*</label></div>
                         <div className="procedureSelectionInputs">
                             <label htmlFor="service">
@@ -536,7 +568,7 @@ console.log(newAppointment);
                     </div>
                     <div className="submit">
                         <button type='submit' form="appointmentForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Crear turno"}</button>
-                        {errorMessage && <p className="errorMessage">{errorMessage}</p>}
+                        {errorMessage.submit && <p className="errorMessage">{errorMessage.submit}</p>}
                     </div>
                 </form>
             </div>
