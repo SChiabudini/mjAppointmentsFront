@@ -234,7 +234,7 @@ const Vehicles = () => {
                                     ) : (
                                         <>
                                             {paginatedVehicles?.map(vehicle => (
-                                                <tr key={vehicle._id}>
+                                                <tr key={vehicle._id} className={`${!vehicle.active ? 'disabled' : ''}`}>
                                                     <td>{vehicle.licensePlate}</td>
                                                     <td>{vehicle.brand}</td>
                                                     <td>{vehicle.model}</td>

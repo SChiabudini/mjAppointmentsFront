@@ -263,7 +263,7 @@ const Budgets = () => {
                                     ) : (
                                         <>
                                             {paginatedBudgets?.map(budget => (
-                                                <tr key={budget._id}>
+                                                <tr key={budget._id} className={`${!budget.active ? 'disabled' : ''}`}>
                                                     <td>{budget.number}</td>
                                                     <td>{formatDate(budget.start)}</td>
                                                     <td>{formatDate(budget.end)}</td>

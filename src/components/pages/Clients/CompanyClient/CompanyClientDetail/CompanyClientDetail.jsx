@@ -69,10 +69,8 @@ const CompanyClientDetail = () => {
                                 <button onClick={() => navigate(`/main_window/clientes/empresas`)}>Atrás</button>
                             </div>
                         </div>
-                        {/* <div className={!companyClientDetail.active ? `container ${style.contentInactive}` : `container ${style.content}`}> */}
-                        <div className="columns">
+                        <div className={`columns ${!companyClientDetail.active ? 'disabled' : ''}`}>
                             <div className="left">
-                            {/* <div className={style.column}> */}
                                 <p><span>Estado:&nbsp;</span>{companyClientDetail.active ? 'Activo' : 'Inactivo'}</p>
                                 {companyClientDetail.cuit && <p><span>CUIT:&nbsp;</span>{companyClientDetail.cuit}</p>}
                                 {companyClientDetail.name && <p><span>Nombre:&nbsp;</span>{companyClientDetail.name}</p>}

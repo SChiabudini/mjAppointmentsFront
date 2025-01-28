@@ -69,11 +69,8 @@ const ServiceSheetDetail = () => {
                                 <button onClick={() => navigate(`/main_window/fichas`)}>Atrás</button>
                             </div>
                         </div>
-                        {/* <div className={!serviceSheetDetail.active ? `container ${style.contentInactive}` : `container ${style.content}`}> */}
-                        <div>
+                        <div className={`columns ${!serviceSheetDetail.active ? 'disabled' : ''}`}>
                             <div>
-                            {/* <div className={style.column}> */}
-                                {/* <p><span>Estado:&nbsp;</span>{serviceSheetDetail.active ? 'Activo' : 'Inactivo'}</p> */}
 								{serviceSheetDetail.number && <p><span>Número de ficha:&nbsp;</span>{serviceSheetDetail.number}</p>}
 								{serviceSheetDetail.date && <p><span>Fecha:&nbsp;</span></p>}
                                 <p><span>{new Date(serviceSheetDetail.date).toLocaleString('es-ES', { 

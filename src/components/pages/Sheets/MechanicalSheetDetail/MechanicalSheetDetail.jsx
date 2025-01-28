@@ -68,11 +68,8 @@ const MechanicalSheetDetail = () => {
 								<button onClick={() => navigate(`/main_window/fichas`)}>Atrás</button>
 							</div>
 						</div>
-						{/* <div className={!mechanicalSheetDetail.active ? `container ${style.contentInactive}` : `container ${style.content}`}> */}
-						<div>
+						<div className={`columns ${!mechanicalSheetDetail.active ? 'disabled' : ''}`}>
 							<div>
-							{/* <div className={style.column}> */}
-								{/* <p><span>Estado:&nbsp;</span>{mechanicalSheetDetail.active ? 'Activo' : 'Inactivo'}</p> */}
 								{mechanicalSheetDetail.number && <p><span>Número de ficha:&nbsp;</span>{mechanicalSheetDetail.number}</p>}
 								{mechanicalSheetDetail.date && <p><span>Fecha:&nbsp;</span></p>}
 								<p><span>{new Date(mechanicalSheetDetail.date).toLocaleString('es-ES', { 

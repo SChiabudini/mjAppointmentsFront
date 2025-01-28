@@ -97,7 +97,7 @@ const BudgetDetail = () => {
                                 </div>
                             </div>                    
                         </div>
-                        <div id="printable-section" className={style.budget}>
+                        <div id="printable-section" className={`${style.budget} ${!budgetDetail.active ? 'disabled' : ''}`}>
                             <div className={style.header}>
                                 <div className={style.header1}>
                                     <img src={logo} alto=""/>

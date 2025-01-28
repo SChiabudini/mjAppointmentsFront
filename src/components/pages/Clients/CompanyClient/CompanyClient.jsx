@@ -247,7 +247,7 @@ const CompanyClients = () => {
                                     ) : (
                                         <>
                                             {paginatedCompanyClients?.map(companyClient => (
-                                                <tr key={companyClient._id}>
+                                                <tr key={companyClient._id} className={`${!companyClient.active ? 'disabled' : ''}`}>
                                                     <td>{companyClient.cuit}</td>
                                                     <td>{companyClient.name}</td>
                                                     <td>{companyClient.email}</td>
