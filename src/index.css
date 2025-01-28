@@ -927,4 +927,28 @@ button.rbc-active{
     }
 }
 
+/*-- SHEETS --*/
 
+.dateSheet {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.dateSheet input[type="checkbox"] {
+    margin: 10px !important;
+}
+
+.dateSheet input[type="date"] {
+    width: 40% !important;
+}
+
+.dateSheet button {
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.dateSheet button img {
+    width: 30%;
+}

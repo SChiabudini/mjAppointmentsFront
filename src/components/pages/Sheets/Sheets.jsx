@@ -10,17 +10,37 @@ import { clearServiceSheetsReducer } from "../../../redux/serviceSheetSlice.js";
 import { clearMechanicalSheetsReducer } from '../../../redux/mechanicalSheetSlice.js';
 import detail from "../../../assets/img/detail.png";
 import loadingGif from "../../../assets/img/loading.gif";
+import clear from "../../../assets/img/clear.png";
+import clearHover from "../../../assets/img/clearHover.png";
+
 
 const Sheets = () => {
+    
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const serviceSheets = useSelector(state => state.serviceSheet.serviceSheets);
     const mechanicalSheets = useSelector(state => state.mechanicalSheet.mechanicalSheets);
     const allMechanicalSheets = useSelector(state => state.mechanicalSheet.mechanicalSheetsAll);
     const allServiceSheets = useSelector(state => state.serviceSheet.serviceSheetsAll);
+
     const sheets = [...serviceSheets, ...mechanicalSheets].sort((a, b) => new Date(b.date) - new Date(a.date));
     const allSheets = [...allServiceSheets, ...allMechanicalSheets].sort((a, b) => new Date(b.date) - new Date(a.date));
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+
+    //----- FILTRO POR DATE
+    const [isDateFilterEnabled, setIsDateFilterEnabled] = useState(false);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+
+    const handleDateFilterToggle = (e) => {
+        setIsDateFilterEnabled(e.target.checked);
+        if (!e.target.checked) resetDate();
+    };
+
+    const resetDate = () => {
+        setStartDate('');
+        setEndDate('');
+    };
 
     const [number, setNumber] = useState('');
     const [date, setDate] = useState('');
@@ -195,23 +215,43 @@ const Sheets = () => {
                                 ▸
                             </button>
                         </div>
-                        <div>
+                        <div className="dateSheet">
                             <input
-                                type="date"
+                                type="checkbox"
+                                name="forDate"
+                                onChange={handleDateFilterToggle}
+                                checked={isDateFilterEnabled}
                             />
                             <input
                                 type="date"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                disabled={!isDateFilterEnabled}
+                            />
+                            <button 
+                                onClick={resetDate} 
+                                onMouseEnter={(e) => e.currentTarget.firstChild.src = clearHover} 
+                                onMouseLeave={(e) => e.currentTarget.firstChild.src = clear}
+                                disabled={!isDateFilterEnabled}
+                            >
+                                <img src={clear} alt="Print"/>
+                            </button>
+                            <input
+                                type="date"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                disabled={!isDateFilterEnabled}
                             />
                         </div>
                         <div className="titleButtons">
-                            <label className="showAll">
-                                <input
-                                    type="checkbox"
-                                    name="showAll"
-                                    onChange={handleAll}
-                                />
-                                Mostrar todos
-                            </label>
+                                <label className="showAll">
+                                    <input
+                                        type="checkbox"
+                                        name="showAll"
+                                        onChange={handleAll}
+                                    />
+                                    Mostrar todos
+                                </label>
                             <button onClick={() => setPopUpServiceOpen(true)}>+ F. service</button>
                             <button onClick={() => setPopUpMechanicalOpen(true)}>+ F. mecánica</button>
                         </div>                

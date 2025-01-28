@@ -37,7 +37,6 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
         submit: ''
     }); 
     const [loading, setLoading] = useState(false);
-console.log(newAppointment);
 
     //----- DISABLE BUTTON
     
