@@ -9,7 +9,7 @@ import reboot from  "../../../../assets/img/reboot.png";
 import rebootHover from "../../../../assets/img/rebootHover.png";
 import loadingGif from "../../../../assets/img/loading.gif";
 
-const PutAppointment = ({ onAppointmentAdded = () => {}, isNested = false }) => {
+const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
     
     let { id } = useParams();
     const dispatch = useDispatch();
