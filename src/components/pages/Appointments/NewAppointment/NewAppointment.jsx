@@ -479,49 +479,53 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                         <div className="formRow">
                             <div>Fecha y horario</div>
                         </div>
-                        <div className="formRow">
+                        <div className="formRowDate">
                             <label htmlFor="start">Inicio*</label>
-                            <input 
-                                type="date" 
-                                name="startDate" 
-                                value={tempDates.startDate}
-                                min={localDate}
-                                onChange={handleInputDate}
-                            />
-                            <input 
-                                type="time" 
-                                name="startTime" 
-                                value={tempDates.startTime}
-                                onChange={handleInputDate}
-                                // onInput={(e) => {
-                                //     if (e.target.value < "07:00" || e.target.value > "16:59") {
-                                //         e.target.value = ""; // Limpia el input si el valor no es válido
-                                //         e.target.setCustomValidity("Horario no válido. Selecciona entre 07:00 y 16:59.");
-                                //         e.target.reportValidity();
-                                //     } else {
-                                //         e.target.setCustomValidity(''); // Limpiar cualquier mensaje de error anterior
-                                //     }
-                                // }}
-                                onInput={(e) => handleTimeInput(e, 'startTime')}
-                            />
+                            <div>
+                                <input 
+                                    type="date" 
+                                    name="startDate" 
+                                    value={tempDates.startDate}
+                                    min={localDate}
+                                    onChange={handleInputDate}
+                                />
+                                <input 
+                                    type="time" 
+                                    name="startTime" 
+                                    value={tempDates.startTime}
+                                    onChange={handleInputDate}
+                                    // onInput={(e) => {
+                                    //     if (e.target.value < "07:00" || e.target.value > "16:59") {
+                                    //         e.target.value = ""; // Limpia el input si el valor no es válido
+                                    //         e.target.setCustomValidity("Horario no válido. Selecciona entre 07:00 y 16:59.");
+                                    //         e.target.reportValidity();
+                                    //     } else {
+                                    //         e.target.setCustomValidity(''); // Limpiar cualquier mensaje de error anterior
+                                    //     }
+                                    // }}
+                                    onInput={(e) => handleTimeInput(e, 'startTime')}
+                                />
+                            </div>
                         </div>
                         {errorMessage.startTime && <p className="errorMessage">{errorMessage.startTime}</p>}
-                        <div className="formRow">
+                        <div className="formRowDate">
                             <label htmlFor="end">Finalización*</label>
-                            <input 
-                                type="date" 
-                                name="endDate" 
-                                value={tempDates.endDate}
-                                min={localDate}
-                                onChange={handleInputDate}
-                            />
-                            <input 
-                                type="time" 
-                                name="endTime" 
-                                value={tempDates.endTime}
-                                onChange={handleInputDate}
-                                onInput={(e) => handleTimeInput(e, 'endTime')}
-                            />
+                            <div>
+                                <input 
+                                    type="date" 
+                                    name="endDate" 
+                                    value={tempDates.endDate}
+                                    min={localDate}
+                                    onChange={handleInputDate}
+                                />
+                                <input 
+                                    type="time" 
+                                    name="endTime" 
+                                    value={tempDates.endTime}
+                                    onChange={handleInputDate}
+                                    onInput={(e) => handleTimeInput(e, 'endTime')}
+                                />
+                            </div>
                         </div>
                         {errorMessage.endTime && <p className="errorMessage">{errorMessage.endTime}</p>}
                         <div className="formRow"><label>Procedimiento*</label></div>
