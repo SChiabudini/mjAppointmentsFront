@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import Error from "../../Error/Error.jsx";
 import { getBudgetById, putBudgetStatus, getBudgets } from "../../../../redux/budgetActions.js";
 import { clearBudgetDetailReducer } from "../../../../redux/budgetSlice.js";
 import PutBudget from "../PutBudget/PutBudget.jsx";
-import logo from "./logoBG.png";
+import logo from "../../../../assets/img/logoMJ-BG.png";
 import loadingGif from "../../../../assets/img/loading.gif";
 import print from "../../../../assets/img/print.png";
 import printHover from "../../../../assets/img/printHover.png";
@@ -103,10 +103,10 @@ const BudgetDetail = () => {
                                 <div className={style.header1}>
                                     <img src={logo} alto=""/>
                                     <p><span>MJ PRO OIL</span></p>
-                                    <p>Razón Social</p>
-                                    <p>Nombre completo</p>
-                                    <p>CUIL</p>
-                                    <p>Teléfono</p>
+                                    <p>Matías Nicolás Ezequiel</p>
+                                    <p>CUIL: 20-41195480-4</p>
+                                    <p>Av. 44 n° 1877 e/ 132 y 133</p>
+                                    <p>Teléfono: (221) 6230285</p>
                                 </div>
                                 <div className={style.header2}>
                                     <p className={style.bigP}>P</p>
