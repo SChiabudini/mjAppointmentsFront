@@ -73,13 +73,14 @@ const ServiceSheetDetail = () => {
                             <div>
 								{serviceSheetDetail.number && <p><span>Número de ficha:&nbsp;</span>{serviceSheetDetail.number}</p>}
 								{serviceSheetDetail.date && <p><span>Fecha:&nbsp;</span></p>}
-                                <p><span>{new Date(serviceSheetDetail.date).toLocaleString('es-ES', { 
+                                <p><span>{new Intl.DateTimeFormat('es-ES', { 
                                     day: '2-digit', 
                                     month: '2-digit', 
                                     year: '2-digit', 
                                     hour: '2-digit', 
                                     minute: '2-digit', 
-                                })}</span></p>
+                                    timeZone: 'UTC' // Forzar UTC
+                                }).format(new Date(serviceSheetDetail.date))} hs</span></p>
                                 {(serviceSheetDetail.personClient || serviceSheetDetail.companyClient) && (
                                     <p><span>Cliente:&nbsp;</span></p>
                                 )}                 
