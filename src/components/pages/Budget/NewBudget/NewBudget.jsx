@@ -19,7 +19,6 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
         personClient: null,
         companyClient: null,
         vehicle: null,
-        end: '',
         items: [],
     };
 
@@ -44,14 +43,10 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
         }
     };
 
-    const today = new Date();
-    const offset = today.getTimezoneOffset();
-    const localDate = new Date(today.getTime() - offset * 60 * 1000).toISOString().split("T")[0];
-
     const [ disabled, setDisabled ] = useState(true);
 
     useEffect(() => {
-        if((newBudget.companyClient || newBudget.personClient) && newBudget.end !== '' && newBudget.items.length > 0){
+        if((newBudget.companyClient || newBudget.personClient) && newBudget.items.length > 0){
             setDisabled(false);
         } else {
             setDisabled(true);
@@ -277,15 +272,8 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
         setLoading(true);
         setErrorMessage("");
 
-        const formattedEndDate = `${newBudget.end}T00:00:00.000Z`;
-
-        const budgetToSubmit = {
-            ...newBudget,
-            end: formattedEndDate, // Actualiza el valor de 'end' con el formato correcto
-        };
-
         try {
-            const response = await dispatch(postBudget(budgetToSubmit));
+            const response = await dispatch(postBudget(newBudget));
             setLoading(false);
             console.log("Budget successfully saved");
 
@@ -443,80 +431,70 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                 <div className="formRow"></div>
                 <form id="budgetForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
                     <div className="formRow">
-                        <label>Vencimiento*</label>                            
-                    <input
-                            type="date"
-                            name="end"
-                            onChange={(event) => setNewBudget({...newBudget, end: event.target.value})}
-                            value={newBudget.end}
-                            min={localDate}
-                        />
+                        <label>Items*</label>
                     </div>
+                    <div className="newItem">
                         <div className="formRow">
-                            <label>Items*</label>
+                            <label>Cantidad*</label>
+                            <input
+                                type="number"
+                                value={currentItem.quantity || ""}
+                                onChange={(event) =>
+                                    setCurrentItem({
+                                        ...currentItem,
+                                        quantity: parseInt(event.target.value, 10) || 0,
+                                    })
+                                }
+                                min={0}
+                            />
                         </div>
-                        <div className="newItem">
-                            <div className="formRow">
-                                <label>Cantidad*</label>
-                                <input
-                                    type="number"
-                                    value={currentItem.quantity || ""}
-                                    onChange={(event) =>
-                                        setCurrentItem({
-                                            ...currentItem,
-                                            quantity: parseInt(event.target.value, 10) || 0,
-                                        })
-                                    }
-                                    min={0}
-                                />
-                            </div>
-                            <div className="formRow">
-                                <label>Descripción*</label>
-                                <input
-                                    type="text"
-                                    value={currentItem.description}
-                                    onChange={(event) =>
-                                        setCurrentItem({
-                                            ...currentItem,
-                                            description: event.target.value,
-                                        })
-                                    }
-                                />
-                            </div>
-                            <div className="formRow">
-                                <label>Precio unitario*</label>
-                                <input
-                                    type="number"
-                                    value={currentItem.price || ""}
-                                    onChange={(event) =>
-                                        setCurrentItem({
-                                            ...currentItem,
-                                            price: parseInt(event.target.value, 10) || 0,
-                                        })
-                                    }
-                                    min={0}
-                                />
-                            </div>
-                            <div className="formRow">                            
-                                <button type="button" onClick={handleNewItem} disabled={disabledNewItem}>
-                                    Añadir ítem
-                                </button>
-                            </div>
+                        <div className="formRow">
+                            <label>Descripción*</label>
+                            <input
+                                type="text"
+                                value={currentItem.description}
+                                onChange={(event) =>
+                                    setCurrentItem({
+                                        ...currentItem,
+                                        description: event.target.value,
+                                    })
+                                }
+                            />
                         </div>
-                        {newBudget.items.length > 0 && (
-                            <div className="formRow">
-                                <ul>
-                                    {newBudget.items.map((item, index) => (
-                                        <li key={index}>
-                                            {item.quantity} x {item.description} - $
-                                            {item.price} - Subtotal: ${item.quantity * item.price}
-                                            <button type="button" onClick={() => removeItem(index)}>x</button>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-                        <div className="formRow"><label>Total: ${total}</label></div>
+                        <div className="formRow">
+                            <label>Precio unitario*</label>
+                            <input
+                                type="number"
+                                value={currentItem.price || ""}
+                                onChange={(event) =>
+                                    setCurrentItem({
+                                        ...currentItem,
+                                        price: parseInt(event.target.value, 10) || 0,
+                                    })
+                                }
+                                min={0}
+                            />
+                        </div>
+                        <div className="formRow">                            
+                            <button type="button" onClick={handleNewItem} disabled={disabledNewItem}>
+                                Añadir ítem
+                            </button>
+                        </div>
+                    </div>
+                    {newBudget.items.length > 0 && (
+                        <div className="formRow">
+                            <ul>
+                                {newBudget.items.map((item, index) => (
+                                    <li key={index}>
+                                        {item.quantity} x {item.description} - $
+                                        {item.price} - Subtotal: ${item.quantity * item.price}
+                                        <button type="button" onClick={() => removeItem(index)}>x</button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                    <div className="formRow"><label>Total: ${total}</label></div>
                     <div className="submit">
                         <button type='submit' form="budgetForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Crear presupuesto"}</button>
                         {errorMessage && <p className="errorMessage">{errorMessage}</p>}
