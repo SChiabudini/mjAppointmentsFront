@@ -1,0 +1,14 @@
+.serviceSheetPage{
+    width: 100%;
+    height: 100%;
+}
+
+.serviceSheet{
+    width: 216mm;
+    height: 279mm;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    box-sizing: border-box;
+}
