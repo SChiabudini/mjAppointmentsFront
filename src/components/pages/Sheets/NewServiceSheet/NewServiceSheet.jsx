@@ -15,7 +15,19 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
 
     const dispatch = useDispatch();
 
+    const nowDate = new Date();
+
+    const today = nowDate.toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+    
+    const now = nowDate.toLocaleTimeString('es-AR', { 
+        timeZone: 'America/Argentina/Buenos_Aires', 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hourCycle: 'h23'
+    });
+
     const initialServiceSheetState = {
+        date: `${today}T${now}`,
         personClient: null,
         companyClient: null,
         vehicle: null,
@@ -41,6 +53,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
         } else {
             setDisabled(true);
         }
+        
     }, [newServiceSheet]);
 
     // ----- HANDLE INPUTS
@@ -48,7 +61,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     const handleInputChange = (event) => {
         const { name, value } = event.target;
     
-        const validFields = ['kilometers', 'kmsToNextService', 'amount', 'personClient', 'companyClient', 'vehicle', 'oil', 'filters', 'notes'];
+        const validFields = ['kilometers', 'kmsToNextService', 'amount', 'personClient', 'companyClient', 'vehicle', 'oil', 'filters', 'notes', 'date'];
     
         if (validFields.includes(name)) {
             setNewServiceSheet({
@@ -58,6 +71,20 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                         ? '' 
                         : parseInt(value, 10) || 0
                     : value,
+            });
+        }
+
+        if(name === "date"){
+            setNewServiceSheet({
+                ...newServiceSheet,
+                date: `${value}T${newServiceSheet.date.split("T")[1]}`
+            });
+        }
+
+        if(name === "time"){
+            setNewServiceSheet({
+                ...newServiceSheet,
+                date: `${newServiceSheet.date.split("T")[0]}T${value}`
             });
         }
     
@@ -405,6 +432,23 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                 {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newServiceSheet.vehicle}/>}
                 <div className="formRow"></div>
                 <form id="serviceSheetForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
+                    <div className="formRowDate">
+                        <label htmlFor="date">Fecha*</label>
+                        <div>
+                            <input 
+                                type="date" 
+                                name="date"
+                                value={newServiceSheet.date.split("T")[0]}
+                                onChange={handleInputChange}
+                            />
+                            <input 
+                                type="time" 
+                                name="time"
+                                value={newServiceSheet.date.split("T")[1]}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                    </div>
                     <div className="formRow">
                         <label htmlFor="kilometers">Kilómetros*</label>
                         <input type="number" name="kilometers" value={newServiceSheet.kilometers || ""} onChange={handleInputChange} min={0}/>
