@@ -18,9 +18,13 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
 
     const [editAppointment, setEditAppointment] = useState({});
     const [initialAppointment, setInitialAppointment] = useState({});
-    const [errorMessage, setErrorMessage] = useState(""); 
+    const [errorMessage, setErrorMessage] = useState({
+        startTime: '',
+        endTime: '',
+        submit: ''
+    }); 
     const [loading, setLoading] = useState(false);
-      
+    
     useEffect(() => {
         dispatch(getAppointmentById(id));
     }, [dispatch, id])
@@ -42,6 +46,14 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
                 setSearchTermVehicles('');
             }
 
+            setTempDates((prevState) => ({
+                ...prevState,
+                startDate: appointmentDetail.start ? formatToLocalDateTime(appointmentDetail.start).split('T')[0] : '',
+                startTime: appointmentDetail.start ? formatToLocalDateTime(appointmentDetail.start).split('T')[1].slice(0, 5) : '',
+                endDate: appointmentDetail.end ? formatToLocalDateTime(appointmentDetail.end).split('T')[0] : '',
+                endTime: appointmentDetail.end ? formatToLocalDateTime(appointmentDetail.end).split('T')[1].slice(0, 5) : '',
+            }));
+
             const initialData = {
                 _id: appointmentDetail._id,
                 start: formatToLocalDateTime(appointmentDetail.start),
@@ -57,10 +69,96 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
         }
     }, [dispatch, id, appointmentDetail]);
 
+    //----- DATE
+
+    const [tempDates, setTempDates] = useState({
+        startDate: '',
+        startTime: '',
+        endDate: '',
+        endTime: '',
+    });
+
+    const formatToLocalDateTime = (dateStr) => {
+        if (!dateStr) return "";
+    
+        // Crear la fecha a partir de la cadena en UTC
+        const date = new Date(dateStr);
+    
+        // Formatear la fecha a la zona horaria de Buenos Aires
+        const options = {
+            // timeZone: 'America/Argentina/Buenos_Aires', // Especifica la zona horaria
+            year: 'numeric',
+            day: '2-digit',
+            month: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            // hour12: false
+            timeZone: 'UTC'
+        };
+    
+        // Formatear con el formato adecuado para que quede como 'yyyy-MM-ddTHH:mm'
+        const formattedDate = new Intl.DateTimeFormat('es-ES', options).format(date);
+    
+        // Dividir la fecha y hora
+        const [datePart, timePart] = formattedDate.split(', ');
+        const [day, month, year] = datePart.split('/');
+        const formatted = `${year}-${month}-${day}T${timePart.slice(0, 5)}`;
+    
+        return formatted;
+    };
+
     const today = new Date();
     const offset = today.getTimezoneOffset();
     const localDate = new Date(today.getTime() - offset * 60 * 1000).toISOString().split("T")[0];
-    const minDateTime = localDate + "T00:00";
+
+    const handleInputDate = (event) => {
+        const { name, value } = event.target;
+
+        // Actualiza el estado temporal de las fechas y horas
+        setTempDates((prev) => {
+            const updatedDates = { ...prev, [name]: value };
+
+            // Verifica si ambas partes (fecha y hora) están presentes para "start"
+            if (name === "startDate" || name === "startTime") {
+                if (updatedDates.startDate && updatedDates.startTime) {
+                    setEditAppointment((prev) => ({
+                        ...prev,
+                        start: `${updatedDates.startDate}T${updatedDates.startTime}`,
+                    }));
+                }
+            }
+
+            // Verifica si ambas partes (fecha y hora) están presentes para "end"
+            if (name === "endDate" || name === "endTime") {
+                if (updatedDates.endDate && updatedDates.endTime) {
+                    setEditAppointment((prev) => ({
+                        ...prev,
+                        end: `${updatedDates.endDate}T${updatedDates.endTime}`,
+                    }));
+                }
+            }
+
+            return updatedDates; // Devuelve el estado temporal actualizado
+        });
+
+    };
+
+    const handleTimeInput = (e, type) => {
+        const value = e.target.value;
+
+        if (value < "07:00" || value > "16:59") {
+            e.target.value = ""; // Limpia el input si el valor no es válido
+            setErrorMessage(prevErrors => ({
+                ...prevErrors,
+                [type]: "Horario no válido. Selecciona entre 07:00 y 16:59."
+            }));
+        } else {
+            setErrorMessage(prevErrors => ({
+                ...prevErrors,
+                [type]: ''
+            }));
+        }
+    };
 
     //----- DISABLE BUTTON
         
@@ -78,13 +176,6 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-
-        if (name === 'start' || name === 'end') {
-            setEditAppointment({
-                ...editAppointment,
-                [name]: value,
-            });
-        }
         
         setEditAppointment((prevState) => ({
             ...prevState,
@@ -114,15 +205,6 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
         };
         if(name === 'searchTermVehicles') setSearchTermVehicles(value);
         if(name === 'searchTermVehicles' && value === '') setDropdownVisibleVehicles(false); 
-    };
-
-    //----- DATE
-
-    const formatToLocalDateTime = (dateStr) => {
-        if (!dateStr) return "";
-        const date = new Date(dateStr);
-        const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-        return offsetDate.toISOString().slice(0, 16); // yyyy-MM-ddTHH:mm
     };
 
     //----- HANDLE PROCEDURE
@@ -229,6 +311,7 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
     };
     
     //----- ATRIBUTES INPUTS
+    
     const handleSearchFocus = (event) => {
         const { name } = event.target;
 
@@ -313,11 +396,13 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
         event.preventDefault();
 
         setLoading(true);
-        setErrorMessage("");
+        setErrorMessage({
+            startTime: '',
+            endTime: '',
+            submit: ''
+        });
 
         try {
-
-            console.log(editAppointment);
 
             const response = await dispatch(putAppointment(editAppointment));
             
@@ -332,7 +417,10 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
             onAppointmentAdded(response);
 
         } catch (error) {
-            setErrorMessage("*Error al editar turno, revise los datos ingresados e intente nuevamente.");
+            setErrorMessage(prevErrors => ({
+                ...prevErrors,
+                submit: "*Error al editar turno, revise los datos ingresados e intente nuevamente."
+            }));
             console.error("Error updating appointment:", error.message);
             if (error.message.includes('already exist')) setAlreadyExist(true);
             setLoading(false);
@@ -355,7 +443,6 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
             </div>
             <div className="container">
                 <div className="formRow">Los campos con (*) son obligatorios.</div>
-                
                 <div className="clientSelection">
                     <div className="formRow">
                         <label>Vehículo*</label>
@@ -467,72 +554,85 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
                         <div className="formRow">
                             <label htmlFor="start">Inicio*</label>
                             <input 
-                                type="datetime-local" 
-                                name="start" 
-                                value={editAppointment.start} 
-                                onChange={handleInputChange}
-                                min={minDateTime} 
+                                type="date" 
+                                name="startDate" 
+                                value={tempDates.startDate}
+                                min={localDate}
+                                onChange={handleInputDate}
+                            />
+                            <input 
+                                type="time" 
+                                name="startTime" 
+                                value={tempDates.startTime}
+                                onChange={handleInputDate}
+                                onInput={(e) => handleTimeInput(e, 'startTime')}
                             />
                         </div>
+                        {errorMessage.startTime && <p className="errorMessage">{errorMessage.startTime}</p>}
                         <div className="formRow">
                             <label htmlFor="end">Finalización*</label>
                             <input 
-                                type="datetime-local" 
-                                name="end" 
-                                value={editAppointment.end} 
-                                onChange={handleInputChange}
-                                min={minDateTime}
+                                type="date" 
+                                name="endDate" 
+                                value={tempDates.endDate}
+                                min={localDate}
+                                onChange={handleInputDate}
+                            />
+                            <input 
+                                type="time" 
+                                name="endTime" 
+                                value={tempDates.endTime}
+                                onChange={handleInputDate}
+                                onInput={(e) => handleTimeInput(e, 'endTime')}
                             />
                         </div>
+                        {errorMessage.endTime && <p className="errorMessage">{errorMessage.endTime}</p>}
                         <div className="formRow"><label>Procedimiento*</label></div>
-
-                            <div className="procedureSelectionInputs">
-                                <label htmlFor="service">
-                                    <input 
-                                        type="checkbox" 
-                                        name="service" 
-                                        id="service" 
-                                        checked={editAppointment.procedure?.service || false} 
-                                        onChange={handleProcedureChange}
-                                    />
-                                    Service
-                                </label>                               
-                                <label htmlFor="mechanical">
-                                    <input 
-                                        type="checkbox" 
-                                        name="mechanical" 
-                                        id="mechanical" 
-                                        checked={editAppointment.procedure?.mechanical || false} 
-                                        onChange={handleProcedureChange}
-                                    />
-                                    Mecánica
-                                </label>    
-                            
+                        <div className="procedureSelectionInputs">
+                            <label htmlFor="service">
+                                <input 
+                                    type="checkbox" 
+                                    name="service" 
+                                    id="service" 
+                                    checked={editAppointment.procedure?.service || false} 
+                                    onChange={handleProcedureChange}
+                                />
+                                Service
+                            </label>                               
+                            <label htmlFor="mechanical">
+                                <input 
+                                    type="checkbox" 
+                                    name="mechanical" 
+                                    id="mechanical" 
+                                    checked={editAppointment.procedure?.mechanical || false} 
+                                    onChange={handleProcedureChange}
+                                />
+                                Mecánica
+                            </label>    
                         </div>
                         <div className="formRow">
-                                <label htmlFor="title">Título*</label>
-                                <input 
-                                    type="text" 
-                                    name="title" 
-                                    value={editAppointment.procedure?.title || ''} 
-                                    onChange={handleProcedureChange} 
-                                />
-                            </div>               
-                            <div className="formRow">
-                                <label htmlFor="description">Descripción</label>
-                            </div>
-                            <div className="formRow">
-                                <textarea
-                                    name="description" 
-                                    value={editAppointment.procedure?.description || ''} 
-                                    onChange={handleProcedureChange} 
-                                />
-                            </div> 
-                       
+                            <label htmlFor="title">Título*</label>
+                            <input 
+                                type="text" 
+                                name="title" 
+                                value={editAppointment.procedure?.title || ''} 
+                                onChange={handleProcedureChange} 
+                            />
+                        </div>               
+                        <div className="formRow">
+                            <label htmlFor="description">Descripción</label>
+                        </div>
+                        <div className="formRow">
+                            <textarea
+                                name="description" 
+                                value={editAppointment.procedure?.description || ''} 
+                                onChange={handleProcedureChange} 
+                            />
+                        </div> 
                     </div>
                     <div className="submit">  
                         <button type='submit' form="appointmentForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Editar turno"}</button>
-                        {errorMessage && <p className="errorMessage">{errorMessage}</p>}
+                        {errorMessage.submit && <p className="errorMessage">{errorMessage.submit}</p>}
                     </div>
                 </form>
             </div>
