@@ -67,12 +67,22 @@ const PutBudget = ({ onBudgetAdded = () => {} }) => {
 
         if (name === 'searchTermClients') {
             setSearchTermClients(value);
-            if (value === '') setDropdownVisibleClients(false);
+            if (value === '') {
+                setDropdownVisibleClients(false);
+                setSearchTermClients('');
+                setSearchTermVehicles('');
+                setEditBudget({ ...editBudget, personClient: null, companyClient: null, vehicle: null });
+            }
         }
     
         if (name === 'searchTermVehicles') {
             setSearchTermVehicles(value);
-            if (value === '') setDropdownVisibleVehicles(false);
+            if (value === '') {
+                setDropdownVisibleVehicles(false);
+                setSearchTermClients('');
+                setSearchTermVehicles('');
+                setEditBudget({ ...editBudget, personClient: null, companyClient: null, vehicle: null });
+            }
         }
     };
 
@@ -292,7 +302,7 @@ const PutBudget = ({ onBudgetAdded = () => {} }) => {
         setSearchingPerson(budgetDetail.personClient ? true : false);
     
         if (budgetDetail.vehicle) {
-            setSearchTermVehicles(budgetDetail.ehicle?.licensePlate || '');
+            setSearchTermVehicles(budgetDetail.vehicle?.licensePlate || '');
         } else {
             setSearchTermVehicles('');
         }
