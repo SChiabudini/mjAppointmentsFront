@@ -617,7 +617,7 @@ th div.withFilter button.sort{
     color: black;
 }
 
-.formRowWithButton {
+.formRowWithButton, .formRowDate {
     padding: 0.5rem 0;
     display: flex;
     justify-content: space-between;
@@ -628,10 +628,19 @@ th div.withFilter button.sort{
     width: 35%;
 }
 
-.formRowWithButton div{
+.formRowWithButton div, .formRowDate div{
     width: 60%;
     display: flex;
     align-items: center;
+}
+
+.formRowDate div{
+    justify-content: space-around;
+    gap: 0.5rem;
+}
+
+.formRowDate div input{
+    width: 100% !important;
 }
 
 .formRowWithButton div input{
