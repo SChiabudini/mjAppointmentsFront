@@ -311,6 +311,7 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
     };
     
     //----- ATRIBUTES INPUTS
+    
     const handleSearchFocus = (event) => {
         const { name } = event.target;
 

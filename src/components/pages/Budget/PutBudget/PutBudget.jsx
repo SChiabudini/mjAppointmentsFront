@@ -281,21 +281,18 @@ const PutBudget = ({ onBudgetAdded = () => {} }) => {
     const resetForm = () => {
         setEditBudget(initialBudget);
         // Actualizar los valores de búsqueda del cliente y vehículo
-        if (initialBudget.personClient) {
-            const person = personClients.find(client => client._id === initialBudget.personClient);
-            setSearchTermClients(`${person.dni} - ${person.name}`);
-        } else if (initialBudget.companyClient) {
-            const company = companyClients.find(client => client._id === initialBudget.companyClient);
-            setSearchTermClients(`${company.cuit} - ${company.name}`);
+        if (budgetDetail.personClient) {
+            setSearchTermClients(`${budgetDetail.personClient.dni} - ${budgetDetail.personClient.name}`);
+        } else if (budgetDetail.companyClient) {
+            setSearchTermClients(`${budgetDetail.companyClient.cuit} - ${budgetDetail.companyClient.name}`);
         } else {
             setSearchTermClients('');
         }
 
-        setSearchingPerson(initialBudget.personClient ? true : false);
+        setSearchingPerson(budgetDetail.personClient ? true : false);
     
-        if (initialBudget.vehicle) {
-            const vehicle = vehicles.find(v => v._id === initialBudget.vehicle);
-            setSearchTermVehicles(vehicle?.licensePlate || '');
+        if (budgetDetail.vehicle) {
+            setSearchTermVehicles(budgetDetail.ehicle?.licensePlate || '');
         } else {
             setSearchTermVehicles('');
         }
