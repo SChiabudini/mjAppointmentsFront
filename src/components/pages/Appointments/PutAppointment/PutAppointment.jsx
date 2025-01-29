@@ -284,21 +284,18 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
         setEditAppointment(initialAppointment);
     
         // Actualizar los valores de búsqueda del cliente y vehículo
-        if (initialAppointment.personClient) {
-            const person = personClients.find(client => client._id === initialAppointment.personClient);
-            setSearchTermClients(`${person.dni} - ${person.name}`);
-        } else if (initialAppointment.companyClient) {
-            const company = companyClients.find(client => client._id === initialAppointment.companyClient);
-            setSearchTermClients(`${company.cuit} - ${company.name}`);
+        if (appointmentDetail.personClient) {
+            setSearchTermClients(`${appointmentDetail.personClient.dni} - ${appointmentDetail.personClient.name}`);
+        } else if (appointmentDetail.companyClient) {
+            setSearchTermClients(`${appointmentDetail.companyClient.cuit} - ${appointmentDetail.companyClient.name}`);
         } else {
             setSearchTermClients('');
         }
 
-        setSearchingPerson(initialAppointment.personClient ? true : false);
+        setSearchingPerson(appointmentDetail.personClient ? true : false);
     
-        if (initialAppointment.vehicle) {
-            const vehicle = vehicles.find(v => v._id === initialAppointment.vehicle);
-            setSearchTermVehicles(vehicle?.licensePlate || '');
+        if (appointmentDetail.vehicle) {
+            setSearchTermVehicles(appointmentDetail.vehicle?.licensePlate || '');
         } else {
             setSearchTermVehicles('');
         }
@@ -319,6 +316,9 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
         setErrorMessage("");
 
         try {
+
+            console.log(editAppointment);
+
             const response = await dispatch(putAppointment(editAppointment));
             
             setLoading(false);
