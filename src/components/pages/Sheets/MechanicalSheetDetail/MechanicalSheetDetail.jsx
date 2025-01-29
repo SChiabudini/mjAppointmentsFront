@@ -72,13 +72,14 @@ const MechanicalSheetDetail = () => {
 							<div>
 								{mechanicalSheetDetail.number && <p><span>Número de ficha:&nbsp;</span>{mechanicalSheetDetail.number}</p>}
 								{mechanicalSheetDetail.date && <p><span>Fecha:&nbsp;</span></p>}
-								<p><span>{new Date(mechanicalSheetDetail.date).toLocaleString('es-ES', { 
+								<p><span>{new Intl.DateTimeFormat('es-ES', { 
 									day: '2-digit', 
 									month: '2-digit', 
 									year: '2-digit', 
 									hour: '2-digit', 
 									minute: '2-digit', 
-								})}</span></p>
+									timeZone: 'UTC' // Forzar UTC
+                                }).format(new Date(mechanicalSheetDetail.date))} hs</span></p>
 								{(mechanicalSheetDetail.personClient || mechanicalSheetDetail.companyClient) && (
 									<p><span>Cliente:&nbsp;</span></p>
 								)}                 
