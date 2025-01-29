@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Error from "../../Error/Error.jsx";
 import { getBudgetById, putBudgetStatus, getBudgets } from "../../../../redux/budgetActions.js";
 import { clearBudgetDetailReducer } from "../../../../redux/budgetSlice.js";
+import PutBudget from "../PutBudget/PutBudget.jsx";
 import logo from "./logoBG.png";
 import loadingGif from "../../../../assets/img/loading.gif";
 import print from "../../../../assets/img/print.png";
@@ -191,6 +192,11 @@ const BudgetDetail = () => {
                     </div>
                 )
             }
+            <div className={popUpOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpOpen(false)}>
+                <div onClick={(e) => e.stopPropagation()}>
+                    <PutBudget onBudgetAdded={() => setPopUpOpen(false)}/>
+                </div>
+            </div>
             {showDeleteModal ?
                 <div className="deleteModal">
                     <div className="deleteModalContainer">
