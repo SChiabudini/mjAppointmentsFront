@@ -8,6 +8,8 @@ import { getServiceSheetById, getServiceSheets, getAllServiceSheets, putServiceS
 import { getPersonClients } from "../../../../redux/personClientActions";
 import { getCompanyClients } from "../../../../redux/companyClientActions";
 import { getVehicles } from "../../../../redux/vehicleActions";
+import reboot from  "../../../../assets/img/reboot.png";
+import rebootHover from "../../../../assets/img/rebootHover.png";
 import loadingGif from "../../../../assets/img/loading.gif";
 
 const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
@@ -18,6 +20,7 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     const serviceSheetDetail = useSelector(state => state.serviceSheet?.serviceSheetDetail || {}); 
 
     const [editServiceSheet, setEditServiceSheet] = useState({});
+    const [initialServiceSheet, setInitialServiceSheet] = useState({});
     const [errorMessage, setErrorMessage] = useState(""); 
     const [loading, setLoading] = useState(false);
       
@@ -46,7 +49,8 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
             if (serviceSheetDetail.vehicle) {
                 setSearchTermVehicles(`${serviceSheetDetail.vehicle.licensePlate}`);
             }
-            setEditServiceSheet({
+
+            const updatedEditServicelSheet = {
                 _id: serviceSheetDetail._id,
                 date: formatDate(serviceSheetDetail.date),
                 personClient: serviceSheetDetail.personClient ? serviceSheetDetail.personClient._id : null,
@@ -60,7 +64,10 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                 amount: serviceSheetDetail.amount,
                 number: serviceSheetDetail.number,
                 active: serviceSheetDetail.active,
-            });
+            };
+
+            setEditServiceSheet(updatedEditServicelSheet);
+            setInitialServiceSheet(updatedEditServicelSheet);
         }
     }, [dispatch, id, serviceSheetDetail]);    
 
@@ -110,24 +117,23 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     
         if (name === 'searchTermClients') {
             setSearchTermClients(value);
-            if (value === '') setDropdownVisibleClients(false);
+            if (value === '') {
+                setDropdownVisibleClients(false);
+                setSearchTermClients('');
+                setSearchTermVehicles('');
+                setEditServiceSheet({ ...editServiceSheet, personClient: null, companyClient: null, vehicle: null });
+            };
         };
     
         if (name === 'searchTermVehicles') {
             setSearchTermVehicles(value);
-            if (value === '') setDropdownVisibleVehicles(false);
+            if (value === '') {
+                setDropdownVisibleVehicles(false);
+                setSearchTermClients('');
+                setSearchTermVehicles('');
+                setEditServiceSheet({ ...editServiceSheet, personClient: null, companyClient: null, vehicle: null });
+            }
         };
-
-        setEditServiceSheet((prevState) => ({
-            ...prevState,
-            ...(name === 'searchTermClients' && value === '' && {
-                personClient: null,
-                companyClient: null,
-            }),
-            ...(name === 'searchTermVehicles' && value === '' && {
-                vehicle: null,
-            }),
-        }));
     };
 
     //----- LOAD CLIENTS AND VEHICLES OPTIONS
@@ -280,6 +286,27 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
         });
     };
 
+    //----- RESET
+
+    const resetForm = () => {
+        setEditServiceSheet(initialServiceSheet);
+        if (serviceSheetDetail.personClient) {
+            setSearchTermClients(`${serviceSheetDetail.personClient.dni} - ${serviceSheetDetail.personClient.name}`);
+        } else if (serviceSheetDetail.companyClient) {
+            setSearchTermClients(`${serviceSheetDetail.companyClient.cuit} - ${serviceSheetDetail.companyClient.name}`);
+        } else {
+            setSearchTermClients('');
+        }
+
+        setSearchingPerson(serviceSheetDetail.personClient ? true : false);
+    
+        if (serviceSheetDetail.vehicle) {
+            setSearchTermVehicles(serviceSheetDetail.vehicle?.licensePlate || '');
+        } else {
+            setSearchTermVehicles('');
+        }
+    };
+
     //----- SUBMIT
  
     const handleNoSend = (event) => {
@@ -302,7 +329,6 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
         };
 
         try {
-            console.log(serviceSheetToSubmit);
             const response = await dispatch(putServiceSheet(serviceSheetToSubmit));
             console.log("Service sheet successfully updated");
             setLoading(false);
@@ -337,7 +363,13 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
             <div className="titleForm">
                 <h2>Editar ficha service</h2>
                 <div className="titleButtons">
-                    {/* <button onClick={handleSetForm} disabled={isClearDisabled}><img src={iconClear} alt="" /></button> */}
+                    <button 
+                        onClick={resetForm} 
+                        onMouseEnter={(e) => e.currentTarget.firstChild.src = rebootHover} 
+                        onMouseLeave={(e) => e.currentTarget.firstChild.src = reboot}
+                    >
+                        <img src={reboot} alt="reboot"/>
+                    </button>
                 </div>
             </div>
             <div className="container">
@@ -388,7 +420,13 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                                 onChange={() => {
                                     setSearchingPerson(true);
                                     setSearchTermClients('');
-                                    setEditServiceSheet({ ...editServiceSheet, personClient: null, companyClient: null });
+                                    setSearchTermVehicles('');
+                                    setEditServiceSheet({ 
+                                        ...editServiceSheet, 
+                                        personClient: null, 
+                                        companyClient: null,
+                                        vehicle: null
+                                    });
                                 }}
                             />
                             Persona
@@ -402,7 +440,13 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                                 onChange={() => {
                                     setSearchingPerson(false);
                                     setSearchTermClients('');
-                                    setEditServiceSheet({ ...editServiceSheet, personClient: null, companyClient: null });
+                                    setSearchTermVehicles('');
+                                    setEditServiceSheet({ 
+                                        ...editServiceSheet, 
+                                        personClient: null, 
+                                        companyClient: null,
+                                        vehicle: null
+                                    });
                                 }}
                             />
                             Empresa

@@ -28,7 +28,6 @@ const Sheets = () => {
 
     const sheets = [...serviceSheets, ...mechanicalSheets].sort((a, b) => new Date(b.date) - new Date(a.date));
     const allSheets = [...allServiceSheets, ...allMechanicalSheets].sort((a, b) => new Date(b.date) - new Date(a.date));
-console.log(sheets);
 
     const [number, setNumber] = useState('');
     const [client, setClient] = useState('');

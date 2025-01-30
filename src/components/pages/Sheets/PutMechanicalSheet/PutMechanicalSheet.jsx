@@ -8,6 +8,8 @@ import { getMechanicalSheetById, getMechanicalSheets, getAllMechanicalSheets, pu
 import { getPersonClients } from "../../../../redux/personClientActions";
 import { getCompanyClients } from "../../../../redux/companyClientActions";
 import { getVehicles } from "../../../../redux/vehicleActions";
+import reboot from  "../../../../assets/img/reboot.png";
+import rebootHover from "../../../../assets/img/rebootHover.png";
 import loadingGif from "../../../../assets/img/loading.gif";
 
 const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
@@ -18,12 +20,13 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
     const mechanicalSheetDetail = useSelector(state => state.mechanicalSheet?.mechanicalSheetDetail || {}); 
 
     const [editMechanicalSheet, setEditMechanicalSheet] = useState({});
+    const [initialMechanicalSheet, setInitialMechanicalSheet] = useState({});
     const [errorMessage, setErrorMessage] = useState(""); 
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-            dispatch(getMechanicalSheetById(id));
-        }, [dispatch, id])
+        dispatch(getMechanicalSheetById(id));
+    }, [dispatch, id])
 
     const formatDate = (date) => {
         const newDate = new Date(date);
@@ -45,8 +48,11 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
             }   
             if (mechanicalSheetDetail.vehicle) {
                 setSearchTermVehicles(`${mechanicalSheetDetail.vehicle.licensePlate}`);
+            } else {
+                setSearchTermVehicles('');
             }
-            setEditMechanicalSheet({
+
+            const updatedEditMechanicalSheet = {
                 _id: mechanicalSheetDetail._id,
                 date: formatDate(mechanicalSheetDetail.date),
                 personClient: mechanicalSheetDetail.personClient ? mechanicalSheetDetail.personClient._id : null,
@@ -58,22 +64,25 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                 amount: mechanicalSheetDetail.amount,
                 number: mechanicalSheetDetail.number,
                 active: mechanicalSheetDetail.active,
-            });
+            };
+
+            setEditMechanicalSheet(updatedEditMechanicalSheet);
+            setInitialMechanicalSheet(updatedEditMechanicalSheet);
         }
 
     }, [dispatch, id, mechanicalSheetDetail]);   
 
     //----- DISABLE BUTTON
     
-        const [ disabled, setDisabled ] = useState(true);
-    
-        useEffect(() => {
-            if(editMechanicalSheet.vehicle && editMechanicalSheet.kilometers && editMechanicalSheet.keyWords !== '' && editMechanicalSheet.description !== '' && editMechanicalSheet.amount){
-                setDisabled(false);
-            } else {
-                setDisabled(true);
-            }
-        }, [editMechanicalSheet]);
+    const [ disabled, setDisabled ] = useState(true);
+
+    useEffect(() => {
+        if(editMechanicalSheet.vehicle && editMechanicalSheet.kilometers && editMechanicalSheet.keyWords !== '' && editMechanicalSheet.description !== '' && editMechanicalSheet.amount){
+            setDisabled(false);
+        } else {
+            setDisabled(true);
+        }
+    }, [editMechanicalSheet]);
 
     // ----- HANDLE INPUTS
 
@@ -91,7 +100,7 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                         : parseInt(value, 10) || 0
                     : value,
             });
-        }
+        };
     
         if(name === "date"){
             setEditMechanicalSheet({
@@ -109,24 +118,23 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
 
         if (name === 'searchTermClients') {
             setSearchTermClients(value);
-            if (value === '') setDropdownVisibleClients(false);
+            if (value === '') {
+                setDropdownVisibleClients(false);
+                setSearchTermClients('');
+                setSearchTermVehicles('');
+                setEditMechanicalSheet({ ...editMechanicalSheet, personClient: null, companyClient: null, vehicle: null });
+            };
         };
     
         if (name === 'searchTermVehicles') {
             setSearchTermVehicles(value);
-            if (value === '') setDropdownVisibleVehicles(false);
+            if (value === '') {
+                setDropdownVisibleVehicles(false);
+                setSearchTermClients('');
+                setSearchTermVehicles('');
+                setEditMechanicalSheet({ ...editMechanicalSheet, personClient: null, companyClient: null, vehicle: null });
+            }
         };
-
-        setEditMechanicalSheet((prevState) => ({
-            ...prevState,
-            ...(name === 'searchTermClients' && value === '' && {
-                personClient: null,
-                companyClient: null,
-            }),
-            ...(name === 'searchTermVehicles' && value === '' && {
-                vehicle: null,
-            }),
-        }));
     };
 
     //----- LOAD CLIENTS AND VEHICLES OPTIONS
@@ -265,6 +273,27 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
         }
     };
 
+    //----- RESET
+
+    const resetForm = () => {
+        setEditMechanicalSheet(initialMechanicalSheet);
+        if (mechanicalSheetDetail.personClient) {
+            setSearchTermClients(`${mechanicalSheetDetail.personClient.dni} - ${mechanicalSheetDetail.personClient.name}`);
+        } else if (mechanicalSheetDetail.companyClient) {
+            setSearchTermClients(`${mechanicalSheetDetail.companyClient.cuit} - ${mechanicalSheetDetail.companyClient.name}`);
+        } else {
+            setSearchTermClients('');
+        }
+
+        setSearchingPerson(mechanicalSheetDetail.personClient ? true : false);
+    
+        if (mechanicalSheetDetail.vehicle) {
+            setSearchTermVehicles(mechanicalSheetDetail.vehicle?.licensePlate || '');
+        } else {
+            setSearchTermVehicles('');
+        }
+    };
+
     //----- SUBMIT
 
     const handleNoSend = (event) => {
@@ -319,7 +348,13 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
             <div className="titleForm">
                 <h2>Editar ficha mecánica</h2>
                 <div className="titleButtons">
-                    {/* <button onClick={handleSetForm} disabled={isClearDisabled}><img src={iconClear} alt="" /></button> */}
+                    <button 
+                        onClick={resetForm} 
+                        onMouseEnter={(e) => e.currentTarget.firstChild.src = rebootHover} 
+                        onMouseLeave={(e) => e.currentTarget.firstChild.src = reboot}
+                    >
+                        <img src={reboot} alt="reboot"/>
+                    </button>
                 </div>
             </div>
             <div className="container">
@@ -370,7 +405,13 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                                         onChange={() => {
                                             setSearchingPerson(true);
                                             setSearchTermClients('');
-                                            setEditMechanicalSheet({ ...editMechanicalSheet, personClient: null, companyClient: null });
+                                            setSearchTermVehicles('');
+                                            setEditMechanicalSheet({ 
+                                                ...editMechanicalSheet, 
+                                                personClient: null, 
+                                                companyClient: null,
+                                                vehicle: null
+                                            });
                                         }}
                                     />
                                     Persona
@@ -384,7 +425,13 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                                         onChange={() => {
                                             setSearchingPerson(false);
                                             setSearchTermClients('');
-                                            setEditMechanicalSheet({ ...editMechanicalSheet, personClient: null, companyClient: null });
+                                            setSearchTermVehicles('');
+                                            setEditMechanicalSheet({ 
+                                                ...editMechanicalSheet, 
+                                                personClient: null, 
+                                                companyClient: null,
+                                                vehicle: null
+                                            });
                                         }}
                                     />
                                     Empresa

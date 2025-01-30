@@ -6,6 +6,8 @@ import NewCompanyClient from "../../Clients/CompanyClient/NewCompanyClient/NewCo
 import { getVehicleById, getVehicles, getAllVehicles, putVehicle } from "../../../../redux/vehicleActions.js";
 import { getPersonClients } from "../../../../redux/personClientActions.js";
 import { getCompanyClients } from "../../../../redux/companyClientActions.js";
+import reboot from  "../../../../assets/img/reboot.png";
+import rebootHover from "../../../../assets/img/rebootHover.png";
 import loadingGif from "../../../../assets/img/loading.gif";
 
 const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientId = null, companyClientId = null }) => {
@@ -16,10 +18,10 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
     const vehicleDetail = useSelector(state => state.vehicle.vehicleDetail); 
 
     const [editVehicle, setEditVehicle] = useState({});
+    const [initialVehicle, setInitialVehicle] = useState({});
     const [alreadyExist, setAlreadyExist] = useState(false);
     const [errorMessage, setErrorMessage] = useState(""); 
     const [loading, setLoading] = useState(false);
-    // console.log(editVehicle);
       
     useEffect(() => {
         dispatch(getVehicleById(id));
@@ -36,7 +38,8 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
             } else {
                 setSearchTerm('');
             }   
-            setEditVehicle({
+
+            const updatedEditVehicle = {
                 _id: vehicleDetail._id,
                 licensePlate: vehicleDetail.licensePlate,
                 brand: vehicleDetail.brand,
@@ -46,7 +49,10 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                 personClient: vehicleDetail.personClient ? vehicleDetail.personClient._id : null,
                 companyClient: vehicleDetail.companyClient ? vehicleDetail.companyClient._id : null,
                 active: vehicleDetail.active,
-            });
+            };
+
+            setEditVehicle(updatedEditVehicle);
+            setInitialVehicle(updatedEditVehicle);
         }
     }, [dispatch, id, vehicleDetail]);
 
@@ -56,7 +62,6 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
     const [yearTooHigh, setYearTooHigh] = useState(false);
 
     useEffect(() => {
-
         const currentYear = new Date().getFullYear();
 
         if(editVehicle.licensePlate !== '' && editVehicle.brand !== '' && editVehicle.model !== '' && editVehicle.engine !== '' && editVehicle.year >= 1000 && editVehicle.year <= currentYear){
@@ -150,6 +155,23 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
         }
     };
 
+    //----- RESET
+
+    const resetForm = () => {
+        setEditVehicle(initialVehicle);
+        if (vehicleDetail && vehicleDetail._id === id) {     
+            if (vehicleDetail.personClient) {
+                setSearchingPerson(true);
+                setSearchTerm(`${vehicleDetail.personClient.dni} - ${vehicleDetail.personClient.name}`);
+            } else if (vehicleDetail.companyClient) {
+                setSearchingPerson(false);
+                setSearchTerm(`${vehicleDetail.companyClient.cuit} - ${vehicleDetail.companyClient.name}`);
+            } else {
+                setSearchTerm('');
+            }   
+        }
+    };
+
     //----- SUBMIT
 
     const handleNoSend = (event) => {
@@ -196,6 +218,15 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
         <div className={isNested? "formContainerNested" : "formContainer"}>
             <div className="titleForm">
                 <h2>Editar vehículo</h2>
+                <div className="titleButtons">
+                    <button 
+                        onClick={resetForm} 
+                        onMouseEnter={(e) => e.currentTarget.firstChild.src = rebootHover} 
+                        onMouseLeave={(e) => e.currentTarget.firstChild.src = reboot}
+                    >
+                        <img src={reboot} alt="reboot"/>
+                    </button>
+                </div>
             </div>
             <div className="container">
                 <div className="formRow">Los campos con (*) son obligatorios.</div>
