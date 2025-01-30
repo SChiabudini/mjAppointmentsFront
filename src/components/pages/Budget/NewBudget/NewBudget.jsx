@@ -34,19 +34,31 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
 
         if (name === 'searchTermClients') {
             setSearchTermClients(value);
-            if (value === '') setDropdownVisibleClients(false);
+            if (value === '') {
+                setDropdownVisibleClients(false);
+                setSearchTermClients('');
+                setSearchTermVehicles('');
+                setNewBudget({ ...newBudget, personClient: null, companyClient: null, vehicle: null });
+            }
         }
     
         if (name === 'searchTermVehicles') {
             setSearchTermVehicles(value);
-            if (value === '') setDropdownVisibleVehicles(false);
+            if (value === '') {
+                setDropdownVisibleVehicles(false);
+                setSearchTermClients('');
+                setSearchTermVehicles('');
+                setNewBudget({ ...newBudget, personClient: null, companyClient: null, vehicle: null });
+            }
         }
     };
+
+    //----- DISABLE BUTTON
 
     const [ disabled, setDisabled ] = useState(true);
 
     useEffect(() => {
-        if((newBudget.companyClient || newBudget.personClient) && newBudget.items.length > 0){
+        if((newBudget.companyClient || newBudget.personClient) && newBudget.items?.length > 0){
             setDisabled(false);
         } else {
             setDisabled(true);
@@ -326,7 +338,9 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
             <div className="container">
                 <div className="formRow">Los campos con (*) son obligatorios.</div>
                 <div className="clientSelection">
-                    <label className="formRow">Vehículo</label>
+                    <div className="formRow">
+                        <label>Vehículo*</label>
+                    </div>
                     <div className="searchRow">
                         <input
                             type="text"
@@ -338,14 +352,14 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                             onBlur={handleSearchBlur}
                             onKeyDown={handleKeyDown}
                         />
-                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button">
+                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button" disabled={newBudget.vehicle}>
                             {showNewVehicle ? '-' : '+'}
                         </button>                                 
                     </div>
                     <div className="searchRow">
-                        {filteredVehicles.length > 0 && dropdownVisibleVehicles && (
+                        {filteredVehicles?.length > 0 && dropdownVisibleVehicles && (
                             <ul className="dropdown">
-                                {filteredVehicles.map((vehicle, index) => (
+                                {filteredVehicles?.map((vehicle, index) => (
                                     <li
                                     key={vehicle._id}
                                     onClick={() => handleVehicleSelection(vehicle)}
@@ -360,71 +374,72 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                 </div>
                 {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true} personClientId={newBudget.personClient} companyClientId={newBudget.companyClient}/>}
                 <div className="clientSelection">
-                        <label className="formRow">Cliente*</label>
-                        {newBudget.personClient || newBudget.companyClient ? 
-                            <></> :
-                            (
-                                <div className="clientSelectionInputs">
-                                    <label>
-                                        <input
-                                            type="radio"
-                                            name="clientType"
-                                            value="person"
-                                            checked={searchingPerson}
-                                            onChange={() => {
-                                                setSearchingPerson(true);
-                                                setSearchTermClients('');
-                                            }}
-                                        />
-                                        Persona
-                                    </label>
-                                    <label>
-                                        <input
-                                            type="radio"
-                                            name="clientType"
-                                            value="company"
-                                            checked={!searchingPerson}
-                                            onChange={() => {
-                                                setSearchingPerson(false);
-                                                setSearchTermClients('');
-                                            }}
-                                        />
-                                        Empresa
-                                    </label>
-                                </div>
-                            )
-                        }
-
-                        <div className="searchRow">
-                            <input
-                                type="text"
-                                name="searchTermClients"
-                                placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
-                                value={searchTermClients}
-                                onChange={handleInputChange}
-                                onFocus={() => setSelectedIndexClients(-1)}
-                                onBlur={handleSearchBlur}
-                                onKeyDown={handleKeyDown}
-                            />
-                            <button onClick={() => setShowNewClient(!showNewClient)} type="button" disabled={newBudget.personClient || newBudget.companyClient}>
-                                {showNewClient ? '-' : '+'}
-                            </button>                                 
-                        </div>
-                        <div className="searchRow">
-                            {filteredClients.length > 0 && dropdownVisibleClients && (
-                                <ul className="dropdown">
-                                    {filteredClients.map((client, index) => (
-                                        <li
-                                        key={client._id}
-                                        onClick={() => handleClientSelection(client)}
-                                        className={index === selectedIndexClients ? 'highlight' : ''}
-                                        >
-                                        {client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`}
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </div>
+                    <div className="formRow">
+                        <label>Cliente*</label>
+                    </div>
+                    {newBudget.personClient || newBudget.companyClient ? 
+                        <></> :
+                        (
+                            <div className="clientSelectionInputs">
+                                <label>
+                                    <input
+                                        type="radio"
+                                        name="clientType"
+                                        value="person"
+                                        checked={searchingPerson}
+                                        onChange={() => {
+                                            setSearchingPerson(true);
+                                            setSearchTermClients('');
+                                        }}
+                                    />
+                                    Persona
+                                </label>
+                                <label>
+                                    <input
+                                        type="radio"
+                                        name="clientType"
+                                        value="company"
+                                        checked={!searchingPerson}
+                                        onChange={() => {
+                                            setSearchingPerson(false);
+                                            setSearchTermClients('');
+                                        }}
+                                    />
+                                    Empresa
+                                </label>
+                            </div>
+                        )
+                    }
+                    <div className="searchRow">
+                        <input
+                            type="text"
+                            name="searchTermClients"
+                            placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
+                            value={searchTermClients}
+                            onChange={handleInputChange}
+                            onFocus={() => setSelectedIndexClients(-1)}
+                            onBlur={handleSearchBlur}
+                            onKeyDown={handleKeyDown}
+                        />
+                        <button onClick={() => setShowNewClient(!showNewClient)} type="button" disabled={newBudget.personClient || newBudget.companyClient}>
+                            {showNewClient ? '-' : '+'}
+                        </button>                                 
+                    </div>
+                    <div className="searchRow">
+                        {filteredClients.length > 0 && dropdownVisibleClients && (
+                            <ul className="dropdown">
+                                {filteredClients.map((client, index) => (
+                                    <li
+                                    key={client._id}
+                                    onClick={() => handleClientSelection(client)}
+                                    className={index === selectedIndexClients ? 'highlight' : ''}
+                                    >
+                                    {client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
                 </div>
                 {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newBudget.vehicle}/>}
                 {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newBudget.vehicle}/>}

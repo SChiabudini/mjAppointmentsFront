@@ -57,11 +57,13 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
         setNewVehicle({
             ...newVehicle,
             [name]: name === 'year' ? (value === '' ? '' : parseInt(value, 10) || 0) : value,
+            ...(name === 'searchTerm' && value === '' && {
+                personClient: null,
+                companyClient: null,
+            }),
         });
 
-        if (name === 'licensePlate') {
-            setAlreadyExist(false);
-        }
+        if (name === 'licensePlate') setAlreadyExist(false);
 
         if(name === 'searchTerm') setSearchTerm(value);
         if(name === 'searchTerm' && value === '') setDropdownVisible(false);
@@ -228,29 +230,37 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                     </div>
                     {!isNested ? (
                         <div className="clientSelection">
-                            <label className="formRow">Cliente</label>
-                            <div className="clientSelectionInputs">
-                                <label>
-                                    <input
-                                        type="radio"
-                                        name="clientType"
-                                        value="person"
-                                        checked={searchingPerson}
-                                        onChange={() => (setSearchingPerson(true), setSearchTerm(''))}
-                                    />
-                                    Persona
-                                </label>
-                                <label>
-                                    <input
-                                        type="radio"
-                                        name="clientType"
-                                        value="company"
-                                        checked={!searchingPerson}
-                                        onChange={() => (setSearchingPerson(false), setSearchTerm(''))}
-                                    />
-                                    Empresa
-                                </label>
+                            <div className="formRow">
+                                <label>Cliente</label>
                             </div>
+                            {newVehicle.personClient || newVehicle.companyClient ? 
+                                (
+                                    <></>
+                                ) : (
+                                    <div className="clientSelectionInputs">
+                                        <label>
+                                            <input
+                                                type="radio"
+                                                name="clientType"
+                                                value="person"
+                                                checked={searchingPerson}
+                                                onChange={() => (setSearchingPerson(true), setSearchTerm(''))}
+                                            />
+                                            Persona
+                                        </label>
+                                        <label>
+                                            <input
+                                                type="radio"
+                                                name="clientType"
+                                                value="company"
+                                                checked={!searchingPerson}
+                                                onChange={() => (setSearchingPerson(false), setSearchTerm(''))}
+                                            />
+                                            Empresa
+                                        </label>
+                                    </div>
+                                )
+                            }
                             <div className="searchRow">
                                 <input
                                     type="text"
@@ -262,7 +272,7 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                                     onBlur={handleSearchBlur}
                                     onKeyDown={handleKeyDown}
                                 />
-                                <button onClick={() => setShowNewClient(!showNewClient)} type="button">
+                                <button onClick={() => setShowNewClient(!showNewClient)} type="button" disabled={newVehicle.personClient || newVehicle.companyClient}>
                                     {showNewClient ? '-' : '+'}
                                 </button>                                 
                             </div>
