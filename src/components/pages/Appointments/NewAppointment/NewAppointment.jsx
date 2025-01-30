@@ -163,7 +163,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
     }, [searchTermClients, searchingPerson, personClients, companyClients]);    
 
     const handleClientSelection = (client) => {
-        const clientName = client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`;
+        const clientName = client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`;         
     
         setSearchTermClients(clientName);
         setDropdownVisibleClients(false);
@@ -173,6 +173,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
             personClient: searchingPerson ? client._id : null,
             companyClient: searchingPerson ? null : client._id,
         });
+
     };
 
     //----- HANDLE VEHICLES
@@ -184,13 +185,25 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
     const [showNewVehicle, setShowNewVehicle] = useState(false);
 
     useEffect(() => {
-        setFilteredVehicles(
-            vehicles.filter(vehicle => 
-                vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase())
-            )
-        );
-    }, [searchTermVehicles, vehicles]);
-
+        const filteredVehicles = vehicles.filter(vehicle => {
+            if (newAppointment.personClient) {
+                if (vehicle.personClient && vehicle.personClient._id === newAppointment.personClient) {
+                    return vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase());
+                }
+            } else if (newAppointment.companyClient) {
+                if (vehicle.companyClient && vehicle.companyClient._id === newAppointment.companyClient) {
+                    return vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase());
+                }
+            } else {
+                return vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase());
+            }
+            return false; // Si no coincide con ningún filtro, no mostrar el vehículo
+        });
+    
+        setFilteredVehicles(filteredVehicles);
+    }, [searchTermVehicles, vehicles, newAppointment.personClient, newAppointment.companyClient]);
+    
+    
     const handleVehicleSelection = (vehicle) => {
         setSearchTermVehicles(vehicle.licensePlate);
         setDropdownVisibleVehicles(false);

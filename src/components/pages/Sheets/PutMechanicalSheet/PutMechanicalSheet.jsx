@@ -182,12 +182,23 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
     const [showNewVehicle, setShowNewVehicle] = useState(false);
 
     useEffect(() => {
-        setFilteredVehicles(
-            vehicles.filter(vehicle => 
-                vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase())
-            )
-        );
-    }, [searchTermVehicles, vehicles]);
+        const filteredVehicles = vehicles.filter(vehicle => {
+            if (edieditMechanicalSheet.personClient) {
+                if (vehicle.personClient && vehicle.personClient._id ===editMechanicalSheet.personClient) {
+                    return vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase());
+                }
+            } else if (edieditMechanicalSheet.companyClient) {
+                if (vehicle.companyClient && vehicle.companyClient._id ===editMechanicalSheet.companyClient) {
+                    return vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase());
+                }
+            } else {
+                return vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase());
+            }
+            return false; // Si no coincide con ningún filtro, no mostrar el vehículo
+        });
+    
+        setFilteredVehicles(filteredVehicles);
+    }, [searchTermVehicles, vehicles,editMechanicalSheet.personClient,editMechanicalSheet.companyClient]);
 
     const handleVehicleSelection = (vehicle) => {
         setSearchTermVehicles(vehicle.licensePlate);

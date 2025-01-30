@@ -110,12 +110,23 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
     const [showNewVehicle, setShowNewVehicle] = useState(false);
 
     useEffect(() => {
-        setFilteredVehicles(
-            vehicles.filter(vehicle => 
-                vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase())
-            )
-        );
-    }, [searchTermVehicles, vehicles]);
+        const filteredVehicles = vehicles.filter(vehicle => {
+            if (newBudget.personClient) {
+                if (vehicle.personClient && vehicle.personClient._id === newBudget.personClient) {
+                    return vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase());
+                }
+            } else if (newBudget.companyClient) {
+                if (vehicle.companyClient && vehicle.companyClient._id === newBudget.companyClient) {
+                    return vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase());
+                }
+            } else {
+                return vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase());
+            }
+            return false; // Si no coincide con ningún filtro, no mostrar el vehículo
+        });
+    
+        setFilteredVehicles(filteredVehicles);
+    }, [searchTermVehicles, vehicles, newBudget.personClient, newBudget.companyClient]);
 
     const handleVehicleSelection = (vehicle) => {
         setSearchTermVehicles(vehicle.licensePlate);

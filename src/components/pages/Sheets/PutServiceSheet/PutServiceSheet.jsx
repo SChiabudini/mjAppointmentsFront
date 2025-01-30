@@ -181,12 +181,23 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     const [showNewVehicle, setShowNewVehicle] = useState(false);
 
     useEffect(() => {
-        setFilteredVehicles(
-            vehicles.filter(vehicle => 
-                vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase())
-            )
-        );
-    }, [searchTermVehicles, vehicles]);
+        const filteredVehicles = vehicles.filter(vehicle => {
+            if (editeditServiceSheet.personClient) {
+                if (vehicle.personClient && vehicle.personClient._id ===editServiceSheet.personClient) {
+                    return vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase());
+                }
+            } else if (editeditServiceSheet.companyClient) {
+                if (vehicle.companyClient && vehicle.companyClient._id ===editServiceSheet.companyClient) {
+                    return vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase());
+                }
+            } else {
+                return vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase());
+            }
+            return false; // Si no coincide con ningún filtro, no mostrar el vehículo
+        });
+    
+        setFilteredVehicles(filteredVehicles);
+    }, [searchTermVehicles, vehicles,editServiceSheet.personClient,editServiceSheet.companyClient]);
 
     const handleVehicleSelection = (vehicle) => {
         setSearchTermVehicles(vehicle.licensePlate);
