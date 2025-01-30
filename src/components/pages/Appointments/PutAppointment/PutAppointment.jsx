@@ -177,34 +177,25 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         
-        setEditAppointment((prevState) => ({
-            ...prevState,
-            ...(name === 'searchTermClients' && value === '' && {
-                personClient: null,
-                companyClient: null,
-            }),
-            ...(name === 'searchTermVehicles' && value === '' && {
-                vehicle: null,
-            }),
-        }));
-        
         if (name === 'searchTermClients') {
             setSearchTermClients(value);
             if (value === '') {
                 setDropdownVisibleClients(false);
-            }
+                setSearchTermClients('');
+                setSearchTermVehicles('');
+                setEditAppointment({ ...editAppointment, personClient: null, companyClient: null, vehicle: null });
+            };
         };
-
-        if(name === 'searchTermClients' && value === '') setDropdownVisibleClients(false); 
-
+    
         if (name === 'searchTermVehicles') {
             setSearchTermVehicles(value);
             if (value === '') {
                 setDropdownVisibleVehicles(false);
+                setSearchTermClients('');
+                setSearchTermVehicles('');
+                setEditAppointment({ ...editAppointment, personClient: null, companyClient: null, vehicle: null });
             }
         };
-        if(name === 'searchTermVehicles') setSearchTermVehicles(value);
-        if(name === 'searchTermVehicles' && value === '') setDropdownVisibleVehicles(false); 
     };
 
     //----- HANDLE PROCEDURE
@@ -365,6 +356,14 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
     
     const resetForm = () => {
         setEditAppointment(initialAppointment);
+
+        setTempDates((prevState) => ({
+            ...prevState,
+            startDate: appointmentDetail.start ? formatToLocalDateTime(appointmentDetail.start).split('T')[0] : '',
+            startTime: appointmentDetail.start ? formatToLocalDateTime(appointmentDetail.start).split('T')[1].slice(0, 5) : '',
+            endDate: appointmentDetail.end ? formatToLocalDateTime(appointmentDetail.end).split('T')[0] : '',
+            endTime: appointmentDetail.end ? formatToLocalDateTime(appointmentDetail.end).split('T')[1].slice(0, 5) : '',
+        }));
     
         // Actualizar los valores de búsqueda del cliente y vehículo
         if (appointmentDetail.personClient) {
@@ -491,7 +490,13 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
                             onChange={() => {
                                 setSearchingPerson(true);
                                 setSearchTermClients('');
-                                setEditAppointment({ ...editAppointment, personClient: null, companyClient: null });
+                                setSearchTermVehicles('');
+                                setEditAppointment({ 
+                                    ...editAppointment,
+                                    personClient: null, 
+                                    companyClient: null, 
+                                    vehicle: null 
+                                });
                             }}
                             />
                             Persona
@@ -505,7 +510,13 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
                                 onChange={() => {
                                     setSearchingPerson(false);
                                     setSearchTermClients('');
-                                    setEditAppointment({ ...editAppointment, personClient: null, companyClient: null });
+                                    setSearchTermVehicles('');
+                                    setEditAppointment({ 
+                                        ...editAppointment,
+                                        personClient: null, 
+                                        companyClient: null, 
+                                        vehicle: null 
+                                    });
                                 }}
                             />
                             Empresa
