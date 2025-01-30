@@ -55,6 +55,7 @@ const PutBudget = ({ onBudgetAdded = () => {} }) => {
                 total: budgetDetail.total,
                 active: budgetDetail.active,
             };
+
             setEditBudget(initialData);
             setInitialBudget(initialData);
         }
@@ -85,6 +86,8 @@ const PutBudget = ({ onBudgetAdded = () => {} }) => {
             }
         }
     };
+
+    //----- DISABLE BUTTON
 
     const [ disabled, setDisabled ] = useState(true);
 
@@ -374,7 +377,9 @@ const PutBudget = ({ onBudgetAdded = () => {} }) => {
             <div className="container">
                 <div className="formRow">Los campos con (*) son obligatorios.</div>
                 <div className="clientSelection">
-                    <label className="formRow">Vehículo</label>
+                    <div className="formRow">
+                        <label>Vehículo*</label>
+                    </div>
                     <div className="searchRow">
                         <input
                             type="text"
@@ -386,14 +391,14 @@ const PutBudget = ({ onBudgetAdded = () => {} }) => {
                             onBlur={handleSearchBlur}
                             onKeyDown={handleKeyDown}
                         />
-                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button">
+                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button" disabled={editBudget.vehicle}>
                             {showNewVehicle ? '-' : '+'}
                         </button>                                 
                     </div>
                     <div className="searchRow">
                         {filteredVehicles?.length > 0 && dropdownVisibleVehicles && (
                             <ul className="dropdown">
-                                {filteredVehicles.map((vehicle, index) => (
+                                {filteredVehicles?.map((vehicle, index) => (
                                     <li
                                     key={vehicle._id}
                                     onClick={() => handleVehicleSelection(vehicle)}
@@ -408,71 +413,73 @@ const PutBudget = ({ onBudgetAdded = () => {} }) => {
                 </div>
                 {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true} personClientId={editBudget.personClient} companyClientId={editBudget.companyClient}/>}
                 <div className="clientSelection">
-                        <label className="formRow">Cliente*</label>
-                        {editBudget.personClient || editBudget.companyClient ? 
-                            <></> :
-                            (
-                                <div className="clientSelectionInputs">
-                                    <label>
-                                        <input
-                                            type="radio"
-                                            name="clientType"
-                                            value="person"
-                                            checked={searchingPerson}
-                                            onChange={() => {
-                                                setSearchingPerson(true);
-                                                setSearchTermClients('');
-                                            }}
-                                        />
-                                        Persona
-                                    </label>
-                                    <label>
-                                        <input
-                                            type="radio"
-                                            name="clientType"
-                                            value="company"
-                                            checked={!searchingPerson}
-                                            onChange={() => {
-                                                setSearchingPerson(false);
-                                                setSearchTermClients('');
-                                            }}
-                                        />
-                                        Empresa
-                                    </label>
-                                </div>
-                            )
-                        }
-
-                        <div className="searchRow">
-                            <input
-                                type="text"
-                                name="searchTermClients"
-                                placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
-                                value={searchTermClients}
-                                onChange={handleInputChange}
-                                onFocus={() => setSelectedIndexClients(-1)}
-                                onBlur={handleSearchBlur}
-                                onKeyDown={handleKeyDown}
-                            />
-                            <button onClick={() => setShowNewClient(!showNewClient)} type="button" disabled={editBudget.personClient || editBudget.companyClient}>
-                                {showNewClient ? '-' : '+'}
-                            </button>                                 
-                        </div>
-                        <div className="searchRow">
-                            {filteredClients?.length > 0 && dropdownVisibleClients && (
-                                <ul className="dropdown">
-                                    {filteredClients.map((client, index) => (
-                                        <li
-                                        key={client._id}
-                                        onClick={() => handleClientSelection(client)}
-                                        className={index === selectedIndexClients ? 'highlight' : ''}
-                                        >
-                                        {client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`}
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </div>
+                    <div className="formRow">
+                        <label>Cliente*</label>
+                    </div>
+                    {editBudget.personClient || editBudget.companyClient ? 
+                        (
+                            <></>
+                        ) : (
+                            <div className="clientSelectionInputs">
+                                <label>
+                                    <input
+                                        type="radio"
+                                        name="clientType"
+                                        value="person"
+                                        checked={searchingPerson}
+                                        onChange={() => {
+                                            setSearchingPerson(true);
+                                            setSearchTermClients('');
+                                        }}
+                                    />
+                                    Persona
+                                </label>
+                                <label>
+                                    <input
+                                        type="radio"
+                                        name="clientType"
+                                        value="company"
+                                        checked={!searchingPerson}
+                                        onChange={() => {
+                                            setSearchingPerson(false);
+                                            setSearchTermClients('');
+                                        }}
+                                    />
+                                    Empresa
+                                </label>
+                            </div>
+                        )
+                    }
+                    <div className="searchRow">
+                        <input
+                            type="text"
+                            name="searchTermClients"
+                            placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
+                            value={searchTermClients}
+                            onChange={handleInputChange}
+                            onFocus={() => setSelectedIndexClients(-1)}
+                            onBlur={handleSearchBlur}
+                            onKeyDown={handleKeyDown}
+                        />
+                        <button onClick={() => setShowNewClient(!showNewClient)} type="button" disabled={editBudget.personClient || editBudget.companyClient}>
+                            {showNewClient ? '-' : '+'}
+                        </button>                                 
+                    </div>
+                    <div className="searchRow">
+                        {filteredClients?.length > 0 && dropdownVisibleClients && (
+                            <ul className="dropdown">
+                                {filteredClients?.map((client, index) => (
+                                    <li
+                                    key={client._id}
+                                    onClick={() => handleClientSelection(client)}
+                                    className={index === selectedIndexClients ? 'highlight' : ''}
+                                    >
+                                    {client.dni ? `${client.dni} - ${client.name}` : `${client.cuit} - ${client.name}`}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
                 </div>
                 {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true} vehicleId={editBudget.vehicle}/>}
                 {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true} vehicleId={editBudget.vehicle}/>}
@@ -532,7 +539,7 @@ const PutBudget = ({ onBudgetAdded = () => {} }) => {
                     {editBudget.items?.length > 0 && (
                         <div className="formRow">
                             <ul>
-                                {editBudget.items.map((item, index) => (
+                                {editBudget.items?.map((item, index) => (
                                     <li key={index}>
                                         {item.quantity} x {item.description} - $
                                         {item.price} - Subtotal: ${item.quantity * item.price}
