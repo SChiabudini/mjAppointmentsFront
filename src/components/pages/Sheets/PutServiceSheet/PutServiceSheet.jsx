@@ -28,6 +28,13 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
         dispatch(getServiceSheetById(id));
     }, [dispatch, id])
 
+    const formatDate = (date) => {
+        const newDate = new Date(date);
+        newDate.setHours(newDate.getHours());
+    
+        return newDate.toISOString().slice(0, 16);
+    }
+
     useEffect(() => {    
         if (serviceSheetDetail && serviceSheetDetail._id === id) {     
             if (serviceSheetDetail.personClient) {
@@ -45,7 +52,7 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
 
             const updatedEditServicelSheet = {
                 _id: serviceSheetDetail._id,
-                date: serviceSheetDetail.date,
+                date: formatDate(serviceSheetDetail.date),
                 personClient: serviceSheetDetail.personClient ? serviceSheetDetail.personClient._id : null,
                 companyClient: serviceSheetDetail.companyClient ? serviceSheetDetail.companyClient._id : null,
                 vehicle: serviceSheetDetail.vehicle ? serviceSheetDetail.vehicle._id : null,
@@ -81,7 +88,7 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     const handleInputChange = (event) => {
         const { name, value } = event.target;
     
-        const validFields = ['kilometers', 'kmsToNextService', 'amount', 'personClient', 'companyClient', 'vehicle', 'oil', 'filters', 'notes'];
+        const validFields = ['kilometers', 'kmsToNextService', 'amount', 'personClient', 'companyClient', 'vehicle', 'oil', 'filters', 'notes', 'date', 'time'];
     
         if (validFields.includes(name)) {
             setEditServiceSheet({
@@ -93,6 +100,20 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                     : value,
             });
         };
+
+        if(name === "date"){
+            setEditServiceSheet({
+                ...editServiceSheet,
+                date: `${value}T${editServiceSheet.date.split("T")[1]}`
+            });
+        }
+
+        if(name === "time"){
+            setEditServiceSheet({
+                ...editServiceSheet,
+                date: `${editServiceSheet.date.split("T")[0]}T${value}`
+            });
+        }
     
         if (name === 'searchTermClients') {
             setSearchTermClients(value);
@@ -466,6 +487,23 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                 {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true} vehicleId={editServiceSheet.vehicle}/>}
                 <div className="formRow"></div>
                 <form id="serviceSheetForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
+                    <div className="formRowDate">
+                        <label htmlFor="date">Fecha*</label>
+                        <div>
+                            <input 
+                                type="date" 
+                                name="date"
+                                value={editServiceSheet.date?.split("T")[0]}
+                                onChange={handleInputChange}
+                            />
+                            <input 
+                                type="time" 
+                                name="time"
+                                value={editServiceSheet.date?.split("T")[1]}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                    </div>
                     <div className="formRow">
                         <label htmlFor="kilometers">Kilómetros*</label>
                         <input type="number" name="kilometers" value={editServiceSheet.kilometers} onChange={handleInputChange} min={0}/>

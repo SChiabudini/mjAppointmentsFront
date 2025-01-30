@@ -27,6 +27,13 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
     useEffect(() => {
         dispatch(getMechanicalSheetById(id));
     }, [dispatch, id])
+
+    const formatDate = (date) => {
+        const newDate = new Date(date);
+        newDate.setHours(newDate.getHours());
+    
+        return newDate.toISOString().slice(0, 16);
+    }
     
     useEffect(() => {    
         if (mechanicalSheetDetail && mechanicalSheetDetail._id === id) {     
@@ -47,7 +54,7 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
 
             const updatedEditMechanicalSheet = {
                 _id: mechanicalSheetDetail._id,
-                date: mechanicalSheetDetail.date,
+                date: formatDate(mechanicalSheetDetail.date),
                 personClient: mechanicalSheetDetail.personClient ? mechanicalSheetDetail.personClient._id : null,
                 companyClient: mechanicalSheetDetail.companyClient ? mechanicalSheetDetail.companyClient._id : null,
                 vehicle: mechanicalSheetDetail.vehicle ? mechanicalSheetDetail.vehicle._id : null,
@@ -62,6 +69,7 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
             setEditMechanicalSheet(updatedEditMechanicalSheet);
             setInitialMechanicalSheet(updatedEditMechanicalSheet);
         }
+
     }, [dispatch, id, mechanicalSheetDetail]);   
 
     //----- DISABLE BUTTON
@@ -81,7 +89,7 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
     const handleInputChange = (event) => {
         const { name, value } = event.target;
     
-        const validFields = ['kilometers','amount', 'personClient', 'companyClient', 'vehicle', 'description', 'keyWords'];
+        const validFields = ['kilometers','amount', 'personClient', 'companyClient', 'vehicle', 'description', 'keyWords', 'date', 'time'];
     
         if (validFields.includes(name)) {
             setEditMechanicalSheet({
@@ -94,6 +102,20 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
             });
         };
     
+        if(name === "date"){
+            setEditMechanicalSheet({
+                ...editMechanicalSheet,
+                date: `${value}T${editMechanicalSheet.date.split("T")[1]}`
+            });
+        }
+
+        if(name === "time"){
+            setEditMechanicalSheet({
+                ...editMechanicalSheet,
+                date: `${editMechanicalSheet.date.split("T")[0]}T${value}`
+            });
+        }
+
         if (name === 'searchTermClients') {
             setSearchTermClients(value);
             if (value === '') {
@@ -450,6 +472,23 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                 {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true} vehicleId={editMechanicalSheet.vehicle}/>}
                 <div className="formRow"></div>
                 <form id="mechanicalSheetForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
+                    <div className="formRowDate">
+                        <label htmlFor="date">Fecha*</label>
+                        <div>
+                            <input 
+                                type="date" 
+                                name="date"
+                                value={editMechanicalSheet.date?.split("T")[0]}
+                                onChange={handleInputChange}
+                            />
+                            <input 
+                                type="time" 
+                                name="time"
+                                value={editMechanicalSheet.date?.split("T")[1]}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                    </div>
                     <div className="formRow">
                         <label htmlFor="kilometers">Kilómetros*</label>
                         <input type="number" name="kilometers" value={editMechanicalSheet.kilometers} onChange={handleInputChange} min={0}/>

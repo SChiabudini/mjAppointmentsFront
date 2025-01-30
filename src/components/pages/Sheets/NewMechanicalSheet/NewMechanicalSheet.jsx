@@ -15,7 +15,19 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
 
     const dispatch = useDispatch();
 
+    const nowDate = new Date();
+
+    const today = nowDate.toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+    
+    const now = nowDate.toLocaleTimeString('es-AR', { 
+        timeZone: 'America/Argentina/Buenos_Aires', 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hourCycle: 'h23'
+    });
+
     const initialMechanicalSheetState = {
+        date: `${today}T${now}`,
         personClient: null,
         companyClient: null,
         vehicle: null,
@@ -56,6 +68,20 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                         ? '' 
                         : parseInt(value, 10) || 0
                     : value,
+            });
+        }
+
+        if(name === "date"){
+            setNewMechanicalSheet({
+                ...newMechanicalSheet,
+                date: `${value}T${newMechanicalSheet.date.split("T")[1]}`
+            });
+        }
+
+        if(name === "time"){
+            setNewMechanicalSheet({
+                ...newMechanicalSheet,
+                date: `${newMechanicalSheet.date.split("T")[0]}T${value}`
             });
         }
     
@@ -379,6 +405,24 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                 {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newMechanicalSheet.vehicle}/>}
                 <div className="formRow"></div>
                 <form id="mechanicalSheetForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
+                <div className="formRowDate">
+                    <label htmlFor="date">Fecha*</label>
+                        <div>
+                            <input 
+                                type="date" 
+                                name="date"
+                                value={newMechanicalSheet.date.split("T")[0]}
+                                onChange={handleInputChange}
+                            />
+                            <input 
+                                type="time" 
+                                name="time"
+                                value={newMechanicalSheet.date.split("T")[1]}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        
+                    </div>
                     <div className="formRow">
                         <label htmlFor="kilometers">Kilómetros*</label>
                         <input type="number" name="kilometers" value={newMechanicalSheet.kilometers || ""} onChange={handleInputChange} min={0}/>
