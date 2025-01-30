@@ -91,7 +91,7 @@ const PersonClientDetail = () => {
                                     {personClientDetail.vehicles?.length > 0 ? (
                                     <div>
                                         {personClientDetail.vehicles?.map((vehicle, index) => (
-                                            <div className="clientInfo">
+                                            <div className="clientInfo" key={index}>
                                                 <ul key={index}>
                                                     <li><span>Patente:&nbsp;</span>{vehicle.licensePlate}</li>
                                                     <li><span>Marca:&nbsp;</span>{vehicle.brand}</li>

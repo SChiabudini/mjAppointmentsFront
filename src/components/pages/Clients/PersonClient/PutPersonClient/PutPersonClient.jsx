@@ -112,6 +112,7 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
     //----- HANDLE VEHÍCLES
 
     const vehicles = useSelector(state => state.vehicle.vehicles);
+    const availableVehicles = vehicles.filter(vehicle => !vehicle.personClient && !vehicle.companyClient);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredVehicles, setFilteredVehicles] = useState([]);
@@ -121,9 +122,7 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
 
     useEffect(() => {
         setFilteredVehicles(
-            vehicles.filter(vehicle => 
-                // vehicle.personClient === null &&
-                // vehicle.companyClient === null &&
+            availableVehicles.filter(vehicle => 
                 vehicle.licensePlate.toLowerCase().includes(searchTerm.toLowerCase())
             )
         );
