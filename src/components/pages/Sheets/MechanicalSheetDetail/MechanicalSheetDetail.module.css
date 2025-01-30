@@ -1,9 +1,9 @@
-.serviceSheetPage{
+.mechanicalSheetPage{
     width: 100%;
     height: 100%;
 }
 
-.serviceSheet{
+.mechanicalSheet{
     width: 216mm;
     height: 279mm;
     margin: 0 auto;
