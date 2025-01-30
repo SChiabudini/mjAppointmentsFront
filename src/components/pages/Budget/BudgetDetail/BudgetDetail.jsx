@@ -104,9 +104,10 @@ const BudgetDetail = () => {
                                     <img src={logo} alto=""/>
                                     <p><span>MJ PRO OIL</span></p>
                                     <p>Matías Nicolás Ezequiel</p>
-                                    <p>CUIT: 20-41195480-4</p>
+                                    <p>20-41195480-4</p>
                                     <p>Av. 44 n° 1877 e/ 132 y 133</p>
                                     <p>Teléfono: (221) 6230285</p>
+                                    <p>Email: mjprooil44@gmail.com</p>
                                 </div>
                                 <div className={style.header2}>
                                     <p className={style.bigP}>P</p>
