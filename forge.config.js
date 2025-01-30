@@ -1,19 +1,23 @@
+const path = require('path');
 const { FusesPlugin } = require('@electron-forge/plugin-fuses');
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 
 module.exports = {
   packagerConfig: {
-    asar: true
+    asar: true,
+    icon: path.resolve(__dirname, 'src/assets/img/icon'), // Ruta al archivo de ícono sin extensión
   },
   rebuildConfig: {},
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        setupIcon: path.resolve(__dirname, 'src/assets/img/icon.ico'), // Ícono para Windows
+      },
     },
     {
       name: '@electron-forge/maker-zip',
-      platforms: ['darwin'],
+      platforms: ['darwin'], // Configuración para macOS
     },
     {
       name: '@electron-forge/maker-deb',
