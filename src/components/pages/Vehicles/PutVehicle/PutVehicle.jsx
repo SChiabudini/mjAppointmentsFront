@@ -93,13 +93,8 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
         
         if (name === 'licensePlate') setAlreadyExist(false);
         
-        if (name === 'searchTerm') {
-            setSearchTerm(value);
-            if (value === '') {
-                setDropdownVisible(false);
-            }
-        };
-        if(name === 'searchTerm' && value === '') setDropdownVisible(false); 
+        if(name === 'searchTerm') setSearchTerm(value);
+        if(name === 'searchTerm' && value === '') setDropdownVisible(false);
     };
 
     //----- HANDLE CLIENT

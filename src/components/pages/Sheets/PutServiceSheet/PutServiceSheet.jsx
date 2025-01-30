@@ -106,14 +106,14 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                 ...editServiceSheet,
                 date: `${value}T${editServiceSheet.date.split("T")[1]}`
             });
-        }
+        };
 
         if(name === "time"){
             setEditServiceSheet({
                 ...editServiceSheet,
                 date: `${editServiceSheet.date.split("T")[0]}T${value}`
             });
-        }
+        };
     
         if (name === 'searchTermClients') {
             setSearchTermClients(value);

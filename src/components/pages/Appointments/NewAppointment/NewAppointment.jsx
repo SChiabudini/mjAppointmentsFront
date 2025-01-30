@@ -50,6 +50,32 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
         }
     }, [newAppointment]);
 
+    //----- HANDLE INPUTS
+
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        
+        if (name === 'searchTermClients') {
+            setSearchTermClients(value);
+            if (value === '') {
+                setDropdownVisibleClients(false);
+                setSearchTermClients('');
+                setSearchTermVehicles('');
+                setNewAppointment({ ...newAppointment, personClient: null, companyClient: null, vehicle: null });
+            };
+        };
+    
+        if (name === 'searchTermVehicles') {
+            setSearchTermVehicles(value);
+            if (value === '') {
+                setDropdownVisibleVehicles(false);
+                setSearchTermClients('');
+                setSearchTermVehicles('');
+                setNewAppointment({ ...newAppointment, personClient: null, companyClient: null, vehicle: null });
+            }
+        };
+    };
+
     //----- DATE
 
     const [tempDates, setTempDates] = useState({
@@ -394,13 +420,13 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                             type="text" 
                             name="searchTermVehicles" 
                             value={searchTermVehicles} 
-                            onChange={(e) => setSearchTermVehicles(e.target.value)}
+                            onChange={handleInputChange}
                             onFocus={handleSearchFocus} 
                             onBlur={handleSearchBlur} 
                             onKeyDown={handleKeyDown} 
                             placeholder="Buscar vehículo" 
                         />
-                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button">
+                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button" disabled={newAppointment.vehicle}>
                             {showNewVehicle ? '-' : '+'}
                         </button>                                
                     </div>
@@ -418,41 +444,49 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                 </div>
                 {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true}/>}
                 <div className="clientSelection">                            
-                    <label>Cliente*</label>
-                    <div className="clientSelectionInputs">
-                        <label htmlFor="personClient">
-                            <input 
-                            type="radio" 
-                            name="clientType" 
-                            value="person" 
-                            checked={searchingPerson}
-                            onChange={() => (setSearchingPerson(true), setSearchTermClients(''))}
-                            />
-                            Persona
-                        </label>
-                        <label htmlFor="companyClient">
-                            <input 
-                                type="radio" 
-                                name="clientType" 
-                                value="company"
-                                checked={!searchingPerson}
-                                onChange={() => (setSearchingPerson(false), setSearchTermClients(''))}
-                            />
-                            Empresa
-                        </label>
+                    <div className="formRow">
+                        <label>Cliente*</label>
                     </div>
+                    {newAppointment.personClient || newAppointment.companyClient ? 
+                        (
+                            <></>
+                        ) : (
+                            <div className="clientSelectionInputs">
+                                <label htmlFor="personClient">
+                                    <input 
+                                    type="radio" 
+                                    name="clientType" 
+                                    value="person" 
+                                    checked={searchingPerson}
+                                    onChange={() => (setSearchingPerson(true), setSearchTermClients(''))}
+                                    />
+                                    Persona
+                                </label>
+                                <label htmlFor="companyClient">
+                                    <input 
+                                        type="radio" 
+                                        name="clientType" 
+                                        value="company"
+                                        checked={!searchingPerson}
+                                        onChange={() => (setSearchingPerson(false), setSearchTermClients(''))}
+                                    />
+                                    Empresa
+                                </label>
+                            </div>
+                       )
+                    }
                     <div className="searchRow">
                         <input
                             type="text"
                             name="searchTermClients"
                             placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
                             value={searchTermClients}
-                            onChange={(e) => setSearchTermClients(e.target.value)}
+                            onChange={handleInputChange}
                             onFocus={handleSearchFocus}
                             onBlur={handleSearchBlur}
                             onKeyDown={handleKeyDown}
                         />
-                        <button type="button" onClick={() => setShowNewClient(!showNewClient)}>
+                        <button type="button" onClick={() => setShowNewClient(!showNewClient)} disabled={newAppointment.personClient || newAppointment.companyClient}>
                             {showNewClient ? '-' : '+'}
                         </button>                                 
                     </div>

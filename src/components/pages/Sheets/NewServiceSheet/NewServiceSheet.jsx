@@ -72,31 +72,41 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                         : parseInt(value, 10) || 0
                     : value,
             });
-        }
+        };
 
         if(name === "date"){
             setNewServiceSheet({
                 ...newServiceSheet,
                 date: `${value}T${newServiceSheet.date.split("T")[1]}`
             });
-        }
+        };
 
         if(name === "time"){
             setNewServiceSheet({
                 ...newServiceSheet,
                 date: `${newServiceSheet.date.split("T")[0]}T${value}`
             });
-        }
+        };
     
         if (name === 'searchTermClients') {
             setSearchTermClients(value);
-            if (value === '') setDropdownVisibleClients(false);
-        }
+            if (value === '') {
+                setDropdownVisibleClients(false);
+                setSearchTermClients('');
+                setSearchTermVehicles('');
+                setNewServiceSheet({ ...newServiceSheet, personClient: null, companyClient: null, vehicle: null });
+            };
+        };
     
         if (name === 'searchTermVehicles') {
             setSearchTermVehicles(value);
-            if (value === '') setDropdownVisibleVehicles(false);
-        }
+            if (value === '') {
+                setDropdownVisibleVehicles(false);
+                setSearchTermClients('');
+                setSearchTermVehicles('');
+                setNewServiceSheet({ ...newServiceSheet, personClient: null, companyClient: null, vehicle: null });
+            }
+        };
     };
 
     //----- LOAD CLIENTS AND VEHICLES OPTIONS
@@ -329,7 +339,9 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
             <div className="container">
                 <div className="formRow">Los campos con (*) son obligatorios.</div>
                 <div className="clientSelection">
-                    <label className="formRow">Vehículo*</label>
+                    <div className="formRow">
+                        <label>Vehículo*</label>
+                    </div>
                     <div className="searchRow">
                         <input
                             type="text"
@@ -341,14 +353,14 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                             onBlur={handleSearchBlur}
                             onKeyDown={handleKeyDown}
                         />
-                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button">
+                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button" disabled={newServiceSheet.vehicle}>
                             {showNewVehicle ? '-' : '+'}
                         </button>                                
                     </div>
                     <div className="searchRow">
-                        {filteredVehicles.length > 0 && dropdownVisibleVehicles && (
+                        {filteredVehicles?.length > 0 && dropdownVisibleVehicles && (
                             <ul className="dropdown">
-                                {filteredVehicles.map((vehicle, index) => (
+                                {filteredVehicles?.map((vehicle, index) => (
                                     <li
                                     key={vehicle._id}
                                     onClick={() => handleVehicleSelection(vehicle)}
@@ -363,10 +375,13 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                 </div>
                 {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true} personClientId={newServiceSheet.personClient} companyClientId={newServiceSheet.companyClient}/>}
                 <div className="clientSelection">
-                    <label className="formRow">Cliente</label>
+                    <div className="formRow">
+                        <label>Cliente</label>
+                    </div>
                     {newServiceSheet.personClient || newServiceSheet.companyClient ? 
-                        <></> :
-                        (
+                        ( 
+                            <></> 
+                        ) : (
                             <div className="clientSelectionInputs">
                                 <label>
                                     <input
@@ -408,14 +423,14 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                             onBlur={handleSearchBlur}
                             onKeyDown={handleKeyDown}
                         />
-                        <button onClick={() => setShowNewClient(!showNewClient)} type="button">
+                        <button onClick={() => setShowNewClient(!showNewClient)} type="button" disabled={newServiceSheet.personClient || newServiceSheet.companyClient}>
                             {showNewClient ? '-' : '+'}
                         </button>                                 
                     </div>
                     <div className="searchRow">
-                        {filteredClients.length > 0 && dropdownVisibleClients && (
+                        {filteredClients?.length > 0 && dropdownVisibleClients && (
                             <ul className="dropdown">
-                                {filteredClients.map((client, index) => (
+                                {filteredClients?.map((client, index) => (
                                     <li
                                     key={client._id}
                                     onClick={() => handleClientSelection(client)}

@@ -107,14 +107,14 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                 ...editMechanicalSheet,
                 date: `${value}T${editMechanicalSheet.date.split("T")[1]}`
             });
-        }
+        };
 
         if(name === "time"){
             setEditMechanicalSheet({
                 ...editMechanicalSheet,
                 date: `${editMechanicalSheet.date.split("T")[0]}T${value}`
             });
-        }
+        };
 
         if (name === 'searchTermClients') {
             setSearchTermClients(value);
@@ -404,46 +404,46 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                             <></>
                         ) : (
                             <div className="clientSelectionInputs">
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="clientType"
-                                    value="person"
-                                    checked={searchingPerson}
-                                    onChange={() => {
-                                        setSearchingPerson(true);
-                                        setSearchTermClients('');
-                                        setSearchTermVehicles('');
-                                        setEditMechanicalSheet({ 
-                                            ...editMechanicalSheet, 
-                                            personClient: null, 
-                                            companyClient: null,
-                                            vehicle: null
-                                        });
-                                    }}
-                                />
-                                Persona
-                            </label>
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="clientType"
-                                    value="company"
-                                    checked={!searchingPerson}
-                                    onChange={() => {
-                                        setSearchingPerson(false);
-                                        setSearchTermClients('');
-                                        setSearchTermVehicles('');
-                                        setEditMechanicalSheet({ 
-                                            ...editMechanicalSheet, 
-                                            personClient: null, 
-                                            companyClient: null,
-                                            vehicle: null
-                                        });
-                                    }}
-                                />
-                                Empresa
-                            </label>
+                                <label>
+                                    <input
+                                        type="radio"
+                                        name="clientType"
+                                        value="person"
+                                        checked={searchingPerson}
+                                        onChange={() => {
+                                            setSearchingPerson(true);
+                                            setSearchTermClients('');
+                                            setSearchTermVehicles('');
+                                            setEditMechanicalSheet({ 
+                                                ...editMechanicalSheet, 
+                                                personClient: null, 
+                                                companyClient: null,
+                                                vehicle: null
+                                            });
+                                        }}
+                                    />
+                                    Persona
+                                </label>
+                                <label>
+                                    <input
+                                        type="radio"
+                                        name="clientType"
+                                        value="company"
+                                        checked={!searchingPerson}
+                                        onChange={() => {
+                                            setSearchingPerson(false);
+                                            setSearchTermClients('');
+                                            setSearchTermVehicles('');
+                                            setEditMechanicalSheet({ 
+                                                ...editMechanicalSheet, 
+                                                personClient: null, 
+                                                companyClient: null,
+                                                vehicle: null
+                                            });
+                                        }}
+                                    />
+                                    Empresa
+                                </label>
                             </div>
                         )
                     }

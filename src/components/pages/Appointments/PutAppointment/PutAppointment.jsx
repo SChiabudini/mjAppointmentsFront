@@ -452,7 +452,6 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
                             name="searchTermVehicles" 
                             value={searchTermVehicles} 
                             onChange={handleInputChange}
-                            // onChange={(e) => setSearchTermVehicles(e.target.value)}
                             onFocus={handleSearchFocus} 
                             onBlur={handleSearchBlur} 
                             onKeyDown={handleKeyDown} 
@@ -537,7 +536,6 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
                             placeholder={`Buscar ${searchingPerson ? 'persona' : 'empresa'}`}
                             value={searchTermClients}
                             onChange={handleInputChange}
-                            // onChange={(e) => setSearchTermClients(e.target.value)}
                             onFocus={handleSearchFocus}
                             onBlur={handleSearchBlur}
                             onKeyDown={handleKeyDown}

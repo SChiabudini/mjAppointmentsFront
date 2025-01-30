@@ -76,24 +76,34 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                 ...newMechanicalSheet,
                 date: `${value}T${newMechanicalSheet.date.split("T")[1]}`
             });
-        }
+        };
 
         if(name === "time"){
             setNewMechanicalSheet({
                 ...newMechanicalSheet,
                 date: `${newMechanicalSheet.date.split("T")[0]}T${value}`
             });
-        }
+        };
     
         if (name === 'searchTermClients') {
             setSearchTermClients(value);
-            if (value === '') setDropdownVisibleClients(false);
-        }
+            if (value === '') {
+                setDropdownVisibleClients(false);
+                setSearchTermClients('');
+                setSearchTermVehicles('');
+                setNewMechanicalSheet({ ...newMechanicalSheet, personClient: null, companyClient: null, vehicle: null });
+            };
+        };
     
         if (name === 'searchTermVehicles') {
             setSearchTermVehicles(value);
-            if (value === '') setDropdownVisibleVehicles(false);
-        }
+            if (value === '') {
+                setDropdownVisibleVehicles(false);
+                setSearchTermClients('');
+                setSearchTermVehicles('');
+                setNewMechanicalSheet({ ...newMechanicalSheet, personClient: null, companyClient: null, vehicle: null });
+            }
+        };
     };
 
     //----- LOAD CLIENTS AND VEHICLES OPTIONS
@@ -307,7 +317,9 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
             <div className="container">
                 <div className="formRow">Los campos con (*) son obligatorios.</div>
                 <div className="clientSelection">
-                    <label className="formRow">Vehículo*</label>
+                    <div className="formRow">
+                        <label>Vehículo*</label>
+                    </div>
                     <div className="searchRow">
                         <input
                             type="text"
@@ -326,7 +338,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                     <div className="searchRow">
                         {filteredVehicles?.length > 0 && dropdownVisibleVehicles && (
                             <ul className="dropdown">
-                                {filteredVehicles.map((vehicle, index) => (
+                                {filteredVehicles?.map((vehicle, index) => (
                                     <li
                                     key={vehicle._id}
                                     onClick={() => handleVehicleSelection(vehicle)}
@@ -341,35 +353,43 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                 </div>
                 {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true} personClientId={newMechanicalSheet.personClient} companyClientId={newMechanicalSheet.companyClient}/>}
                 <div className="clientSelection">
-                    <label className="formRow">Cliente</label>
-                    <div className="clientSelectionInputs">
-                        <label>
-                            <input
-                                type="radio"
-                                name="clientType"
-                                value="person"
-                                checked={searchingPerson}
-                                onChange={() => {
-                                    setSearchingPerson(true);
-                                    setSearchTermClients('');
-                                }}
-                            />
-                            Persona
-                        </label>
-                        <label>
-                            <input
-                                type="radio"
-                                name="clientType"
-                                value="company"
-                                checked={!searchingPerson}
-                                onChange={() => {
-                                    setSearchingPerson(false);
-                                    setSearchTermClients('');
-                                }}
-                            />
-                            Empresa
-                        </label>
+                    <div className="formRow">
+                        <label>Cliente</label>
                     </div>
+                    {newMechanicalSheet.personClient || newMechanicalSheet.companyClient ? 
+                        (
+                            <></>
+                        ) : (
+                            <div className="clientSelectionInputs">
+                                <label>
+                                    <input
+                                        type="radio"
+                                        name="clientType"
+                                        value="person"
+                                        checked={searchingPerson}
+                                        onChange={() => {
+                                            setSearchingPerson(true);
+                                            setSearchTermClients('');
+                                        }}
+                                    />
+                                    Persona
+                                </label>
+                                <label>
+                                    <input
+                                        type="radio"
+                                        name="clientType"
+                                        value="company"
+                                        checked={!searchingPerson}
+                                        onChange={() => {
+                                            setSearchingPerson(false);
+                                            setSearchTermClients('');
+                                        }}
+                                    />
+                                    Empresa
+                                </label>
+                            </div>
+                        )
+                    }
                     <div className="searchRow">
                         <input
                             type="text"
