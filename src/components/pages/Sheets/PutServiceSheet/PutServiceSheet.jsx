@@ -375,7 +375,9 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
             <div className="container">
                 <div className="formRow">Los campos con (*) son obligatorios.</div>
                 <div className="clientSelection">
-                    <label className="formRow">Vehículo*</label>
+                    <div className="formRow">
+                        <label>Vehículo*</label>
+                    </div>
                     <div className="searchRow">
                         <input
                             type="text"
@@ -387,7 +389,7 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                             onBlur={handleSearchBlur}
                             onKeyDown={handleKeyDown}
                         />
-                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button">
+                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button" disabled={editServiceSheet.vehicle}>
                             {showNewVehicle ? '-' : '+'}
                         </button>                             
                     </div>
@@ -409,49 +411,57 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                 </div>
                 {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true} personClientId={editServiceSheet.personClient} companyClientId={editServiceSheet.companyClient}/>}
                 <div className="clientSelection">
-                    <label className="formRow">Cliente</label>
-                    <div className="clientSelectionInputs">
-                        <label>
-                            <input
-                                type="radio"
-                                name="clientType"
-                                value="person"
-                                checked={searchingPerson}
-                                onChange={() => {
-                                    setSearchingPerson(true);
-                                    setSearchTermClients('');
-                                    setSearchTermVehicles('');
-                                    setEditServiceSheet({ 
-                                        ...editServiceSheet, 
-                                        personClient: null, 
-                                        companyClient: null,
-                                        vehicle: null
-                                    });
-                                }}
-                            />
-                            Persona
-                        </label>
-                        <label>
-                            <input
-                                type="radio"
-                                name="clientType"
-                                value="company"
-                                checked={!searchingPerson}
-                                onChange={() => {
-                                    setSearchingPerson(false);
-                                    setSearchTermClients('');
-                                    setSearchTermVehicles('');
-                                    setEditServiceSheet({ 
-                                        ...editServiceSheet, 
-                                        personClient: null, 
-                                        companyClient: null,
-                                        vehicle: null
-                                    });
-                                }}
-                            />
-                            Empresa
-                        </label>
+                    <div className="formRow">
+                        <label>Cliente</label>
                     </div>
+                    {editServiceSheet.personClient || editServiceSheet.companyClient ? 
+                        (
+                            <></>
+                        ) : (
+                            <div className="clientSelectionInputs">
+                                <label>
+                                    <input
+                                        type="radio"
+                                        name="clientType"
+                                        value="person"
+                                        checked={searchingPerson}
+                                        onChange={() => {
+                                            setSearchingPerson(true);
+                                            setSearchTermClients('');
+                                            setSearchTermVehicles('');
+                                            setEditServiceSheet({ 
+                                                ...editServiceSheet, 
+                                                personClient: null, 
+                                                companyClient: null,
+                                                vehicle: null
+                                            });
+                                        }}
+                                    />
+                                    Persona
+                                </label>
+                                <label>
+                                    <input
+                                        type="radio"
+                                        name="clientType"
+                                        value="company"
+                                        checked={!searchingPerson}
+                                        onChange={() => {
+                                            setSearchingPerson(false);
+                                            setSearchTermClients('');
+                                            setSearchTermVehicles('');
+                                            setEditServiceSheet({ 
+                                                ...editServiceSheet, 
+                                                personClient: null, 
+                                                companyClient: null,
+                                                vehicle: null
+                                            });
+                                        }}
+                                    />
+                                    Empresa
+                                </label>
+                            </div>
+                        )
+                    }
                     <div className="searchRow">
                         <input
                             type="text"
@@ -463,7 +473,7 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                             onBlur={handleSearchBlur}
                             onKeyDown={handleKeyDown}
                         />
-                        <button onClick={() => setShowNewClient(!showNewClient)} type="button">
+                        <button onClick={() => setShowNewClient(!showNewClient)} type="button" disabled={editServiceSheet.personClient || editServiceSheet.companyClient}>
                             {showNewClient ? '-' : '+'}
                         </button>                                 
                     </div>

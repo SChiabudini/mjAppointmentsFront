@@ -458,7 +458,7 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
                             onKeyDown={handleKeyDown} 
                             placeholder="Buscar vehículo" 
                         />
-                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button">
+                        <button onClick={() => setShowNewVehicle(!showNewVehicle)} type="button" disabled={editAppointment.vehicle}>
                             {showNewVehicle ? '-' : '+'}
                         </button>                                
                     </div>
@@ -479,49 +479,57 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
                 </div>
                 {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true}/>}
                 <div className="clientSelection">                            
-                    <label>Cliente*</label>
-                    <div className="clientSelectionInputs">
-                        <label htmlFor="personClient">
-                            <input 
-                            type="radio" 
-                            name="clientType" 
-                            value="person" 
-                            checked={searchingPerson}
-                            onChange={() => {
-                                setSearchingPerson(true);
-                                setSearchTermClients('');
-                                setSearchTermVehicles('');
-                                setEditAppointment({ 
-                                    ...editAppointment,
-                                    personClient: null, 
-                                    companyClient: null, 
-                                    vehicle: null 
-                                });
-                            }}
-                            />
-                            Persona
-                        </label>
-                        <label htmlFor="companyClient">
-                            <input 
-                                type="radio" 
-                                name="clientType" 
-                                value="company"
-                                checked={!searchingPerson}
-                                onChange={() => {
-                                    setSearchingPerson(false);
-                                    setSearchTermClients('');
-                                    setSearchTermVehicles('');
-                                    setEditAppointment({ 
-                                        ...editAppointment,
-                                        personClient: null, 
-                                        companyClient: null, 
-                                        vehicle: null 
-                                    });
-                                }}
-                            />
-                            Empresa
-                        </label>
+                    <div className="formRow">
+                        <label>Cliente*</label>
                     </div>
+                    {editAppointment.personClient || editAppointment.companyClient ? 
+                        (
+                            <></>
+                        ) : (
+                            <div className="clientSelectionInputs">
+                                <label htmlFor="personClient">
+                                    <input 
+                                    type="radio" 
+                                    name="clientType" 
+                                    value="person" 
+                                    checked={searchingPerson}
+                                    onChange={() => {
+                                        setSearchingPerson(true);
+                                        setSearchTermClients('');
+                                        setSearchTermVehicles('');
+                                        setEditAppointment({ 
+                                            ...editAppointment,
+                                            personClient: null, 
+                                            companyClient: null, 
+                                            vehicle: null 
+                                        });
+                                    }}
+                                    />
+                                    Persona
+                                </label>
+                                <label htmlFor="companyClient">
+                                    <input 
+                                        type="radio" 
+                                        name="clientType" 
+                                        value="company"
+                                        checked={!searchingPerson}
+                                        onChange={() => {
+                                            setSearchingPerson(false);
+                                            setSearchTermClients('');
+                                            setSearchTermVehicles('');
+                                            setEditAppointment({ 
+                                                ...editAppointment,
+                                                personClient: null, 
+                                                companyClient: null, 
+                                                vehicle: null 
+                                            });
+                                        }}
+                                    />
+                                    Empresa
+                                </label>
+                            </div>
+                        )
+                    }
                     <div className="searchRow">
                         <input
                             type="text"
@@ -534,7 +542,7 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
                             onBlur={handleSearchBlur}
                             onKeyDown={handleKeyDown}
                         />
-                        <button type="button" onClick={() => setShowNewClient(!showNewClient)}>
+                        <button type="button" onClick={() => setShowNewClient(!showNewClient)} disabled={editAppointment.personClient || editAppointment.companyClient}>
                             {showNewClient ? '-' : '+'}
                         </button>                                 
                     </div>
@@ -556,7 +564,6 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
                 </div>
                 {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true}/>}
                 {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true}/>}
-                
                 <form onSubmit={handleSubmit} id="appointmentForm" onKeyDown={handleNoSend}>
                     <div>
                         <div className="formRow">
@@ -602,7 +609,9 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
                             </div>
                         </div>
                         {errorMessage.endTime && <p className="errorMessage">{errorMessage.endTime}</p>}
-                        <div className="formRow"><label>Procedimiento*</label></div>
+                        <div className="formRow">
+                            <label>Procedimiento*</label>
+                        </div>
                         <div className="procedureSelectionInputs">
                             <label htmlFor="service">
                                 <input 

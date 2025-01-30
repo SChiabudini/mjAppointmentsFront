@@ -264,37 +264,45 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                     </div>                   
                     {!isNested ? (
                         <div className="clientSelection">
-                            <label className="formRow">Cliente</label>
-                            <div className="clientSelectionInputs">
-                                <label>
-                                    <input
-                                        type="radio"
-                                        name="clientType"
-                                        value="person"
-                                        checked={searchingPerson}
-                                        onChange={() => {
-                                            setSearchingPerson(true);
-                                            setSearchTerm('');
-                                            setEditVehicle({ ...editVehicle, personClient: null, companyClient: null });
-                                        }}
-                                    />
-                                    Persona
-                                </label>
-                                <label>
-                                    <input
-                                        type="radio"
-                                        name="clientType"
-                                        value="company"
-                                        checked={!searchingPerson}
-                                        onChange={() => {
-                                            setSearchingPerson(false);
-                                            setSearchTerm('');
-                                            setEditVehicle({ ...editVehicle, companyClient: null, personClient: null });
-                                        }}
-                                    />
-                                    Empresa
-                                </label>
+                            <div className="formRow">
+                                <label>Cliente</label>
                             </div>
+                            {editVehicle.personClient || editVehicle.companyClient ? 
+                            (
+                                <></>
+                            ) : (
+                                <div className="clientSelectionInputs">
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="clientType"
+                                            value="person"
+                                            checked={searchingPerson}
+                                            onChange={() => {
+                                                setSearchingPerson(true);
+                                                setSearchTerm('');
+                                                setEditVehicle({ ...editVehicle, personClient: null, companyClient: null });
+                                            }}
+                                        />
+                                        Persona
+                                    </label>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="clientType"
+                                            value="company"
+                                            checked={!searchingPerson}
+                                            onChange={() => {
+                                                setSearchingPerson(false);
+                                                setSearchTerm('');
+                                                setEditVehicle({ ...editVehicle, companyClient: null, personClient: null });
+                                            }}
+                                        />
+                                        Empresa
+                                    </label>
+                                </div>
+                                )
+                            }
                             <div className="searchRow">
                                 <input
                                     type="text"
@@ -306,7 +314,7 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                                     onBlur={handleSearchBlur}
                                     onKeyDown={handleKeyDown}
                                 />
-                                <button onClick={() => setShowNewClient(!showNewClient)} type="button">
+                                <button onClick={() => setShowNewClient(!showNewClient)} type="button" disabled={editVehicle.personClient || editVehicle.companyClient}>
                                     {showNewClient ? '-' : '+'}
                                 </button>                                 
                             </div>
