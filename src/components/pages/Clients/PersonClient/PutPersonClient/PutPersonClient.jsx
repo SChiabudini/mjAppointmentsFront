@@ -132,7 +132,7 @@ const PutPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
         if (!editPersonClient.vehicles.some(v => v.licensePlate === vehicle.licensePlate)) {
             setEditPersonClient(prevState => ({
                 ...prevState,
-                vehicles: [...prevState.vehicles, vehicle._id]
+                vehicles: [...prevState.vehicles, vehicle]
             }));
         }
         setSearchTerm('');
