@@ -282,7 +282,13 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
             price: 0,
         });
         setTotal(0);
-    }
+    };
+
+    //----- FORMAT NUMBER
+
+    const formatNumber = (number) => {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    };
 
     //----- SUBMIT
 
@@ -510,20 +516,20 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                             </button>
                         </div>
                     </div>
-                    {newBudget.items.length > 0 && (
+                    {newBudget.items?.length > 0 && (
                         <div className="formRow">
                             <ul>
-                                {newBudget.items.map((item, index) => (
+                                {newBudget.items?.map((item, index) => (
                                     <li key={index}>
-                                        {item.quantity} x {item.description} - $
-                                        {item.price} - Subtotal: ${item.quantity * item.price}
+                                        {formatNumber(item.quantity)} x {item.description} - $
+                                        {formatNumber(item.price)} - Subtotal: ${formatNumber(item.quantity * item.price)}
                                         <button type="button" onClick={() => removeItem(index)}>x</button>
                                     </li>
                                 ))}
                             </ul>
                         </div>
                     )}
-                    <div className="formRow"><label>Total: ${total}</label></div>
+                    <div className="formRow"><label>Total: ${formatNumber(total)}</label></div>
                     <div className="submit">
                         <button type='submit' form="budgetForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Crear presupuesto"}</button>
                         {errorMessage && <p className="errorMessage">{errorMessage}</p>}

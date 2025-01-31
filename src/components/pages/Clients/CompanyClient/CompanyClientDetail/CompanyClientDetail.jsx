@@ -47,7 +47,13 @@ const CompanyClientDetail = () => {
                 navigate(`/main_window/clientes/empresas`)
             )
         );
-    }
+    };
+
+    //----- FORMAT NUMBER
+    
+    const formatNumber = (number) => {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    };
 
     return(
         <div className="page">
@@ -125,8 +131,8 @@ const CompanyClientDetail = () => {
                                                             minute: '2-digit', 
                                                         })}</li>
                                                     }
-                                                    {serviceSheet.kilometers && <li>Kilometraje:&nbsp;{serviceSheet.kilometers}</li>}
-                                                    {serviceSheet.kmsToNextService && <li>Kms hasta el siguiente service:&nbsp;{serviceSheet.kmsToNextService}</li>}
+                                                    {serviceSheet.kilometers && <li>Kilometraje:&nbsp;{formatNumber(serviceSheet.kilometers)}</li>}
+                                                    {serviceSheet.kmsToNextService && <li>Kms hasta el siguiente service:&nbsp;{formatNumber(serviceSheet.kmsToNextService)}</li>}
                                                     {serviceSheet.oil && <li>Aceite:&nbsp;{serviceSheet.oil}</li>}
                                                     {serviceSheet.filters?.length > 0 ? (
                                                         <li>
@@ -137,7 +143,7 @@ const CompanyClientDetail = () => {
                                                         <></>
                                                     )}
                                                     {serviceSheet.notes && <li>Notas:&nbsp;{serviceSheet.notes}</li>}
-                                                    {serviceSheet.amount && <li>Monto:&nbsp;${serviceSheet.amount}</li>}                                                   
+                                                    {serviceSheet.amount && <li>Monto:&nbsp;${formatNumber(serviceSheet.amount)}</li>}                                                   
                                                 </ul>
                                             ))}
                                         </div>
@@ -146,7 +152,6 @@ const CompanyClientDetail = () => {
                                             <p><span>Service&nbsp;</span></p>
                                             <p className={style.withoutRegistration}>No hay fichas de service registradas.</p>
                                         </div>
-                                        
                                     )}
                                     {companyClientDetail.mechanicalSheets?.length > 0 ? (
                                         <div className={style.sheets}>
@@ -163,10 +168,10 @@ const CompanyClientDetail = () => {
                                                             minute: '2-digit', 
                                                         })}</li>
                                                     }
-                                                    {mechanicalSheet.kilometers && <li>Kilometraje:&nbsp;{mechanicalSheet.kilometers}</li>}
+                                                    {mechanicalSheet.kilometers && <li>Kilometraje:&nbsp;{formatNumber(mechanicalSheet.kilometers)}</li>}
                                                     {mechanicalSheet.keyWords && <li>Palabras clave:&nbsp;{mechanicalSheet.keyWords}</li>}
                                                     {mechanicalSheet.description && <li>Descripción:&nbsp;{mechanicalSheet.description}</li>}
-                                                    {mechanicalSheet.amount && <li>Monto:&nbsp;${mechanicalSheet.amount}</li>}                                                   
+                                                    {mechanicalSheet.amount && <li>Monto:&nbsp;${formatNumber(mechanicalSheet.amount)}</li>}                                                   
                                                 </ul>
                                             ))}
                                         </div>

@@ -50,7 +50,13 @@ const ServiceSheetDetail = () => {
                 navigate(`/main_window/fichas`)
             )
         );
-    }
+    };
+
+    //----- FORMAT NUMBER
+
+    const formatNumber = (number) => {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    };
 
 	return (
 		<div className={style.serviceSheetPage}>
@@ -151,8 +157,8 @@ const ServiceSheetDetail = () => {
                                 <div className={style.dataContainer}>
                                     <p><span>DATOS DEL SERVICE</span></p>
                                     <div className={style.data}>
-                                        {serviceSheetDetail.kilometers && <p><span>Kilómetros:&nbsp;</span>{serviceSheetDetail.kilometers}</p>}
-                                        {serviceSheetDetail.kmsToNextService && <p><span>Kilómetros hasta el siguiente service:&nbsp;</span>{serviceSheetDetail.kmsToNextService}</p>}
+                                        {serviceSheetDetail.kilometers && <p><span>Kilómetros:&nbsp;</span>{formatNumber(serviceSheetDetail.kilometers)}</p>}
+                                        {serviceSheetDetail.kmsToNextService && <p><span>Kilómetros hasta el siguiente service:&nbsp;</span>{formatNumber(serviceSheetDetail.kmsToNextService)}</p>}
                                         {serviceSheetDetail.oil && <p><span>Aceite:&nbsp;</span>{serviceSheetDetail.oil}</p>}
                                         {serviceSheetDetail.filters?.length > 0 ? (
                                             <p><span>Filtros:&nbsp;</span>{serviceSheetDetail.filters?.join(', ')}</p>
@@ -164,7 +170,7 @@ const ServiceSheetDetail = () => {
                                     </div>  
                                 </div>
                             </div>
-                            <div className={style.footer}>Total: ${serviceSheetDetail.amount}</div>
+                            <div className={style.footer}>Total: ${formatNumber(serviceSheetDetail.amount)}</div>
                         </div>
                     </div>
                 )
