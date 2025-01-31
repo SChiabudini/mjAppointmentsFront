@@ -88,6 +88,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
     const today = new Date();
     const offset = today.getTimezoneOffset();
     const localDate = new Date(today.getTime() - offset * 60 * 1000).toISOString().split("T")[0];
+    const minEndDate = tempDates.startDate || localDate;
 
     const handleInputDate = (event) => {
         const { name, value } = event.target;
@@ -564,7 +565,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                                     type="date" 
                                     name="endDate" 
                                     value={tempDates.endDate}
-                                    min={localDate}
+                                    min={minEndDate}
                                     onChange={handleInputDate}
                                 />
                                 <input 

@@ -16,7 +16,6 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     const dispatch = useDispatch();
 
     const nowDate = new Date();
-
     const today = nowDate.toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
     
     const now = nowDate.toLocaleTimeString('es-AR', { 
