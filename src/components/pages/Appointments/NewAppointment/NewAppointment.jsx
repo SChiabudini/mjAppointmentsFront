@@ -174,6 +174,8 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
             companyClient: searchingPerson ? null : client._id,
         });
 
+        setShowNewClient(false);
+
     };
 
     //----- HANDLE VEHICLES
@@ -239,6 +241,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
             }));
             setSearchingPerson(true);
         }
+        setShowNewVehicle(false);
     };
 
     //----- DROPDOWN

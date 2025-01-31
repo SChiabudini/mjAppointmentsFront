@@ -99,6 +99,8 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
         } else {
             setNewBudget({ ...newBudget, companyClient: client._id, personClient: null });
         }
+
+        setShowNewClient(false);
     };
 
     //----- HANDLE VEHICLES
@@ -162,6 +164,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
             }));
             setSearchingPerson(true);
         }
+        setShowNewVehicle(false);
     };
     
     //----- DROPDOWN

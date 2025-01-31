@@ -147,6 +147,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
             companyClient: searchingPerson ? null : client._id,
         });
 
+        setShowNewClient(false);
     };
 
     //----- HANDLE VEHICLES
@@ -210,6 +211,8 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
             }));
             setSearchingPerson(true);
         }
+
+        setShowNewVehicle(false);
     };
     
     //----- DROPDOWN

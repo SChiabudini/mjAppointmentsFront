@@ -246,6 +246,8 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
         } else {
             setEditAppointment({ ...editAppointment, companyClient: client._id, personClient: null });
         }
+
+        setShowNewClient(false);
     };
 
     //----- VEHICLES
@@ -310,6 +312,8 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
             }));
             setSearchingPerson(true);
         }
+
+        setShowNewVehicle(false);
     };
     
     //----- ATRIBUTES INPUTS
