@@ -171,6 +171,8 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
         } else {
             setEditMechanicalSheet({ ...editMechanicalSheet, companyClient: client._id, personClient: null });
         }
+
+        setShowNewClient(false);
     };
 
     //----- HANDLE VEHICLES
@@ -234,6 +236,8 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
             }));
             setSearchingPerson(true);
         }
+
+        setShowNewVehicle(false);
     };
     
     //----- DROPDOWN

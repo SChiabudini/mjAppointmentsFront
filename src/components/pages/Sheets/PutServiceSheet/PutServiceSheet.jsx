@@ -170,6 +170,8 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
         } else {
             setEditServiceSheet({ ...editServiceSheet, companyClient: client._id, personClient: null });
         }
+
+        setShowNewClient(false);
     };
 
     //----- VEHICLES
@@ -233,6 +235,8 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
             }));
             setSearchingPerson(true);
         }
+
+        setShowNewVehicle(false);
     };
 
     //----- DROPDOWN

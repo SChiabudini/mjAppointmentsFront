@@ -140,6 +140,8 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
         } else {
             setNewMechanicalSheet({ ...newMechanicalSheet, companyClient: client._id, personClient: null });
         }
+
+        setShowNewClient(false);
     };
 
     //----- HANDLE VEHICLES
@@ -203,6 +205,8 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
             }));
             setSearchingPerson(true);
         }
+
+        setShowNewVehicle(false);
     };
     
     //----- DROPDOWN
