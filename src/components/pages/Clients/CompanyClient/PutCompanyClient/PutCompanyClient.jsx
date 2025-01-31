@@ -238,7 +238,7 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
                         // min='0'
                         value={editCompanyClient.cuit} 
                         onChange={handleInputChange} />
-                        {alreadyExist && <p className="errorMessage">Ya existe un cliente con ese CUIT.</p>}
+                        {alreadyExist && <p className="errorMessage">Ya existe un cliente con ese CUIT, corroborar que no esté archivado.</p>}
                     </div>
                     <div className="formRow">
                         <label>Nombre</label>

@@ -224,7 +224,7 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
                         <label htmlFor="cuit">CUIT*</label>
                         <input type="text" name="cuit" value={newCompanyClient.cuit} onChange={handleInputChange}/>
                     </div>
-                    {alreadyExist && <div className="formRow"><p className="errorMessage">Ya existe un cliente con ese CUIT.</p></div>}
+                    {alreadyExist && <div className="formRow"><p className="errorMessage">Ya existe un cliente con ese CUIT, corroborar que no esté archivado.</p></div>}
                     <div className="formRow">
                         <label htmlFor="name">Nombre*</label>
                         <input type="text" name="name" value={newCompanyClient.name} onChange={handleInputChange}/>

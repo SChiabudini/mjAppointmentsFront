@@ -221,7 +221,7 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                         <label>DNI*</label>
                         <input type="text" name="dni" value={newPersonClient.dni} onChange={handleInputChange} />
                     </div>
-                    {alreadyExist && <div className="formRow"><p className="errorMessage">Ya existe un cliente con ese DNI.</p></div>}
+                    {alreadyExist && <div className="formRow"><p className="errorMessage">Ya existe un cliente con ese DNI, corroborar que no esté archivado.</p></div>}
                     <div className="formRow">
                         <label>Nombre*</label>
                         <input type="text" name="name" value={newPersonClient.name} onChange={handleInputChange} />
