@@ -69,6 +69,12 @@ const BudgetDetail = () => {
         return formattedDate;
     };
 
+    //----- FORMAT NUMBER
+
+    const formatNumber = (number) => {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    };
+
     return(
         <div className={style.budgetPage}>
             {error ? (
@@ -178,18 +184,17 @@ const BudgetDetail = () => {
                                     <tbody>
                                         {budgetDetail.items?.map((item, index) => (
                                             <tr key={index}>
-                                                <td>{item.quantity}</td>
+                                                <td>{formatNumber(item.quantity)}</td>
                                                 <td>{item.description}</td>
-                                                <td>${item.price}</td>
-                                                <td>${item.price * item.quantity}</td>
+                                                <td>${formatNumber(item.price)}</td>
+                                                <td>${formatNumber(item.price * item.quantity)}</td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
                             </div>
-                            <div className={style.footer}>Total: ${total}</div>
+                            <div className={style.footer}>Total: ${formatNumber(total)}</div>
                         </div>
-
                     </div>
                 )
             }

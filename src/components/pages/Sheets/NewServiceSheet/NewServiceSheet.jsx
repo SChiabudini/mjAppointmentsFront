@@ -307,6 +307,8 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
         };
 
         try {
+            console.log(serviceSheetToSubmit);
+            
             const response = await dispatch(postServiceSheet(serviceSheetToSubmit));
             console.log("Service sheet successfully saved");
             setLoading(false);

@@ -152,7 +152,13 @@ const Budgets = () => {
             dispatch(getAllBudgets()).then(() => setLoading(false));
         }
         setShowAll(!showAll);
-    }
+    };
+
+    //----- FORMAT NUMBER
+
+    const formatNumber = (number) => {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    };
 
     return(
         <div className="page">
@@ -269,7 +275,7 @@ const Budgets = () => {
                                                     <td>{formatDate(budget.end)}</td>
                                                     <td>{budget.personClient ? budget.personClient.name : budget.companyClient ? budget.companyClient.name : 'No disponible'}</td>
                                                     <td>{budget.vehicle ? budget.vehicle.licensePlate : 'No disponible'}</td>
-                                                    <td>${budget.total}</td>
+                                                    <td>${formatNumber(budget.total)}</td>
                                                     <td className='center'>
                                                         <a onClick={() => navigate(`/main_window/presupuestos/${budget._id}`)}>
                                                             <img src={detail} alt="" className="detailImg" />
