@@ -258,7 +258,13 @@ const PersonClients = () => {
                                                     <td>{personClient.dni}</td>
                                                     <td>{personClient.name}</td>
                                                     <td>{personClient.email}</td>
-                                                    <td>+{personClient.phoneWsp.prefix}{personClient.phoneWsp.numberPhone}</td>
+                                                    <td>
+                                                        {personClient.phoneWsp.numberPhone ? (
+                                                            `+${personClient.phoneWsp.prefix}${personClient.phoneWsp.numberPhone}`
+                                                        ) : (
+                                                            'Sin Whatsapp'
+                                                        )} 
+                                                    </td>
                                                     <td>
                                                         {personClient.phones?.length 
                                                             ? personClient.phones.join(', ') 

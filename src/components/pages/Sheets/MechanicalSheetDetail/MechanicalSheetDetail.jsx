@@ -119,31 +119,27 @@ const MechanicalSheetDetail = () => {
 										<p><span>DATOS DEL CLIENTE</span></p>
 										{mechanicalSheetDetail.personClient ? (
 											<div className={style.data}>
-												
-													<p><span>DNI:</span> {mechanicalSheetDetail.personClient.dni}</p>
-													<p><span>Nombre:</span> {mechanicalSheetDetail.personClient.name}</p>
-													<p><span>Email:</span> {mechanicalSheetDetail.personClient.email}</p>
-													{mechanicalSheetDetail.personClient.cuilCuit && <p><span>CUIL/CUIT:</span> {mechanicalSheetDetail.personClient.cuilCuit}</p>}
-													{mechanicalSheetDetail.personClient.phoneWsp.numberPhone && <p><span>Whatsapp:&nbsp;</span>+{mechanicalSheetDetail.personClient.phoneWsp.prefix}{mechanicalSheetDetail.personClient.phoneWsp.numberPhone}</p>}
-													{mechanicalSheetDetail.personClient.phones?.length > 0 && <p><span>Teléfonos:</span> {mechanicalSheetDetail.personClient.phones?.join(', ')}</p>}
-												
+												<p><span>DNI:</span> {mechanicalSheetDetail.personClient.dni}</p>
+												<p><span>Nombre:</span> {mechanicalSheetDetail.personClient.name}</p>
+												<p><span>Email:</span> {mechanicalSheetDetail.personClient.email}</p>
+												{mechanicalSheetDetail.personClient.cuilCuit && <p><span>CUIL/CUIT:</span> {mechanicalSheetDetail.personClient.cuilCuit}</p>}
+												{mechanicalSheetDetail.personClient.phoneWsp.numberPhone && <p><span>Whatsapp:&nbsp;</span>+{mechanicalSheetDetail.personClient.phoneWsp.prefix}{mechanicalSheetDetail.personClient.phoneWsp.numberPhone}</p>}
+												{mechanicalSheetDetail.personClient.phones?.length > 0 && <p><span>Teléfonos:</span> {mechanicalSheetDetail.personClient.phones?.join(', ')}</p>}
 											</div>
 										) : (
 											<div className={style.data}>
-																						
 												<p><span>CUIT:</span> {mechanicalSheetDetail.companyClient.cuit}</p>
 												<p><span>Nombre:</span> {mechanicalSheetDetail.companyClient.name}</p>
 												<p><span>Email:</span> {mechanicalSheetDetail.companyClient.email}</p>
 												{mechanicalSheetDetail.companyClient.address && <p><span>Dirección:</span> {mechanicalSheetDetail.companyClient.address}</p>}
 												{mechanicalSheetDetail.companyClient.phoneWsp.numberPhone && <p><span>Whatsapp:&nbsp;</span>+{mechanicalSheetDetail.companyClient.phoneWsp.prefix}{mechanicalSheetDetail.companyClient.phoneWsp.numberPhone}</p>}
 												{mechanicalSheetDetail.companyClient.phones?.length > 0 && <p><span>Teléfonos:</span> {mechanicalSheetDetail.companyClient.phones?.join(', ')}</p>}
-
 											</div>
 										)}
 									</div>
 									<div className={style.dataContainer}>
 										<p><span>DATOS DEL VEHÍCULO</span></p>
-										<div className={style.data}>                                                                                    
+										<div className={style.data}>                                                                                
 											<p><span>Patente:</span> {mechanicalSheetDetail.vehicle.licensePlate}</p>
 											<p><span>Marca:</span> {mechanicalSheetDetail.vehicle.brand}</p>
 											<p><span>Modelo:</span> {mechanicalSheetDetail.vehicle.model}</p>

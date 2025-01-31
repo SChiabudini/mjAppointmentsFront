@@ -74,7 +74,7 @@ const CompanyClientDetail = () => {
                                 <p><span>Estado:&nbsp;</span>{companyClientDetail.active ? 'Activo' : 'Inactivo'}</p>
                                 {companyClientDetail.cuit && <p><span>CUIT:&nbsp;</span>{companyClientDetail.cuit}</p>}
                                 {companyClientDetail.name && <p><span>Nombre:&nbsp;</span>{companyClientDetail.name}</p>}
-                                {companyClientDetail.phoneWsp ? (
+                                {companyClientDetail.phoneWsp.numberPhone ? (
                                     <p><span>Whatsapp:&nbsp;</span>+{companyClientDetail.phoneWsp.prefix}{companyClientDetail.phoneWsp.numberPhone}</p>
                                 ) : (
                                     <p><span>Whatsapp:&nbsp;</span>No hay teléfono con Whatsapp registrado.</p>

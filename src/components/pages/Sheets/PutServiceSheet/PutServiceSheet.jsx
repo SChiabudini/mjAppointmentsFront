@@ -184,11 +184,11 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
 
     useEffect(() => {
         const filteredVehicles = vehicles.filter(vehicle => {
-            if (editeditServiceSheet.personClient) {
+            if (editServiceSheet.personClient) {
                 if (vehicle.personClient && vehicle.personClient._id ===editServiceSheet.personClient) {
                     return vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase());
                 }
-            } else if (editeditServiceSheet.companyClient) {
+            } else if (editServiceSheet.companyClient) {
                 if (vehicle.companyClient && vehicle.companyClient._id ===editServiceSheet.companyClient) {
                     return vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase());
                 }

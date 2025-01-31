@@ -185,11 +185,11 @@ const PutMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
 
     useEffect(() => {
         const filteredVehicles = vehicles.filter(vehicle => {
-            if (edieditMechanicalSheet.personClient) {
+            if (editMechanicalSheet.personClient) {
                 if (vehicle.personClient && vehicle.personClient._id ===editMechanicalSheet.personClient) {
                     return vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase());
                 }
-            } else if (edieditMechanicalSheet.companyClient) {
+            } else if (editMechanicalSheet.companyClient) {
                 if (vehicle.companyClient && vehicle.companyClient._id ===editMechanicalSheet.companyClient) {
                     return vehicle.licensePlate.toLowerCase().includes(searchTermVehicles.toLowerCase());
                 }

@@ -122,14 +122,12 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
     }, [searchTerm, vehicles]);
 
     const handleVehicleSelection = (vehicle) => {
-    console.log(`New vehicle: ${vehicle}`);
     if (!newCompanyClient.vehicles.some(v => v.licensePlate === vehicle.licensePlate)) {
         setNewCompanyClient(prevState => ({
             ...prevState,
             vehicles: [...prevState.vehicles, vehicle]
         }));
     }
-    console.log(`Vehicles: ${newCompanyClient.vehicles}`);
     setSearchTerm('');
     };
 
@@ -181,7 +179,6 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        console.log(`Data a enviar: ${newCompanyClient}`);
         setLoading(true);
         setErrorMessage("");
 

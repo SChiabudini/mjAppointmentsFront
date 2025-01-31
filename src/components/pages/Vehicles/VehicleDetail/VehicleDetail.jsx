@@ -91,7 +91,7 @@ const VehicleDetail = () => {
                                                 {vehicleDetail.personClient.phoneWsp.numberPhone ? (
                                                     <li><span>Whatsapp:&nbsp;</span>+{vehicleDetail.personClient.phoneWsp.prefix}{vehicleDetail.personClient.phoneWsp.numberPhone}</li>
                                                 ) : (
-                                                    <li><span>Whatsapp:&nbsp;</span>No Whatsapp registrado.</li>
+                                                    <li><span>Whatsapp:&nbsp;</span>Sin Whatsapp.</li>
                                                 )} 
                                                 {vehicleDetail.personClient.phones?.length > 0 ? (
                                                     <div>

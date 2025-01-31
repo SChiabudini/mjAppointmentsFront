@@ -119,25 +119,21 @@ const ServiceSheetDetail = () => {
                                         <p><span>DATOS DEL CLIENTE</span></p>
                                         {serviceSheetDetail.personClient ? (
                                             <div className={style.data}>
-                                                
-                                                    <p><span>DNI:</span> {serviceSheetDetail.personClient.dni}</p>
-                                                    <p><span>Nombre:</span> {serviceSheetDetail.personClient.name}</p>
-                                                    <p><span>Email:</span> {serviceSheetDetail.personClient.email}</p>
-                                                    {serviceSheetDetail.personClient.cuilCuit && <p><span>CUIL/CUIT:</span> {serviceSheetDetail.personClient.cuilCuit}</p>}
-                                                    {serviceSheetDetail.personClient.phoneWsp.numberPhone && <p><span>Whatsapp:&nbsp;</span>+{serviceSheetDetail.personClient.phoneWsp.prefix}{serviceSheetDetail.personClient.phoneWsp.numberPhone}</p>}
-                                                    {serviceSheetDetail.personClient.phones?.length > 0 && <p><span>Teléfonos:</span> {serviceSheetDetail.personClient.phones?.join(', ')}</p>}
-                                                
+                                                <p><span>DNI:</span> {serviceSheetDetail.personClient.dni}</p>
+                                                <p><span>Nombre:</span> {serviceSheetDetail.personClient.name}</p>
+                                                <p><span>Email:</span> {serviceSheetDetail.personClient.email}</p>
+                                                {serviceSheetDetail.personClient.cuilCuit && <p><span>CUIL/CUIT:</span> {serviceSheetDetail.personClient.cuilCuit}</p>}
+                                                {serviceSheetDetail.personClient.phoneWsp.numberPhone && <p><span>Whatsapp:&nbsp;</span>+{serviceSheetDetail.personClient.phoneWsp.prefix}{serviceSheetDetail.personClient.phoneWsp.numberPhone}</p>}
+                                                {serviceSheetDetail.personClient.phones?.length > 0 && <p><span>Teléfonos:</span> {serviceSheetDetail.personClient.phones?.join(', ')}</p>}
                                             </div>
                                         ) : (
                                             <div className={style.data}>
-                                                                                        
                                                 <p><span>CUIT:</span> {serviceSheetDetail.companyClient.cuit}</p>
                                                 <p><span>Nombre:</span> {serviceSheetDetail.companyClient.name}</p>
                                                 <p><span>Email:</span> {serviceSheetDetail.companyClient.email}</p>
                                                 {serviceSheetDetail.companyClient.address && <p><span>Dirección:</span> {serviceSheetDetail.companyClient.address}</p>}
                                                 {serviceSheetDetail.companyClient.phoneWsp.numberPhone && <p><span>Whatsapp:&nbsp;</span>+{serviceSheetDetail.companyClient.phoneWsp.prefix}{serviceSheetDetail.companyClient.phoneWsp.numberPhone}</p>}
                                                 {serviceSheetDetail.companyClient.phones?.length > 0 && <p><span>Teléfonos:</span> {serviceSheetDetail.companyClient.phones?.join(', ')}</p>}
-
                                             </div>
                                         )}
                                     </div>
@@ -159,9 +155,7 @@ const ServiceSheetDetail = () => {
                                         {serviceSheetDetail.kmsToNextService && <p><span>Kilómetros hasta el siguiente service:&nbsp;</span>{serviceSheetDetail.kmsToNextService}</p>}
                                         {serviceSheetDetail.oil && <p><span>Aceite:&nbsp;</span>{serviceSheetDetail.oil}</p>}
                                         {serviceSheetDetail.filters?.length > 0 ? (
-                                            
                                             <p><span>Filtros:&nbsp;</span>{serviceSheetDetail.filters?.join(', ')}</p>
-                                            
                                         ) : (
                                             <></>
                                         )}
@@ -173,7 +167,6 @@ const ServiceSheetDetail = () => {
                             <div className={style.footer}>Total: ${serviceSheetDetail.amount}</div>
                         </div>
                     </div>
-
                 )
             )}
             <div className={popUpOpen ? 'popUp' : 'popUpClosed'} onClick={() => setPopUpOpen(false)}>
