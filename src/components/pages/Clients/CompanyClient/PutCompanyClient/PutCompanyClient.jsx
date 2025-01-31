@@ -129,10 +129,11 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
     }, [searchTerm, vehicles]);
 
     const handleVehicleSelection = (vehicle) => {
+        console.log(vehicle);
         if (!editCompanyClient.vehicles.some(v => v.licensePlate === vehicle.licensePlate)) {
             setEditCompanyClient(prevState => ({
                 ...prevState,
-                vehicles: [...prevState.vehicles, vehicle]
+                vehicles: [...prevState.vehicles, vehicle._id]
             }));
         }
         setSearchTerm('');
@@ -190,6 +191,7 @@ const PutCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
         setErrorMessage("");
 
         try {
+            //console.log(editCompanyClient);
             const response = await dispatch(putCompanyClient(editCompanyClient));
             console.log("Client/company successfully updated");
             setLoading(false);
