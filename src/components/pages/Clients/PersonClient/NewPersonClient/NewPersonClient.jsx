@@ -118,7 +118,7 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
         if (!newPersonClient.vehicles.some(v => v.licensePlate === vehicle.licensePlate)) {
             setNewPersonClient(prevState => ({
                 ...prevState,
-                vehicles: [...prevState.vehicles, vehicle._id]
+                vehicles: [...prevState.vehicles, vehicle]
             }));
         }
         setSearchTerm('');
