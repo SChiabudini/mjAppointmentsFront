@@ -455,7 +455,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                         )}
                     </div>     
                 </div>
-                {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true}/>}
+                {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true} personClientId={newAppointment.personClient} companyClientId={newAppointment.companyClient}/>}
                 <div className="clientSelection">                            
                     <div className="formRow">
                         <label>Cliente*</label>
@@ -519,8 +519,8 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                         )}
                     </div>                               
                 </div>
-                {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true}/>}
-                {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true}/>}
+                {showNewClient && searchingPerson && <NewPersonClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newAppointment.vehicle}/>}
+                {showNewClient && !searchingPerson && <NewCompanyClient onClientAdded={handleClientSelection} isNested={true} vehicleId={newAppointment.vehicle}/>}
                 <form onSubmit={handleSubmit} id="appointmentForm" onKeyDown={handleNoSend}>
                     <div>
                         <div className="formRow">
