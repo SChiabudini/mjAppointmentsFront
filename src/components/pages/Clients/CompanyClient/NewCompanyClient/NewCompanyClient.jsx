@@ -122,12 +122,14 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
     }, [searchTerm, vehicles]);
 
     const handleVehicleSelection = (vehicle) => {
+    console.log(`New vehicle: ${vehicle}`);
     if (!newCompanyClient.vehicles.some(v => v.licensePlate === vehicle.licensePlate)) {
         setNewCompanyClient(prevState => ({
             ...prevState,
             vehicles: [...prevState.vehicles, vehicle]
         }));
     }
+    console.log(`Vehicles: ${newCompanyClient.vehicles}`);
     setSearchTerm('');
     };
 
@@ -179,6 +181,7 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        console.log(`Data a enviar: ${newCompanyClient}`);
         setLoading(true);
         setErrorMessage("");
 
@@ -311,7 +314,7 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
                                     {newCompanyClient.vehicles?.map((vehicle, index) => (
                                         <li key={index}>
                                             {vehicle.licensePlate}
-                                            <button type="button" onClick={() => removeVehicle(index)}>Eliminar</button>
+                                            <button type="button" onClick={() => removeVehicle(index)}>x</button>
                                         </li>
                                     ))}
                                 </ul>
@@ -322,7 +325,7 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
                     )}                
                 </form>
                 <div className={isNested ? "submitNested" : "submit"}>
-                    {showNewVehicle && <NewVehicle onClientAdded={handleVehicleSelection} isNested={true}/>}
+                    {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true}/>}
                     <button type='submit' form="companyClientForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Crear cliente"}</button>
                     {errorMessage && <p className="errorMessage">{errorMessage}</p>}
                 </div>
