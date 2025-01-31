@@ -235,6 +235,7 @@ const Sheets = () => {
                                     type="date"
                                     value={endDate}
                                     onChange={(e) => setEndDate(e.target.value)}
+                                    min={startDate}
                                 />
 
                                 <button 
