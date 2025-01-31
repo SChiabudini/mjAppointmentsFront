@@ -122,14 +122,12 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
     }, [searchTerm, vehicles]);
 
     const handleVehicleSelection = (vehicle) => {
-    console.log(`New vehicle: ${vehicle}`);
     if (!newCompanyClient.vehicles.some(v => v.licensePlate === vehicle.licensePlate)) {
         setNewCompanyClient(prevState => ({
             ...prevState,
-            vehicles: [...prevState.vehicles, vehicle]
+            vehicles: [...prevState.vehicles, vehicle._id]
         }));
     }
-    console.log(`Vehicles: ${newCompanyClient.vehicles}`);
     setSearchTerm('');
     };
 
