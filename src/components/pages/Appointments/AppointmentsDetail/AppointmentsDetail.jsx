@@ -84,7 +84,7 @@ const AppointmentsDetail = () => {
                                             {appointmentDetail.personClient.dni && <li><span>DNI:&nbsp;</span>{appointmentDetail.personClient.dni}</li>}
                                             {appointmentDetail.personClient.cuilCuit && <li><span>CUIL/CUIT:&nbsp;</span>{appointmentDetail.personClient.cuilCuit}</li>}
                                             {appointmentDetail.personClient.email && <li><span>Correo electrónico:&nbsp;</span>{appointmentDetail.personClient.email}</li>}
-                                            {appointmentDetail.personClient.phoneWsp ? (
+                                            {appointmentDetail.personClient.phoneWsp.numberPhone ? (
                                                 <li><span>Whatsapp:&nbsp;</span>+{appointmentDetail.personClient.phoneWsp.prefix}{appointmentDetail.personClient.phoneWsp.numberPhone}</li>
                                             ) : (
                                                 <li>No hay teléfono con Whatsapp registrado.</li>
@@ -106,7 +106,7 @@ const AppointmentsDetail = () => {
                                             {appointmentDetail.companyClient.cuit && <li><span>CUIT:&nbsp;</span>{appointmentDetail.companyClient.cuit}</li>}
                                             {appointmentDetail.companyClient.address && <li><span>Dirección:&nbsp;</span>{appointmentDetail.companyClient.address}</li>}
                                             {appointmentDetail.companyClient.email && <li><span>Correo electrónico:&nbsp;</span>{appointmentDetail.companyClient.email}</li>}
-                                            {appointmentDetail.companyClient.phoneWsp ? (
+                                            {appointmentDetail.companyClient.phoneWsp.numberPhone ? (
                                                 <li><span>Whatsapp:&nbsp;</span>+{appointmentDetail.companyClient.phoneWsp.prefix}{appointmentDetail.companyClient.phoneWsp.numberPhone}</li>
                                             ) : (
                                                 <li>No hay teléfono con Whatsapp registrado.</li>

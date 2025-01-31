@@ -251,10 +251,16 @@ const CompanyClients = () => {
                                                     <td>{companyClient.cuit}</td>
                                                     <td>{companyClient.name}</td>
                                                     <td>{companyClient.email}</td>
-                                                    <td>+{companyClient.phoneWsp.prefix}{companyClient.phoneWsp.numberPhone}</td>
+                                                    <td>
+                                                        {companyClient.phoneWsp.numberPhone ? (
+                                                            `+${companyClient.phoneWsp.prefix}${companyClient.phoneWsp.numberPhone}`
+                                                        ) : (
+                                                            'Sin Whatsapp'
+                                                        )} 
+                                                    </td>
                                                     <td>
                                                         {companyClient.phones?.length 
-                                                            ? companyClient?.phones.join(', ') 
+                                                            ? companyClient.phones?.join(', ') 
                                                             : 'No disponible'}
                                                     </td>
                                                     <td>{companyClient.address ? companyClient.address : 'No disponible'}</td>

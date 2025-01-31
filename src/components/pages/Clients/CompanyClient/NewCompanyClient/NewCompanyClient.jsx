@@ -179,7 +179,6 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        console.log(`Data a enviar: ${newCompanyClient}`);
         setLoading(true);
         setErrorMessage("");
 

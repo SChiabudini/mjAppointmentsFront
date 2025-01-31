@@ -205,7 +205,6 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
         setFilteredVehicles(filteredVehicles);
     }, [searchTermVehicles, vehicles, newAppointment.personClient, newAppointment.companyClient]);
     
-    
     const handleVehicleSelection = (vehicle) => {
         setSearchTermVehicles(vehicle.licensePlate);
         setDropdownVisibleVehicles(false);

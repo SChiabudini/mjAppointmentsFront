@@ -75,7 +75,7 @@ const PersonClientDetail = () => {
                                 {personClientDetail.dni && <p><span>DNI:&nbsp;</span>{personClientDetail.dni}</p>}
                                 {personClientDetail.cuilCuit && <p><span>CUIL/CUIT:&nbsp;</span>{personClientDetail.cuilCuit}</p>}
                                 {personClientDetail.name && <p><span>Nombre:&nbsp;</span>{personClientDetail.name}</p>}
-                                {personClientDetail.phoneWsp ? (
+                                {personClientDetail.phoneWsp.numberPhone ? (
                                     <p><span>Whatsapp:&nbsp;</span>+{personClientDetail.phoneWsp?.prefix}{personClientDetail.phoneWsp?.numberPhone}</p>
                                 ) : (
                                     <p><span>Whatsapp:&nbsp;</span>No hay teléfono con Whatsapp registrado.</p>
