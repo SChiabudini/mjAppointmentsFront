@@ -204,7 +204,7 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                         value={newVehicle.licensePlate} 
                         onChange={handleInputChange}/>
                     </div>
-                    {alreadyExist && <div className="formRow"><p className="errorMessage">Ya existe un vehículo con esa patente.</p></div>}
+                    {alreadyExist && <div className="formRow"><p className="errorMessage">Ya existe un vehículo con esa patente, corroborar que no esté archivado.</p></div>}
                     <div className="formRow">
                         <label htmlFor="brand">Marca*</label>
                         <input type="text" name="brand" value={newVehicle.brand} onChange={handleInputChange}/>
