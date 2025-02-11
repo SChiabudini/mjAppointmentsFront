@@ -99,7 +99,7 @@ const ServiceSheetDetail = () => {
                                     <p>Email: mjprooil44@gmail.com</p>
                                 </div>
                                 <div className={style.header2}>
-                                    <p className={style.bigP}>P</p>
+                                    <p className={style.bigP}>F</p>
                                     <p>DOCUMENTO</p>
                                     <p>NO VÁLIDO</p>
                                     <p>COMO FACTURA</p>
