@@ -64,7 +64,7 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
     useEffect(() => {
         const currentYear = new Date().getFullYear();
 
-        if(editVehicle.licensePlate !== '' && editVehicle.brand !== '' && editVehicle.model !== '' && editVehicle.engine !== '' && editVehicle.year >= 1000 && editVehicle.year <= currentYear){
+        if(editVehicle.licensePlate !== '' && editVehicle.brand !== '' && editVehicle.model !== '' && editVehicle.engine !== '' && (editVehicle.year === 0 || (editVehicle.year >= 1000 && editVehicle.year <= currentYear))){
             setDisabled(false);
         } else {
             setDisabled(true);
@@ -243,7 +243,7 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                         <input type="text" name="model" value={editVehicle.model} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow">
-                        <label htmlFor="year">Año*</label>
+                        <label htmlFor="year">Año</label>
                         <input type="number" name="year" value={editVehicle.year || ''} onWheel={(event) => event.target.blur()} onChange={(e) => {
                             const value = e.target.value;
 

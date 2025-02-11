@@ -82,7 +82,7 @@ const VehicleDetail = () => {
                                 {vehicleDetail.licensePlate && <p><span>Patente:&nbsp;</span>{vehicleDetail.licensePlate}</p>}
                                 {vehicleDetail.brand && <p><span>Marca:&nbsp;</span>{vehicleDetail.brand}</p>}
                                 {vehicleDetail.model && <p><span>Modelo:&nbsp;</span>{vehicleDetail.model}</p>}
-                                {vehicleDetail.year && <p><span>Año:&nbsp;</span>{vehicleDetail.year}</p>}
+                                <p><span>Año:&nbsp;</span>{vehicleDetail.year !== 0 ? vehicleDetail.year : "No disponible"}</p>
                                 {vehicleDetail.engine && <p><span>Motor:&nbsp;</span>{vehicleDetail.engine}</p>}
                                 {vehicleDetail.personClient || vehicleDetail.companyClient ? (
                                 <div>  
