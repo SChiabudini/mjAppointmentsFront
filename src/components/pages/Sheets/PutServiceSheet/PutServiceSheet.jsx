@@ -531,11 +531,11 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                     </div>
                     <div className="formRow">
                         <label htmlFor="kilometers">Kilómetros*</label>
-                        <input type="number" name="kilometers" value={editServiceSheet.kilometers} onChange={handleInputChange} min={0}/>
+                        <input type="number" name="kilometers" value={editServiceSheet.kilometers} onChange={handleInputChange} min={0} onWheel={(event) => event.target.blur()}/>
                     </div>
                     <div className="formRow">
                         <label htmlFor="kmsToNextService">Kms próximo service*</label>
-                        <input type="number" name="kmsToNextService" value={editServiceSheet.kmsToNextService} onChange={handleInputChange} min={0}/>
+                        <input type="number" name="kmsToNextService" value={editServiceSheet.kmsToNextService} onChange={handleInputChange} min={0} onWheel={(event) => event.target.blur()}/>
                     </div>
                     <div className="formRow">
                         <label htmlFor="oil">Aceite*</label>
@@ -586,7 +586,7 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                     </div>
                     <div className="formRow">
                         <label htmlFor="amount">Monto*</label>
-                        <input type="number" name="amount" value={editServiceSheet.amount} onChange={handleInputChange} min={0}/>
+                        <input type="number" name="amount" value={editServiceSheet.amount} onChange={handleInputChange} min={0} onWheel={(event) => event.target.blur()}/>
                     </div>
                     <div className="formRow"><label htmlFor="notes">Notas</label></div>
                     <div className="formRow"><textarea name="notes" value={editServiceSheet.notes} onChange={handleInputChange}/></div>

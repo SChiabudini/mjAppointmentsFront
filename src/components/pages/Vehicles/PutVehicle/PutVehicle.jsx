@@ -244,7 +244,7 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                     </div>
                     <div className="formRow">
                         <label htmlFor="year">Año*</label>
-                        <input type="text" name="year" value={editVehicle.year || ''} onChange={(e) => {
+                        <input type="number" name="year" value={editVehicle.year || ''} onWheel={(event) => event.target.blur()} onChange={(e) => {
                             const value = e.target.value;
 
                             if (value.length <= 4) {

@@ -516,6 +516,7 @@ const PutBudget = ({ onBudgetAdded = () => {} }) => {
                                     })
                                 }
                                 min={0}
+                                onWheel={(event) => event.target.blur()}
                             />
                         </div>
                         <div className="formRow">
@@ -543,6 +544,7 @@ const PutBudget = ({ onBudgetAdded = () => {} }) => {
                                     })
                                 }
                                 min={0}
+                                onWheel={(event) => event.target.blur()}
                             />
                         </div>
                         <div className="formRow">                            

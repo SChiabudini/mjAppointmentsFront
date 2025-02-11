@@ -460,11 +460,11 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                     </div>
                     <div className="formRow">
                         <label htmlFor="kilometers">Kilómetros*</label>
-                        <input type="number" name="kilometers" value={newMechanicalSheet.kilometers || ""} onChange={handleInputChange} min={0}/>
+                        <input type="number" name="kilometers" value={newMechanicalSheet.kilometers || ""} onChange={handleInputChange} min={0} onWheel={(event) => event.target.blur()}/>
                     </div>
                     <div className="formRow">
                         <label htmlFor="amount">Monto*</label>
-                        <input type="number" name="amount" value={newMechanicalSheet.amount || ""} onChange={handleInputChange} min={0}/>
+                        <input type="number" name="amount" value={newMechanicalSheet.amount || ""} onChange={handleInputChange} min={0} onWheel={(event) => event.target.blur()}/>
                     </div>
                     <div className="formRow">
                         <label htmlFor="keyWords">Palabras clave*</label>
