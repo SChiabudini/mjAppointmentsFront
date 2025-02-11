@@ -108,6 +108,12 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
         };
     };
 
+    const handleTextareaKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            event.stopPropagation();
+        }
+    };
+
     //----- LOAD CLIENTS AND VEHICLES OPTIONS
 
     const personClients = useSelector(state => state.personClient.personClients);
@@ -288,7 +294,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
     //----- SUBMIT
 
     const handleNoSend = (event) => {
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' && event.target.name !== 'notes') {
             event.preventDefault();
         }
     };
@@ -537,7 +543,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                         <input type="number" name="amount" value={newServiceSheet.amount || ""} min={0} onChange={handleInputChange} onWheel={(event) => event.target.blur()}/>
                     </div>
                     <div className="formRow"><label htmlFor="notes">Notas</label></div>
-                    <div className="formRow"><textarea name="notes" value={newServiceSheet.notes} onChange={handleInputChange}/></div>
+                    <div className="formRow"><textarea name="notes" value={newServiceSheet.notes} onChange={handleInputChange} onKeyDown={handleTextareaKeyDown}/></div>
                     <div className="submit">
                         <button type='submit' form="serviceSheetForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Crear ficha"}</button>
                         {errorMessage && <p className="errorMessage">{errorMessage}</p>}
