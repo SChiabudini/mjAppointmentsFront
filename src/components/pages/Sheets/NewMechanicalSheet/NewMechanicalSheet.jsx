@@ -106,6 +106,12 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
         };
     };
 
+    const handleTextareaKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            event.stopPropagation();
+        }
+    };
+
     //----- LOAD CLIENTS AND VEHICLES OPTIONS
 
     const personClients = useSelector(state => state.personClient.personClients);
@@ -269,7 +275,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
     //----- SUBMIT
 
     const handleNoSend = (event) => {
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' && event.target.name !== 'description') {
             event.preventDefault();
         }
     };
@@ -471,7 +477,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                         <input type="text" name="keyWords" value={newMechanicalSheet.keyWords} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow"><label htmlFor="description">Descripción*</label></div>
-                    <div className="formRow"><textarea name="description" value={newMechanicalSheet.description} onChange={handleInputChange}/></div>
+                    <div className="formRow"><textarea name="description" value={newMechanicalSheet.description} onChange={handleInputChange} onKeyDown={handleTextareaKeyDown}/></div>
                     <div className="submit">
                         <button type='submit' form="mechanicalSheetForm" disabled={disabled}>{loading ? <img src={loadingGif} alt=""/> : "Crear ficha"}</button>
                         {errorMessage && <p className="errorMessage">{errorMessage}</p>}
