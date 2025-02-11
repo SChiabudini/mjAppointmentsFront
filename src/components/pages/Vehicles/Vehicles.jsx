@@ -238,7 +238,7 @@ const Vehicles = () => {
                                                     <td>{vehicle.licensePlate}</td>
                                                     <td>{vehicle.brand}</td>
                                                     <td>{vehicle.model}</td>
-                                                    <td>{vehicle.year}</td>
+                                                    <td>{vehicle.year !== 0 ? vehicle.year : "No disponible"}</td>
                                                     <td>{vehicle.engine}</td>
                                                     <td>{vehicle.personClient ? vehicle.personClient.name : vehicle.companyClient ? vehicle.companyClient.name : 'No disponible'}</td>
                                                     <td className='center'>

@@ -37,7 +37,7 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
 
         const currentYear = new Date().getFullYear();
 
-        if(newVehicle.licensePlate !== '' && newVehicle.brand !== '' && newVehicle.model !== '' && newVehicle.engine !== '' && newVehicle.year >= 1000 && newVehicle.year <= currentYear){
+        if(newVehicle.licensePlate !== '' && newVehicle.brand !== '' && newVehicle.model !== '' && newVehicle.engine !== '' && (newVehicle.year === 0 || (newVehicle.year >= 1000 && newVehicle.year <= currentYear))){
             setDisabled(false);
         } else {
             setDisabled(true);
@@ -214,7 +214,7 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                         <input type="text" name="model" value={newVehicle.model} onChange={handleInputChange}/>
                     </div>
                     <div className="formRow">
-                        <label htmlFor="year">Año*</label>
+                        <label htmlFor="year">Año</label>
                         <input type="number" name="year" value={newVehicle.year || ''} onWheel={(event) => event.target.blur()} onChange={(e) => {
                             const value = e.target.value;
 
