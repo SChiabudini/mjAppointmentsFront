@@ -459,7 +459,7 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
                 <div className="formRow">Los campos con (*) son obligatorios.</div>
                 <div className="clientSelection">
                     <div className="formRow">
-                        <label>Vehículo*</label>
+                        <label style={{fontWeight: '600'}}>Vehículo*</label>
                     </div>
                     <div className="searchRow">
                         <input 
@@ -494,7 +494,7 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
                 {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true}/>}
                 <div className="clientSelection">                            
                     <div className="formRow">
-                        <label>Cliente*</label>
+                        <label style={{fontWeight: '600'}}>Cliente*</label>
                     </div>
                     {editAppointment.personClient || editAppointment.companyClient ? 
                         (
@@ -580,7 +580,7 @@ const PutAppointment = ({ onAppointmentAdded = () => {}}) => {
                 <form onSubmit={handleSubmit} id="appointmentForm" onKeyDown={handleNoSend}>
                     <div>
                         <div className="formRow">
-                            <div>Fecha y horario</div>
+                            <div style={{fontWeight: '600'}}>Fecha y horario:</div>
                         </div>
                         <div className="formRowDate">
                             <label htmlFor="start">Inicio*</label>

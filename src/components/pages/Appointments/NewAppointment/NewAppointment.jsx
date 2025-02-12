@@ -429,7 +429,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                 <div className="formRow">Los campos con (*) son obligatorios.</div>
                 <div className="clientSelection">
                     <div className="formRow">
-                        <label>Vehículo*</label>
+                        <label style={{fontWeight: '600'}}>Vehículo*</label>
                     </div>
                     <div className="searchRow">
                         <input 
@@ -461,7 +461,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                 {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true} personClientId={newAppointment.personClient} companyClientId={newAppointment.companyClient}/>}
                 <div className="clientSelection">                            
                     <div className="formRow">
-                        <label>Cliente*</label>
+                        <label style={{fontWeight: '600'}}>Cliente*</label>
                     </div>
                     {newAppointment.personClient || newAppointment.companyClient ? 
                         (
@@ -527,7 +527,7 @@ const NewAppointment = ({ onAppointmentAdded = () => {} }) => {
                 <form onSubmit={handleSubmit} id="appointmentForm" onKeyDown={handleNoSend}>
                     <div>
                         <div className="formRow">
-                            <div>Fecha y horario</div>
+                            <div style={{fontWeight: '600'}}>Fecha y horario:</div>
                         </div>
                         <div className="formRowDate">
                             <label htmlFor="start">Inicio*</label>

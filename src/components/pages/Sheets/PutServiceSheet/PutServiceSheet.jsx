@@ -397,7 +397,7 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                 <div className="formRow">Los campos con (*) son obligatorios.</div>
                 <div className="clientSelection">
                     <div className="formRow">
-                        <label>Vehículo*</label>
+                        <label style={{fontWeight: '600'}}>Vehículo*</label>
                     </div>
                     <div className="searchRow">
                         <input
@@ -433,7 +433,7 @@ const PutServiceSheet = ({onServiceSheetAdded = () => {}}) => {
                 {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true} personClientId={editServiceSheet.personClient} companyClientId={editServiceSheet.companyClient}/>}
                 <div className="clientSelection">
                     <div className="formRow">
-                        <label>Cliente</label>
+                        <label style={{fontWeight: '600'}}>Cliente</label>
                     </div>
                     {editServiceSheet.personClient || editServiceSheet.companyClient ? 
                         (
