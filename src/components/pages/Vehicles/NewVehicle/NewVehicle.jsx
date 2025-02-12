@@ -229,7 +229,7 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                     {!isNested ? (
                         <div className="clientSelection">
                             <div className="formRow">
-                                <label>Cliente</label>
+                                <label style={{fontWeight: '600'}}>Cliente</label>
                             </div>
                             {newVehicle.personClient || newVehicle.companyClient ? 
                                 (

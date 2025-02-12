@@ -336,7 +336,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                 <div className="formRow">Los campos con (*) son obligatorios.</div>
                 <div className="clientSelection">
                     <div className="formRow">
-                        <label>Vehículo*</label>
+                        <label style={{fontWeight: '600'}}>Vehículo*</label>
                     </div>
                     <div className="searchRow">
                         <input
@@ -372,7 +372,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
                 {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true} personClientId={newMechanicalSheet.personClient} companyClientId={newMechanicalSheet.companyClient}/>}
                 <div className="clientSelection">
                     <div className="formRow">
-                        <label>Cliente</label>
+                        <label style={{fontWeight: '600'}}>Cliente</label>
                     </div>
                     {newMechanicalSheet.personClient || newMechanicalSheet.companyClient ? 
                         (

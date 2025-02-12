@@ -260,7 +260,7 @@ const PutVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                     {!isNested ? (
                         <div className="clientSelection">
                             <div className="formRow">
-                                <label>Cliente</label>
+                                <label style={{fontWeight: '600'}}>Cliente</label>
                             </div>
                             {editVehicle.personClient || editVehicle.companyClient ? 
                             (

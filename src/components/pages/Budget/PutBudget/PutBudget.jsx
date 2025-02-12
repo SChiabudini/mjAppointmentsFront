@@ -393,7 +393,7 @@ const PutBudget = ({ onBudgetAdded = () => {} }) => {
                 <div className="formRow">Los campos con (*) son obligatorios.</div>
                 <div className="clientSelection">
                     <div className="formRow">
-                        <label>Vehículo*</label>
+                        <label style={{fontWeight: '600'}}>Vehículo*</label>
                     </div>
                     <div className="searchRow">
                         <input
@@ -429,7 +429,7 @@ const PutBudget = ({ onBudgetAdded = () => {} }) => {
                 {showNewVehicle && <NewVehicle onVehicleAdded={handleVehicleSelection} isNested={true} personClientId={editBudget.personClient} companyClientId={editBudget.companyClient}/>}
                 <div className="clientSelection">
                     <div className="formRow">
-                        <label>Cliente*</label>
+                        <label style={{fontWeight: '600'}}>Cliente*</label>
                     </div>
                     {editBudget.personClient || editBudget.companyClient ? 
                         (
@@ -501,7 +501,7 @@ const PutBudget = ({ onBudgetAdded = () => {} }) => {
                 <div className="formRow"></div>
                 <form id="budgetForm" onSubmit={handleSubmit} onKeyDown={handleNoSend}>
                     <div className="formRow">
-                        <label>Items*</label>
+                        <label style={{fontWeight: '600'}}>Items</label>
                     </div>
                     <div className="newItem">
                         <div className="formRow">
