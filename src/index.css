@@ -244,6 +244,9 @@ button:disabled {
     display: flex;
     align-items: center;
     gap: 0.25rem;
+    color: var(--dark-grey);
+    font-size: 0.75rem;
+    letter-spacing: 0.05rem;
 }
 
 button.delete{
