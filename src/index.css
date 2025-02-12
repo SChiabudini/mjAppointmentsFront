@@ -269,8 +269,12 @@ button.add:hover{
     color: white;
 }
 
+.titleButtons button.withImage{
+    padding: 0.4rem 1rem;
+}
+
 .titleButtons button img{
-    width: 1rem;
+    width: 0.9rem;
 }
 
 /*--FORMS--*/
