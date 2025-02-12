@@ -307,10 +307,7 @@ const NewMechanicalSheet = ({onMechanicalSheetAdded = () => {}}) => {
 
             dispatch(getVehicles());
 
-            setNewMechanicalSheet(initialMechanicalSheetState);
-            setSearchingPerson(true);
-            setSearchTermClients('');
-            setSearchTermVehicles('');
+            resetForm();
             dispatch(getMechanicalSheets());
             dispatch(getAllMechanicalSheets());
             onMechanicalSheetAdded(response);

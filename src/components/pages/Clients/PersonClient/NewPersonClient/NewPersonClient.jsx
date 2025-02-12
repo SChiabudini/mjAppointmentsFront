@@ -185,9 +185,7 @@ const NewPersonClient = ({ onClientAdded = () => {}, isNested = false, vehicleId
                 dispatch(getVehicles());
             }
 
-            setNewPersonClient(initialPersonClientState);
-            setPhonePrefix('549');
-            setPhoneWsp('');
+            resetForm();
             dispatch(getPersonClients());
             dispatch(getAllPersonClients());
             onClientAdded(response);

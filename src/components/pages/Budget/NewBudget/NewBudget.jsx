@@ -321,16 +321,7 @@ const NewBudget = ({ onBudgetAdded = () => {} }) => {
                 dispatch(getVehicles());
             }
 
-            setNewBudget(initialBudgetState);
-            setSearchTermClients('');
-            setSearchTermVehicles('');
-            setSearchingPerson(true);
-            setCurrentItem({
-                quantity: 0,
-                description: "",
-                price: 0,
-            });
-            setTotal(0);
+            resetForm();
             dispatch(getBudgets());
             dispatch(getAllBudgets());
             onBudgetAdded(response);
