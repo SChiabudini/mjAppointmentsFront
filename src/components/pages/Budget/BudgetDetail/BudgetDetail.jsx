@@ -95,6 +95,7 @@ const BudgetDetail = () => {
                                         onClick={() => window.print()} 
                                         onMouseEnter={(e) => e.currentTarget.firstChild.src = printHover} 
                                         onMouseLeave={(e) => e.currentTarget.firstChild.src = print}
+                                        className="withImage"
                                     >
                                         <img src={print} alt="Print"/>
                                     </button>
