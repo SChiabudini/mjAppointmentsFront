@@ -191,7 +191,7 @@ const NewCompanyClient = ({ onClientAdded = () => {}, isNested = false, vehicleI
                 dispatch(getVehicles());
             }
 
-            setNewCompanyClient(initialCompanyClientState);
+            resetForm();
             dispatch(getCompanyClients());
             dispatch(getAllCompanyClients());
             onClientAdded(response);

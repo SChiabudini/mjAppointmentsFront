@@ -166,9 +166,7 @@ const NewVehicle = ({ onVehicleAdded = () => {}, isNested = false, personClientI
                 dispatch(getCompanyClients());
             }
 
-            setNewVehicle(initialVehicleState);
-            setSearchTerm('');            
-            setSearchingPerson(true);
+            resetForm();
             dispatch(getVehicles());
             dispatch(getAllVehicles());
             onVehicleAdded(response);

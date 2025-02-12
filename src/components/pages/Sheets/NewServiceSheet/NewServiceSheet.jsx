@@ -327,10 +327,7 @@ const NewServiceSheet = ({onServiceSheetAdded = () => {}}) => {
 
             dispatch(getVehicles());
 
-            setNewServiceSheet(initialServiceSheetState);
-            setSearchingPerson(true);
-            setSearchTermClients('');
-            setSearchTermVehicles('');
+            resetForm();
             dispatch(getServiceSheets());
             dispatch(getAllServiceSheets());
             onServiceSheetAdded(response);
