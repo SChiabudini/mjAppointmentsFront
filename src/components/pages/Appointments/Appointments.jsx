@@ -1,5 +1,5 @@
 import style from './Appointments.module.css';
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import iconMechanic from './icons/mechanic.png';
 import iconService from './icons/service.png';
@@ -9,7 +9,7 @@ import { Calendar, dayjsLocalizer } from 'react-big-calendar';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import NewAppointment from './NewAppointment/NewAppointment.jsx';
-import { getAllAppointments } from '../../../redux/appointmentActions.js';
+import { getAppointments, getAllAppointments } from '../../../redux/appointmentActions.js';
 
 dayjs.locale('es');
 
@@ -19,6 +19,10 @@ const Appointments = () => {
     const navigate = useNavigate();
 
     const [showAll, setShowAll] = useState(false);
+
+    useEffect(() => {
+        dispatch(getAppointments());
+    }, [dispatch])
 
     //----- ABRIR POPUP
     const [popUpOpen, setPopUpOpen] = useState(false);
